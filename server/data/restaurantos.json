@@ -1,0 +1,801 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Executive Chef Admin",
+      "email": "admin@restaurantos.local",
+      "passwordHash": "$2a$10$TuczLci2dKLdt1Lveq3gQukvbo4bTQjiiTyiROf4G22hIfilQAVWi",
+      "role": "ADMIN",
+      "isActive": true,
+      "createdAt": "2026-10-16T13:24:44.557Z",
+      "lastLoginAt": "2026-10-17T15:28:21.926Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Starters & Molecular Tapas",
+      "slug": "starters-tapas",
+      "description": "Avant-garde appetizers fusing street delicacies with modern culinary science",
+      "displayOrder": 1,
+      "isVisible": true
+    },
+    {
+      "id": 2,
+      "name": "Progressive Small Plates",
+      "slug": "small-plates",
+      "description": "Intricate sharing dishes with playful textures and layered aromatics",
+      "displayOrder": 2,
+      "isVisible": true
+    },
+    {
+      "id": 3,
+      "name": "Main Course Curations",
+      "slug": "main-course",
+      "description": "Slow-simmered gravies and charcoal-roasted specialties reimagined",
+      "displayOrder": 3,
+      "isVisible": true
+    },
+    {
+      "id": 4,
+      "name": "Artisanal Breads & Fragrant Rice",
+      "slug": "breads-rice",
+      "description": "Tandoor leavened breads and dum-cooked aged basmati",
+      "displayOrder": 4,
+      "isVisible": true
+    },
+    {
+      "id": 5,
+      "name": "Sweet Illusions & Desserts",
+      "slug": "desserts",
+      "description": "Theatrical post-meal spectacles crafted with liquid nitrogen and traditional confections",
+      "displayOrder": 5,
+      "isVisible": true
+    },
+    {
+      "id": 6,
+      "name": "Alchemical Mixology & Botanicals",
+      "slug": "beverages",
+      "description": "Smoked distillations, ayurvedic infusions, and signature mocktails",
+      "displayOrder": 6,
+      "isVisible": true
+    },
+    {
+      "id": 7,
+      "name": "Chef's Signature Tasting",
+      "slug": "chefs-specials",
+      "description": "Limited-edition seasonal creations by our culinary laboratory",
+      "displayOrder": 7,
+      "isVisible": true
+    }
+  ],
+  "menuItems": [
+    {
+      "id": 1,
+      "categoryId": 1,
+      "categoryName": "Starters & Molecular Tapas",
+      "name": "Dal Chawal Arancini",
+      "slug": "dal-chawal-arancini",
+      "description": "Crispy lentil & arborio rice spheres topped with tomato punch chutney, dehydrated poppadum tuile, and mint emulsion.",
+      "price": 495,
+      "imageUrl": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Yellow Moong Dal, Arborio Rice, Cumin, Ghee, Papadum, Mint, Mustard Seed Emulsion",
+      "allergens": "Dairy, Gluten",
+      "spiceLevel": "MILD",
+      "isVeg": true,
+      "isAvailable": true,
+      "isChefSpecial": true,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 1,
+      "calories": 320,
+      "preparationTimeMinutes": 15
+    },
+    {
+      "id": 2,
+      "categoryId": 1,
+      "categoryName": "Starters & Molecular Tapas",
+      "name": "Deconstructed Pani Puri Sphere",
+      "slug": "deconstructed-pani-puri",
+      "description": "Molecular alginate spheres enclosing spiced spiced mint-coriander water, served over sweet tamarind dust and micro sev crisps.",
+      "price": 445,
+      "imageUrl": "https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Mint Extract, Coriander, Black Salt, Tamarind Pulp, Calcium Lactate, Semolina Flakes",
+      "allergens": "Gluten",
+      "spiceLevel": "MEDIUM",
+      "isVeg": true,
+      "isAvailable": true,
+      "isChefSpecial": true,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 2,
+      "calories": 180,
+      "preparationTimeMinutes": 10
+    },
+    {
+      "id": 3,
+      "categoryId": 2,
+      "categoryName": "Progressive Small Plates",
+      "name": "Smoked Butter Chicken Bao",
+      "slug": "smoked-butter-chicken-bao",
+      "description": "Steamed lotus-leaf lotus bao buns stuffed with pulled tandoori chicken, makhani glaze, kasuri fenugreek foam, and pickled shallots.",
+      "price": 595,
+      "imageUrl": "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Chicken Tikka, Steamed Bao Dough, Tomato Cream Reduction, Kasuri Methi, Pickled Red Onions",
+      "allergens": "Dairy, Gluten",
+      "spiceLevel": "MILD",
+      "isVeg": false,
+      "isAvailable": true,
+      "isChefSpecial": true,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 1,
+      "calories": 450,
+      "preparationTimeMinutes": 18
+    },
+    {
+      "id": 4,
+      "categoryId": 2,
+      "categoryName": "Progressive Small Plates",
+      "name": "Galouti Kebab Pâté on Ulta Tawa Crisp",
+      "slug": "galouti-kebab-pate",
+      "description": "Melt-in-mouth smoked lamb pâté delicately spiced with 18 awadhi herbs, served on saffron inverted-griddle crisps with cardamom gel.",
+      "price": 675,
+      "imageUrl": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Minced Lamb, Raw Papaya, Rose Petal Powder, Brown Onions, Ghee, Ulta Tawa Paratha",
+      "allergens": "Gluten, Dairy",
+      "spiceLevel": "MEDIUM",
+      "isVeg": false,
+      "isAvailable": true,
+      "isChefSpecial": true,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 2,
+      "calories": 520,
+      "preparationTimeMinutes": 20
+    },
+    {
+      "id": 5,
+      "categoryId": 2,
+      "categoryName": "Progressive Small Plates",
+      "name": "Tempura Dynamite Prawns",
+      "slug": "tempura-dynamite-prawns",
+      "description": "Golden fried tiger prawns tossed in sriracha-curry leaf aioli with toasted black sesame and compressed cucumber ribbon.",
+      "price": 745,
+      "imageUrl": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Tiger Prawns, Rice Flour Tempura, Sriracha, Fresh Curry Leaves, Sesame, Lemon Zest",
+      "allergens": "Crustaceans, Egg, Sesame",
+      "spiceLevel": "HOT",
+      "isVeg": false,
+      "isAvailable": true,
+      "isChefSpecial": false,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 3,
+      "calories": 410,
+      "preparationTimeMinutes": 14
+    },
+    {
+      "id": 6,
+      "categoryId": 3,
+      "categoryName": "Main Course Curations",
+      "name": "Wild Mushroom & Black Truffle Khichdi",
+      "slug": "wild-mushroom-truffle-khichdi",
+      "description": "Slow-tempered arborio & moong comfort risotto infused with porcini broth, shaved winter truffles, and aged parmesan papad crisp.",
+      "price": 695,
+      "imageUrl": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Shiitake & Porcini Mushrooms, Black Truffle Oil, Moong Dal, Arborio Rice, Parmesan Crust",
+      "allergens": "Dairy",
+      "spiceLevel": "MILD",
+      "isVeg": true,
+      "isAvailable": true,
+      "isChefSpecial": true,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 1,
+      "calories": 480,
+      "preparationTimeMinutes": 22
+    },
+    {
+      "id": 7,
+      "categoryId": 3,
+      "categoryName": "Main Course Curations",
+      "name": "Braised Lamb Shank Rogan Josh",
+      "slug": "braised-lamb-shank-rogan-josh",
+      "description": "8-hour slow cooked tender lamb shank in Kashmiri rattan jyot & dried ginger reduction, topped with saffron bone marrow glaze.",
+      "price": 895,
+      "imageUrl": "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Prime Lamb Shank, Kashmiri Chili, Rattan Jyot, Fennel Powder, Dry Ginger, Mustard Oil",
+      "allergens": "Dairy",
+      "spiceLevel": "MEDIUM",
+      "isVeg": false,
+      "isAvailable": true,
+      "isChefSpecial": true,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 2,
+      "calories": 740,
+      "preparationTimeMinutes": 25
+    },
+    {
+      "id": 8,
+      "categoryId": 3,
+      "categoryName": "Main Course Curations",
+      "name": "Paneer Pinwheel Makhani Dome",
+      "slug": "paneer-pinwheel-makhani",
+      "description": "Hand-rolled cottage cheese spirals filled with dried fruit duxelles, served under a glass smoke dome with velvet makhani silk.",
+      "price": 625,
+      "imageUrl": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Artisanal Paneer, Pistachio-Fig Farce, San Marzano Tomato Reduction, White Butter, Fenugreek Smoke",
+      "allergens": "Dairy, Tree Nuts",
+      "spiceLevel": "MILD",
+      "isVeg": true,
+      "isAvailable": true,
+      "isChefSpecial": false,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 3,
+      "calories": 560,
+      "preparationTimeMinutes": 18
+    },
+    {
+      "id": 9,
+      "categoryId": 4,
+      "categoryName": "Artisanal Breads & Fragrant Rice",
+      "name": "Truffle & Roasted Garlic Naan Basket",
+      "slug": "truffle-garlic-naan-basket",
+      "description": "Tandoor baked sourdough flatbreads brushed with clarified white butter, roasted confit garlic, and white truffle essence.",
+      "price": 245,
+      "imageUrl": "https://images.unsplash.com/photo-1626074353765-517a681e40be?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Refined Wheat Flour, Confit Garlic, Desi Ghee, Truffle Glaze, Nigella Seeds",
+      "allergens": "Gluten, Dairy",
+      "spiceLevel": "NONE",
+      "isVeg": true,
+      "isAvailable": true,
+      "isChefSpecial": false,
+      "isRecommended": false,
+      "isPopular": true,
+      "displayOrder": 1,
+      "calories": 280,
+      "preparationTimeMinutes": 8
+    },
+    {
+      "id": 10,
+      "categoryId": 4,
+      "categoryName": "Artisanal Breads & Fragrant Rice",
+      "name": "Awadhi Dum Saffron Biryani",
+      "slug": "awadhi-dum-saffron-biryani",
+      "description": "Long grain aged basmati sealed in clay handi with kewra attar, caramelised onions, saffron curd, and served with burrani raita.",
+      "price": 645,
+      "imageUrl": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Daawat Aged Basmati, Saffron, Rose Water, Fried Onion Crisp, Mint, Whole Spices",
+      "allergens": "Dairy",
+      "spiceLevel": "MEDIUM",
+      "isVeg": true,
+      "isAvailable": true,
+      "isChefSpecial": false,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 2,
+      "calories": 580,
+      "preparationTimeMinutes": 20
+    },
+    {
+      "id": 11,
+      "categoryId": 5,
+      "categoryName": "Sweet Illusions & Desserts",
+      "name": "Rasmalai Tres Leches",
+      "slug": "rasmalai-tres-leches",
+      "description": "Cardamom infused genoise sponge soaked in condensed saffron rabdi, crowned with caramelized milk wafer and crushed Iranian pistachio.",
+      "price": 495,
+      "imageUrl": "https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Chenna Discs, Condensed Milk, Evaporated Milk, Saffron Strands, Rose Water, Pistachios",
+      "allergens": "Dairy, Gluten, Tree Nuts",
+      "spiceLevel": "NONE",
+      "isVeg": true,
+      "isAvailable": true,
+      "isChefSpecial": true,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 1,
+      "calories": 420,
+      "preparationTimeMinutes": 12
+    },
+    {
+      "id": 12,
+      "categoryId": 5,
+      "categoryName": "Sweet Illusions & Desserts",
+      "name": "Bailey's & Jalebi Molecular Caviar",
+      "slug": "baileys-jalebi-caviar",
+      "description": "Miniature saffron spiral crisps served over liquid nitrogen rabdi foam and spheres of Irish cream liqueur pearls.",
+      "price": 545,
+      "imageUrl": "https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Flour Crisps, Saffron Syrup, Bailey’s Reduction, Rabdi Foam, Edible Gold Leaf",
+      "allergens": "Dairy, Gluten",
+      "spiceLevel": "NONE",
+      "isVeg": true,
+      "isAvailable": true,
+      "isChefSpecial": true,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 2,
+      "calories": 460,
+      "preparationTimeMinutes": 14
+    },
+    {
+      "id": 13,
+      "categoryId": 6,
+      "categoryName": "Alchemical Mixology & Botanicals",
+      "name": "Farzi Illusion: Chuski Margarita",
+      "slug": "farzi-chuski-margarita",
+      "description": "Interactive tequila craft cocktail with crushed kala-khatta ice lollipop, triple sec vapor, black salt rim, and dry-ice mist.",
+      "price": 645,
+      "imageUrl": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Agave Tequila, Kala Khatta Reduction, Fresh Lime, Cointreau, Himalayan Pink Rock Salt",
+      "allergens": "None",
+      "spiceLevel": "MILD",
+      "isVeg": true,
+      "isAvailable": true,
+      "isChefSpecial": true,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 1,
+      "calories": 190,
+      "preparationTimeMinutes": 8
+    },
+    {
+      "id": 14,
+      "categoryId": 6,
+      "categoryName": "Alchemical Mixology & Botanicals",
+      "name": "The Alchemist Smoked Old Fashioned",
+      "slug": "smoked-old-fashioned",
+      "description": "Bourbon stirred with jaggery syrup and aromatic bitters, presented inside an oak wood smoke bell jar with dehydrated orange wheel.",
+      "price": 725,
+      "imageUrl": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Single Barrel Bourbon, Palm Jaggery, Angostura Bitters, Cinnamon Smoke, Maraschino Cherry",
+      "allergens": "None",
+      "spiceLevel": "NONE",
+      "isVeg": true,
+      "isAvailable": true,
+      "isChefSpecial": true,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 2,
+      "calories": 210,
+      "preparationTimeMinutes": 10
+    },
+    {
+      "id": 15,
+      "categoryId": 6,
+      "categoryName": "Alchemical Mixology & Botanicals",
+      "name": "Kokum & Tamarind Botanical Spritz",
+      "slug": "kokum-tamarind-spritz",
+      "description": "Zero-proof artisanal refresher crafted from Goan kokum berries, sweet tamarind water, cumin soda, and sparkling mineral water.",
+      "price": 375,
+      "imageUrl": "https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=1200&auto=format&fit=crop",
+      "ingredients": "Wild Kokum Extract, Tamarind Reduction, Roasted Cumin, Mint Sprig, Sparkling Water",
+      "allergens": "None",
+      "spiceLevel": "NONE",
+      "isVeg": true,
+      "isAvailable": true,
+      "isChefSpecial": false,
+      "isRecommended": true,
+      "isPopular": true,
+      "displayOrder": 3,
+      "calories": 95,
+      "preparationTimeMinutes": 6
+    }
+  ],
+  "tables": [
+    {
+      "id": 1,
+      "tableNumber": "T01",
+      "capacity": 2,
+      "section": "Main Dining",
+      "status": "AVAILABLE",
+      "qrCodeUrl": "/menu?table=T01"
+    },
+    {
+      "id": 2,
+      "tableNumber": "T02",
+      "capacity": 2,
+      "section": "Main Dining",
+      "status": "AVAILABLE",
+      "qrCodeUrl": "/menu?table=T02"
+    },
+    {
+      "id": 3,
+      "tableNumber": "T03",
+      "capacity": 4,
+      "section": "Main Dining",
+      "status": "AVAILABLE",
+      "qrCodeUrl": "/menu?table=T03"
+    },
+    {
+      "id": 4,
+      "tableNumber": "T04",
+      "capacity": 4,
+      "section": "Main Dining",
+      "status": "AVAILABLE",
+      "qrCodeUrl": "/menu?table=T04",
+      "activeOrderId": null
+    },
+    {
+      "id": 5,
+      "tableNumber": "T05",
+      "capacity": 6,
+      "section": "Terrace Garden",
+      "status": "AVAILABLE",
+      "qrCodeUrl": "/menu?table=T05"
+    },
+    {
+      "id": 6,
+      "tableNumber": "T06",
+      "capacity": 4,
+      "section": "Terrace Garden",
+      "status": "AVAILABLE",
+      "qrCodeUrl": "/menu?table=T06"
+    },
+    {
+      "id": 7,
+      "tableNumber": "T07",
+      "capacity": 8,
+      "section": "Chef's Table",
+      "status": "RESERVED",
+      "qrCodeUrl": "/menu?table=T07"
+    },
+    {
+      "id": 8,
+      "tableNumber": "T08",
+      "capacity": 2,
+      "section": "Cocktail Lounge",
+      "status": "AVAILABLE",
+      "qrCodeUrl": "/menu?table=T08"
+    },
+    {
+      "id": 9,
+      "tableNumber": "T09",
+      "capacity": 4,
+      "section": "Cocktail Lounge",
+      "status": "AVAILABLE",
+      "qrCodeUrl": "/menu?table=T09"
+    },
+    {
+      "id": 10,
+      "tableNumber": "T10",
+      "capacity": 6,
+      "section": "Private Dining Room",
+      "status": "AVAILABLE",
+      "qrCodeUrl": "/menu?table=T10"
+    },
+    {
+      "id": 11,
+      "tableNumber": "T11",
+      "capacity": 4,
+      "section": "Main Dining",
+      "status": "AVAILABLE",
+      "qrCodeUrl": "/menu?table=T11"
+    },
+    {
+      "id": 12,
+      "tableNumber": "T12",
+      "capacity": 2,
+      "section": "Terrace Garden",
+      "status": "AVAILABLE",
+      "qrCodeUrl": "/menu?table=T12"
+    }
+  ],
+  "reservations": [
+    {
+      "id": 4,
+      "name": "Simran Khurana",
+      "phone": "+91 98765 43210",
+      "email": "simran@demo.com",
+      "reservationDate": "2026-10-25",
+      "reservationTime": "20:30",
+      "guests": 4,
+      "specialRequest": "Chef table tasting preference",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Station allocated",
+      "createdAt": "2026-10-17T15:28:22.008Z",
+      "updatedAt": "2026-10-17T15:28:22.013Z"
+    },
+    {
+      "id": 3,
+      "name": "Kavita Rao",
+      "phone": "+91 98450 11223",
+      "email": "kavita.rao@demo.com",
+      "reservationDate": "2026-10-20",
+      "reservationTime": "20:30",
+      "guests": 4,
+      "specialRequest": "Window seating for birthday",
+      "status": "PENDING",
+      "tableNumber": "",
+      "adminNote": "",
+      "createdAt": "2026-10-16T13:38:08.754Z",
+      "updatedAt": "2026-10-16T13:38:08.754Z"
+    },
+    {
+      "id": 1,
+      "name": "Vikram Malhotra",
+      "phone": "+91 98112 34567",
+      "email": "vikram.malhotra@demo.com",
+      "reservationDate": "2026-10-17",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Anniversary celebration, prefer quiet corner table with tasting pairing.",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Complimentary dessert sparkler arranged.",
+      "createdAt": "2026-10-16T13:24:44.570Z",
+      "updatedAt": "2026-10-16T13:24:44.570Z"
+    },
+    {
+      "id": 2,
+      "name": "Aanya Sen",
+      "phone": "+91 98200 87654",
+      "email": "aanya.sen@demo.com",
+      "reservationDate": "2026-10-18",
+      "reservationTime": "13:30",
+      "guests": 2,
+      "specialRequest": "Vegetarian tasting menu requested.",
+      "status": "PENDING",
+      "tableNumber": "",
+      "adminNote": "",
+      "createdAt": "2026-10-16T13:24:44.570Z",
+      "updatedAt": "2026-10-16T13:24:44.570Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": 3,
+      "orderNumber": "FZ-9070",
+      "tableNumber": "T04",
+      "customerName": "Audit Test Guest",
+      "customerPhone": "+91 98111 22334",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 16,
+          "name": "Audit Molecular Spheres",
+          "price": 595,
+          "quantity": 2
+        }
+      ],
+      "subtotal": 1190,
+      "tax": 59.5,
+      "total": 1249.5,
+      "status": "COMPLETED",
+      "notes": "Priority table service",
+      "createdAt": "2026-10-17T15:28:21.980Z",
+      "updatedAt": "2026-10-17T15:28:21.998Z"
+    },
+    {
+      "id": 2,
+      "orderNumber": "FZ-1972",
+      "tableNumber": "T04",
+      "customerName": "Aarav Sharma",
+      "customerPhone": "+91 97110 99887",
+      "items": [
+        {
+          "price": 495,
+          "quantity": 2,
+          "menuItemId": 1,
+          "isVeg": true,
+          "name": "Dal Chawal Arancini"
+        },
+        {
+          "price": 495,
+          "quantity": 1,
+          "menuItemId": 11,
+          "isVeg": true,
+          "name": "Rasmalai Tres Leches"
+        }
+      ],
+      "subtotal": 1485,
+      "tax": 74.25,
+      "total": 1559.25,
+      "status": "PENDING",
+      "notes": "Serve dessert after main meal",
+      "createdAt": "2026-10-16T13:38:15.076Z",
+      "updatedAt": "2026-10-16T13:38:15.076Z"
+    },
+    {
+      "id": 1,
+      "orderNumber": "FZ-1082",
+      "tableNumber": "T04",
+      "customerName": "Rohit Verma",
+      "customerPhone": "+91 99887 76655",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 495,
+          "quantity": 2,
+          "specialInstructions": "Extra crisp papadum",
+          "isVeg": true
+        },
+        {
+          "id": 2,
+          "menuItemId": 3,
+          "name": "Smoked Butter Chicken Bao",
+          "price": 595,
+          "quantity": 1,
+          "specialInstructions": "",
+          "isVeg": false
+        },
+        {
+          "id": 3,
+          "menuItemId": 13,
+          "name": "Farzi Illusion: Chuski Margarita",
+          "price": 645,
+          "quantity": 2,
+          "specialInstructions": "Light on rock salt",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 2875,
+      "tax": 143.75,
+      "total": 3018.75,
+      "status": "IN_KITCHEN",
+      "notes": "Table seated at 19:45, priority service.",
+      "createdAt": "2026-10-16T13:09:44.570Z",
+      "updatedAt": "2026-10-16T13:24:44.570Z"
+    }
+  ],
+  "galleryImages": [
+    {
+      "id": 1,
+      "title": "Grand Dining Chamber & Amber Illumination",
+      "categoryName": "Ambience",
+      "imageUrl": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop",
+      "isVideo": false,
+      "displayOrder": 1
+    },
+    {
+      "id": 2,
+      "title": "Molecular Plating by Master Chef",
+      "categoryName": "Culinary Art",
+      "imageUrl": "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1200&auto=format&fit=crop",
+      "isVideo": false,
+      "displayOrder": 2
+    },
+    {
+      "id": 3,
+      "title": "The Mixology Laboratory & Smoke Bar",
+      "categoryName": "Mixology",
+      "imageUrl": "https://images.unsplash.com/photo-1572116469696-31de0f17cc34?q=80&w=1200&auto=format&fit=crop",
+      "isVideo": false,
+      "displayOrder": 3
+    },
+    {
+      "id": 4,
+      "title": "Private Chef's Reserve Dining Table",
+      "categoryName": "Ambience",
+      "imageUrl": "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?q=80&w=1200&auto=format&fit=crop",
+      "isVideo": false,
+      "displayOrder": 4
+    },
+    {
+      "id": 5,
+      "title": "Artisanal Starters Plated with Precision",
+      "categoryName": "Culinary Art",
+      "imageUrl": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop",
+      "isVideo": false,
+      "displayOrder": 5
+    },
+    {
+      "id": 6,
+      "title": "Evening Exterior & Grand Welcome",
+      "categoryName": "Ambience",
+      "imageUrl": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1200&auto=format&fit=crop",
+      "isVideo": false,
+      "displayOrder": 6
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "customerName": "Devika Singhania",
+      "rating": 5,
+      "comment": "An unbelievable gastronomic spectacle. The Dal Chawal Arancini and Chuski Margarita redefine Indian cuisine without losing its soul.",
+      "source": "GOOGLE",
+      "status": "APPROVED",
+      "isFeatured": true,
+      "createdAt": "2026-09-12"
+    },
+    {
+      "id": 2,
+      "customerName": "Marcus Vance",
+      "rating": 5,
+      "comment": "World-class progressive cooking. The smoked lamb pate and dry-ice illusions match 3-star Michelin theater. Extraordinary experience.",
+      "source": "TRIPADVISOR",
+      "status": "APPROVED",
+      "isFeatured": true,
+      "createdAt": "2026-09-24"
+    },
+    {
+      "id": 3,
+      "customerName": "Priya & Rahul Kapoor",
+      "rating": 5,
+      "comment": "Celebrated our anniversary at the Chef’s Table. The attention to detail, warm hospitality, and the Rasmalai Tres Leches were sublime.",
+      "source": "WEBSITE",
+      "status": "APPROVED",
+      "isFeatured": true,
+      "createdAt": "2026-10-02"
+    }
+  ],
+  "settings": {
+    "id": 1,
+    "restaurantName": "Farzi — Progressive Modern Indian",
+    "tagline": "An Illusion of Indian Heritage through the Prism of Modern Molecular Gastronomy",
+    "logoUrl": "",
+    "faviconUrl": "",
+    "primaryColor": "#0A0B0E",
+    "accentColor": "#D4AF37",
+    "phone": "+91 11 4352 8888",
+    "whatsappNumber": "+91 98100 12345",
+    "email": "reservations@farzirestaurant.demo",
+    "address": "Level 2, High Street Galleria, Connaught Place, New Delhi 110001",
+    "googleMapsEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3501.9961294657155!2d77.2177215!3d28.6322303!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd37b1234567%3A0x123456789abcdef!2sConnaught%20Place!5e0!3m2!1sen!2sin!4v1600000000000!5m2!1sen!2sin",
+    "workingHours": [
+      {
+        "days": "Monday – Thursday",
+        "lunch": "12:00 PM – 03:30 PM",
+        "dinner": "07:00 PM – 11:30 PM"
+      },
+      {
+        "days": "Friday – Sunday",
+        "lunch": "12:00 PM – 04:00 PM",
+        "dinner": "07:00 PM – 12:30 AM"
+      }
+    ],
+    "socialLinks": {
+      "instagram": "https://instagram.com/farzicafe",
+      "facebook": "https://facebook.com/farzicafe",
+      "tripadvisor": "https://tripadvisor.com"
+    },
+    "currencySymbol": "₹",
+    "taxPercentage": 5
+  },
+  "qrScans": [
+    {
+      "id": 6,
+      "table": "T04",
+      "timestamp": "2026-10-16T13:49:09.546Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+    },
+    {
+      "id": 5,
+      "table": "T04",
+      "timestamp": "2026-10-16T13:49:09.538Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+    },
+    {
+      "id": 4,
+      "table": "T04",
+      "timestamp": "2026-10-16T13:48:36.171Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+    },
+    {
+      "id": 3,
+      "table": "T04",
+      "timestamp": "2026-10-16T13:48:36.144Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+    },
+    {
+      "id": 1,
+      "table": "T04",
+      "timestamp": "2026-10-16T12:24:44.570Z",
+      "userAgent": "Mobile Safari"
+    },
+    {
+      "id": 2,
+      "table": "T01",
+      "timestamp": "2026-10-16T11:24:44.570Z",
+      "userAgent": "Mobile Chrome"
+    }
+  ]
+}
