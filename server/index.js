@@ -132,7 +132,7 @@ const getInitialData = () => {
         email: 'admin@restaurantos.local',
         passwordHash: adminPasswordHash,
         role: 'ADMIN',
-        isActive: true,
+        isActive: !isProduction,
         createdAt: new Date().toISOString()
       }
     ],
@@ -591,6 +591,13 @@ const loadDatabase = () => {
     }
     const raw = fs.readFileSync(DATA_FILE, 'utf-8');
     const parsed = JSON.parse(raw);
+    if (isProduction && Array.isArray(parsed.users)) {
+      for (const u of parsed.users) {
+        if (u.email && u.email.toLowerCase().endsWith('.local')) {
+          u.isActive = false;
+        }
+      }
+    }
     return parsed;
   } catch (err) {
     console.error('Error loading database, attempting recovery from backup:', err);
@@ -905,13 +912,14 @@ app.post('/api/public/orders', publicOrderRateLimiter, (req, res) => {
       });
     }
 
-    const quantity = Math.floor(Number(it.quantity));
-    if (!quantity || quantity < 1 || quantity > 50) {
+    const rawQty = it.quantity;
+    if (typeof rawQty !== 'number' || !Number.isInteger(rawQty) || rawQty < 1 || rawQty > 50) {
       return res.status(400).json({
         success: false,
-        message: `Invalid quantity (${it.quantity}) for dish "${dish.name}". Quantity must be between 1 and 50.`
+        message: `Invalid quantity (${it.quantity}) for dish "${dish.name}". Quantity must be an integer between 1 and 50.`
       });
     }
+    const quantity = rawQty;
 
     // SERVER IS THE SOLE AUTHORITY FOR UNIT PRICE
     const unitPrice = Number(dish.price);
@@ -1118,6 +1126,13 @@ app.post('/api/auth/login', loginRateLimiter, (req, res) => {
 
   if (!user) {
     return res.status(401).json({ success: false, message: 'Invalid email or password credentials' });
+  }
+
+  if (isProduction && cleanEmail.endsWith('.local')) {
+    return res.status(403).json({
+      success: false,
+      message: 'Default demo credentials (.local) are disabled in production mode. Please use a provisioned administrator account.'
+    });
   }
 
   if (user.isActive === false) {
@@ -1418,9 +1433,15 @@ app.put('/api/admin/reservations/:id', authenticateToken, requireRole('ADMIN', '
   if (tableNumber !== undefined) {
     const cleanTbl = String(tableNumber).trim().toUpperCase();
     if (cleanTbl) {
-      const exists = (db.tables || []).some(t => t.tableNumber.toUpperCase() === cleanTbl);
-      if (!exists) {
+      const tbl = (db.tables || []).find(t => t.tableNumber.toUpperCase() === cleanTbl);
+      if (!tbl) {
         return res.status(400).json({ success: false, message: `Station "${cleanTbl}" is not a recognized table.` });
+      }
+      if (r.guests && tbl.capacity < r.guests) {
+        return res.status(400).json({
+          success: false,
+          message: `Station "${cleanTbl}" capacity (${tbl.capacity} guests) is insufficient for party of ${r.guests} guests.`
+        });
       }
     }
     r.tableNumber = cleanTbl;
@@ -1449,6 +1470,13 @@ app.put('/api/admin/orders/:id/status', authenticateToken, requireRole('ADMIN', 
   const validStatuses = ['PENDING', 'CONFIRMED', 'IN_KITCHEN', 'READY', 'SERVED', 'COMPLETED', 'CANCELLED'];
   if (!validStatuses.includes(status)) {
     return res.status(400).json({ success: false, message: `Invalid status '${status}'` });
+  }
+
+  if (order.status === 'COMPLETED' || order.status === 'CANCELLED') {
+    return res.status(400).json({
+      success: false,
+      message: `Order #${order.orderNumber} is already in terminal state '${order.status}' and cannot be transitioned.`
+    });
   }
 
   order.status = status;

@@ -73,13 +73,41 @@ async function runTests() {
   assert(me.status === 200, 'Authenticated /api/auth/me returns HTTP 200');
   assert(me.data?.data?.email === 'admin@restaurantos.com', 'Current user matches provisioned admin');
 
-  // Test 4: Role-Based Access Control (RBAC)
-  console.log('\n▶ [Test 4] RBAC Protection');
+  // Test 4: Role-Based Access Control (RBAC) & Privilege Separation
+  console.log('\n▶ [Test 4] RBAC Protection & Privilege Separation');
   const unauthMenu = await request('/api/admin/menu');
   assert(unauthMenu.status === 401, 'Protected /api/admin/menu without token returns 401');
 
   const badTokenMenu = await request('/api/admin/menu', { token: 'invalid.jwt.token' });
   assert(badTokenMenu.status === 401, 'Protected /api/admin/menu with corrupted token returns 401');
+
+  // Authenticate with provisioned STAFF role account
+  const staffLogin = await request('/api/auth/login', {
+    method: 'POST',
+    body: { email: 'staff@restaurantos.com', password: 'StaffPass@2026' }
+  });
+  assert(staffLogin.status === 200, 'Provisioned staff account login succeeds');
+  const staffToken = staffLogin.data?.data?.token;
+
+  // Staff is permitted to view kitchen orders
+  const staffOrders = await request('/api/admin/orders', { token: staffToken });
+  assert(staffOrders.status === 200, 'Staff authorized to access kitchen orders (HTTP 200)');
+
+  // Staff is FORBIDDEN from modifying system settings (Role: ADMIN only)
+  const staffSettings = await request('/api/admin/settings', {
+    method: 'PUT',
+    token: staffToken,
+    body: { taxPercentage: 0 }
+  });
+  assert(staffSettings.status === 403, 'Privilege escalation blocked: Staff forbidden from modifying settings (HTTP 403)');
+
+  // Staff is FORBIDDEN from creating menu categories (Role: ADMIN only)
+  const staffCat = await request('/api/admin/categories', {
+    method: 'POST',
+    token: staffToken,
+    body: { name: 'Unauthorized Category' }
+  });
+  assert(staffCat.status === 403, 'Privilege escalation blocked: Staff forbidden from creating categories (HTTP 403)');
 
   // Test 5: Public Menu Catalog
   console.log('\n▶ [Test 5] Public Menu & Dish Detail');
@@ -113,12 +141,40 @@ async function runTests() {
   });
   assert(emptyOrder.status === 400, 'Empty items order rejected with HTTP 400');
 
-  // Rejection 6c: Invalid quantity
+  // Rejection 6c: Invalid quantity (zero)
   const badQtyOrder = await request('/api/public/orders', {
     method: 'POST',
     body: { tableNumber: 'T01', items: [{ menuItemId: firstDish.id, quantity: 0 }] }
   });
   assert(badQtyOrder.status === 400, 'Zero quantity item rejected with HTTP 400');
+
+  // Rejection 6d: Negative quantity
+  const negQtyOrder = await request('/api/public/orders', {
+    method: 'POST',
+    body: { tableNumber: 'T01', items: [{ menuItemId: firstDish.id, quantity: -2 }] }
+  });
+  assert(negQtyOrder.status === 400, 'Negative quantity item rejected with HTTP 400');
+
+  // Rejection 6e: Fractional/float quantity
+  const floatQtyOrder = await request('/api/public/orders', {
+    method: 'POST',
+    body: { tableNumber: 'T01', items: [{ menuItemId: firstDish.id, quantity: 2.5 }] }
+  });
+  assert(floatQtyOrder.status === 400, 'Fractional quantity item rejected with HTTP 400');
+
+  // Rejection 6f: Excessive quantity (>50)
+  const excessiveQtyOrder = await request('/api/public/orders', {
+    method: 'POST',
+    body: { tableNumber: 'T01', items: [{ menuItemId: firstDish.id, quantity: 999 }] }
+  });
+  assert(excessiveQtyOrder.status === 400, 'Excessive quantity item (>50) rejected with HTTP 400');
+
+  // Rejection 6g: Non-existent menu item ID
+  const invalidDishOrder = await request('/api/public/orders', {
+    method: 'POST',
+    body: { tableNumber: 'T01', items: [{ menuItemId: 99999, quantity: 1 }] }
+  });
+  assert(invalidDishOrder.status === 400, 'Non-existent menu item ID rejected with HTTP 400');
 
   // Security test 6d: Price tampering attempt
   // Client attempts to pay ₹1 for a ₹495 dish
@@ -185,6 +241,14 @@ async function runTests() {
   const tableT02Freed = tablesAfterComplete.data.data.find(t => t.tableNumber === 'T02');
   assert(tableT02Freed.status === 'AVAILABLE', 'Table T02 automatically freed (AVAILABLE) upon order completion');
 
+  // Terminal state immutability: attempting to reopen COMPLETED order must be rejected
+  const reopenOrder = await request(`/api/admin/orders/${orderData.id}/status`, {
+    method: 'PUT',
+    token: authToken,
+    body: { status: 'IN_KITCHEN' }
+  });
+  assert(reopenOrder.status === 400, 'Order state immutability enforced: Transitioning completed order rejected with HTTP 400');
+
   // Test 10: Reservation Validation & Handling
   console.log('\n▶ [Test 10] Reservation Strict Validations & State Handling');
   
@@ -233,13 +297,21 @@ async function runTests() {
   assert(validRes.data?.data?.status === 'PENDING', 'New reservation created in PENDING state');
   const resId = validRes.data.data.id;
 
-  // Admin updates reservation
+  // Table capacity validation: attempting to assign table T01 (capacity 2) to party of 4 guests must fail
+  const badCapacityRes = await request(`/api/admin/reservations/${resId}`, {
+    method: 'PUT',
+    token: authToken,
+    body: { tableNumber: 'T01' }
+  });
+  assert(badCapacityRes.status === 400, 'Table capacity enforced: Station T01 (capacity 2) rejected for party of 4 guests (HTTP 400)');
+
+  // Admin updates reservation with adequately sized table T07 (capacity 8)
   const updateRes = await request(`/api/admin/reservations/${resId}`, {
     method: 'PUT',
     token: authToken,
     body: { status: 'CONFIRMED', tableNumber: 'T07', adminNote: 'Chef notified of VIP tasting' }
   });
-  assert(updateRes.status === 200, 'Admin confirmed reservation and assigned table T07');
+  assert(updateRes.status === 200, 'Admin confirmed reservation and assigned table T07 (capacity 8)');
   assert(updateRes.data?.data?.status === 'CONFIRMED', 'Reservation status updated to CONFIRMED');
 
   // Test 11: Admin Menu CRUD Workflow
@@ -309,15 +381,23 @@ async function runTests() {
   assert(updateSettings.status === 200, 'Settings updated with 12% tax rate');
   assert(updateSettings.data?.data?.taxPercentage === 12, 'Tax rate saved as 12% in settings');
 
-  // Reset tax back to 5% standard
-  await request('/api/admin/settings', {
-    method: 'PUT',
-    token: authToken,
-    body: { taxPercentage: 5.0 }
-  });
+  // Test 14: Rate Limiter Burst Protection
+  console.log('\n▶ [Test 14] Authentication Rate Limiter Burst Protection');
+  let rateLimitHit = false;
+  for (let i = 0; i < 12; i++) {
+    const burstRes = await request('/api/auth/login', {
+      method: 'POST',
+      body: { email: 'burst_rate_tester@restaurantos.com', password: 'InvalidPasswordBurst' }
+    });
+    if (burstRes.status === 429) {
+      rateLimitHit = true;
+      break;
+    }
+  }
+  assert(rateLimitHit, 'Authentication rate limiter successfully enforced HTTP 429 on excessive attempts');
 
   console.log('\n======================================================');
-  console.log('   ALL 13 ACCEPTANCE TESTS PASSED SUCCESSFULLY! ✓');
+  console.log('   ALL 14 ACCEPTANCE TESTS PASSED SUCCESSFULLY! ✓');
   console.log('======================================================\n');
 }
 
