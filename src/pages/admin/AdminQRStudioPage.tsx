@@ -21,7 +21,7 @@ export const AdminQRStudioPage: React.FC = () => {
   const [selectedTable, setSelectedTable] = useState<string>('T04');
   const [customUrl, setCustomUrl] = useState<string>('');
   const [qrDataUrl, setQrDataUrl] = useState<string>('');
-  const [baseUrl, setBaseUrl] = useState<string>(window.location.origin);
+  const [baseUrl, setBaseUrl] = useState<string>(import.meta.env.VITE_PUBLIC_APP_URL || window.location.origin);
   const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,10 +36,11 @@ export const AdminQRStudioPage: React.FC = () => {
     loadTables();
   }, []);
 
-  // Compute final destination URL
-  const destinationUrl = customUrl.trim()
-    ? customUrl.trim()
-    : `${baseUrl}/menu?table=${selectedTable}`;
+  // Compute final destination URL safely
+  const sanitizedCustom = customUrl.trim().replace(/^javascript:/i, '');
+  const destinationUrl = sanitizedCustom
+    ? sanitizedCustom
+    : `${baseUrl.replace(/\/+$/, '')}/menu?table=${selectedTable}`;
 
   const isLocalhost = destinationUrl.includes('localhost') || destinationUrl.includes('127.0.0.1');
 

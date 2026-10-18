@@ -8,9 +8,21 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: `http://localhost:${process.env.PORT || 5000}`,
         changeOrigin: true,
       },
     },
   },
+  build: {
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-ui': ['lucide-react', 'framer-motion', 'clsx', 'tailwind-merge'],
+          'vendor-charts': ['recharts']
+        }
+      }
+    }
+  }
 });

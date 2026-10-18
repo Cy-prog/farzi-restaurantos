@@ -3,24 +3,44 @@ import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, Sparkles } from 'lucide
 import { Button } from '../components/ui/Button';
 import { PageTransition } from '../components/motion/PageTransition';
 
+import { api } from '../services/api';
+
 export const ContactPage: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [isSent, setIsSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !message) return;
-    setIsSent(true);
-    setTimeout(() => {
-      setIsSent(false);
+    if (!name.trim() || !email.trim() || !message.trim()) return;
+
+    setIsSubmitting(true);
+    setErrorMessage('');
+
+    try {
+      await api.submitContactMessage({
+        name: name.trim(),
+        email: email.trim(),
+        subject: subject.trim(),
+        message: message.trim()
+      });
+      setIsSent(true);
       setName('');
       setEmail('');
       setSubject('');
       setMessage('');
-    }, 4000);
+      setTimeout(() => {
+        setIsSent(false);
+      }, 5000);
+    } catch (err: unknown) {
+      setErrorMessage(err instanceof Error ? err.message : 'Failed to submit inquiry. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -181,7 +201,20 @@ export const ContactPage: React.FC = () => {
                   />
                 </div>
 
-                <Button type="submit" variant="gold" size="md" className="w-full" icon={<Send className="w-4 h-4" />}>
+                {errorMessage && (
+                  <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800/50 text-rose-300 text-xs">
+                    {errorMessage}
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  variant="gold"
+                  size="md"
+                  className="w-full"
+                  isLoading={isSubmitting}
+                  icon={<Send className="w-4 h-4" />}
+                >
                   Dispatch Message
                 </Button>
               </form>

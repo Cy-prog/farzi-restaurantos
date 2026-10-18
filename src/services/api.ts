@@ -11,7 +11,8 @@ import {
   AuthResponse
 } from '../types';
 
-const API_BASE = '/api';
+const rawBase = (import.meta.env.VITE_API_BASE_URL as string | undefined) || '/api';
+const API_BASE = rawBase.replace(/\/+$/, '');
 
 const getAuthHeaders = (): HeadersInit => {
   const token = localStorage.getItem('farzi_auth_token');
@@ -21,13 +22,25 @@ const getAuthHeaders = (): HeadersInit => {
   };
 };
 
+async function parseJsonResponse<T>(res: Response, defaultErrorMessage: string): Promise<T> {
+  let json: any = null;
+  try {
+    json = await res.json();
+  } catch {
+    throw new Error(res.statusText || defaultErrorMessage);
+  }
+  if (!res.ok) {
+    throw new Error(json?.message || defaultErrorMessage);
+  }
+  return json?.data;
+}
+
 export const api = {
   // Public
   async getCategories(): Promise<MenuCategory[]> {
     const res = await fetch(`${API_BASE}/public/categories`);
-    const json = await res.json();
-    if (!res.ok) throw new Error(json.message || 'Failed to load categories');
-    return json.data || [];
+    const data = await parseJsonResponse<MenuCategory[]>(res, 'Failed to load categories');
+    return data || [];
   },
 
   async getMenu(params?: {
@@ -85,37 +98,36 @@ export const api = {
     customerName?: string;
     customerPhone?: string;
     items: Array<{
-      id: number;
+      id?: number;
       menuItemId: number;
-      name: string;
-      price: number;
+      name?: string;
+      price?: number;
       quantity: number;
       specialInstructions?: string;
       isVeg?: boolean;
     }>;
     notes?: string;
+    idempotencyKey?: string;
   }): Promise<Order> {
     const res = await fetch(`${API_BASE}/public/orders`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(data.idempotencyKey ? { 'Idempotency-Key': data.idempotencyKey } : {})
+      },
       body: JSON.stringify(data)
     });
-    const json = await res.json();
-    if (!res.ok) throw new Error(json.message || 'Failed to place order');
-    return json.data;
+    return parseJsonResponse<Order>(res, 'Failed to place order');
   },
 
   async getOrder(orderNumber: string): Promise<Order> {
     const res = await fetch(`${API_BASE}/public/orders/${orderNumber}`);
-    const json = await res.json();
-    if (!res.ok) throw new Error(json.message || 'Order not found');
-    return json.data;
+    return parseJsonResponse<Order>(res, 'Order not found');
   },
 
   async getTables(): Promise<RestaurantTable[]> {
     const res = await fetch(`${API_BASE}/public/tables`);
-    const json = await res.json();
-    return json.data;
+    return parseJsonResponse<RestaurantTable[]>(res, 'Failed to load tables');
   },
 
   async logQRScan(table: string): Promise<void> {
@@ -148,14 +160,21 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
-    const json = await res.json();
-    return json.data;
+    return parseJsonResponse<Review>(res, 'Failed to submit review');
+  },
+
+  async submitContactMessage(data: { name: string; email: string; phone?: string; subject?: string; message: string }): Promise<void> {
+    const res = await fetch(`${API_BASE}/public/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    await parseJsonResponse<any>(res, 'Failed to submit contact inquiry');
   },
 
   async getSettings(): Promise<WebsiteSettings> {
     const res = await fetch(`${API_BASE}/public/settings`);
-    const json = await res.json();
-    return json.data;
+    return parseJsonResponse<WebsiteSettings>(res, 'Failed to load settings');
   },
 
   // Auth

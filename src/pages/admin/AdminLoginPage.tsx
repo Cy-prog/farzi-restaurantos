@@ -5,8 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components/ui/Button';
 
 export const AdminLoginPage: React.FC = () => {
-  const [email, setEmail] = useState('admin@restaurantos.local');
-  const [password, setPassword] = useState('Admin@12345');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { login } = useAuth();
@@ -18,18 +18,13 @@ export const AdminLoginPage: React.FC = () => {
     setErrorMessage('');
 
     try {
-      await login(email, password);
+      await login(email.trim(), password);
       navigate('/admin');
     } catch (err: unknown) {
       setErrorMessage(err instanceof Error ? err.message : 'Invalid credentials. Please verify your email and password.');
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const fillDemoCredentials = () => {
-    setEmail('admin@restaurantos.local');
-    setPassword('Admin@12345');
   };
 
   return (
@@ -52,21 +47,12 @@ export const AdminLoginPage: React.FC = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10 px-4">
         <div className="bg-charcoal-900 border border-charcoal-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
-          {/* Demo Quick Fill Banner */}
-          <div className="bg-charcoal-950 p-4 rounded-xl border border-gold-500/30 flex items-center justify-between">
-            <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-gold-400 font-semibold block">
-                Demo Credentials
-              </span>
-              <p className="text-xs text-ivory-300 font-mono mt-0.5">admin@restaurantos.local</p>
-            </div>
-            <button
-              type="button"
-              onClick={fillDemoCredentials}
-              className="text-[11px] font-mono px-2.5 py-1 rounded bg-gold-500/20 text-gold-300 hover:bg-gold-500 hover:text-charcoal-950 transition-colors font-semibold"
-            >
-              Fill In
-            </button>
+          {/* Security Notice */}
+          <div className="bg-charcoal-950/80 p-3.5 rounded-xl border border-charcoal-800 flex items-center gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-gold-400 flex-shrink-0" />
+            <p className="text-[11px] text-ivory-400 font-mono">
+              Restricted management portal. All access attempts are monitored and logged.
+            </p>
           </div>
 
           {errorMessage && (

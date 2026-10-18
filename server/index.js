@@ -1,9 +1,13 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -11,14 +15,106 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || 'CHANGE_ME_this_is_a_local_dev_only_placeholder_secret_key_32bytes';
+const isProduction = process.env.NODE_ENV === 'production';
 
-app.use(cors());
-app.use(express.json());
+// Strict Production JWT Secret Validation & Dev Safe Fallback
+const rawJwtSecret = process.env.JWT_SECRET;
+if (isProduction) {
+  if (!rawJwtSecret || rawJwtSecret.length < 32 || rawJwtSecret.includes('CHANGE_ME')) {
+    console.error('FATAL APPLICATION SECURITY ERROR: In production mode, JWT_SECRET must be set to a secure, randomly generated string of at least 32 characters. Cannot start server.');
+    process.exit(1);
+  }
+}
+const JWT_SECRET = rawJwtSecret || 'dev_placeholder_farzi_restaurantos_secret_key_32_bytes_min';
+
+// Strict Production CORS Configuration
+const allowedOriginsStr = process.env.CORS_ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:5000,http://127.0.0.1:5173';
+const allowedOrigins = allowedOriginsStr.split(',').map(o => o.trim()).filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || (!isProduction && (origin.includes('localhost') || origin.includes('127.0.0.1')))) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS origin '${origin}' is not permitted by Farzi RestaurantOS security policy.`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key']
+}));
+
+// Body parser with explicit size limit (1MB max to prevent memory exhaustion)
+app.use(express.json({ limit: '1mb' }));
+
+// Security Headers Middleware
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
+
+// Sliding-window in-memory rate limiter factory
+const createRateLimiter = ({ windowMs, max, message }) => {
+  const requests = new Map();
+  return (req, res, next) => {
+    const rawIp = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+    const ip = String(rawIp).split(',')[0].trim();
+    const now = Date.now();
+    const windowStart = now - windowMs;
+
+    let timestamps = requests.get(ip) || [];
+    timestamps = timestamps.filter(t => t > windowStart);
+
+    if (timestamps.length >= max) {
+      return res.status(429).json({
+        success: false,
+        message: message || 'Too many requests. Please wait and try again later.'
+      });
+    }
+
+    timestamps.push(now);
+    requests.set(ip, timestamps);
+
+    if (requests.size > 2000) {
+      for (const [key, times] of requests.entries()) {
+        const valid = times.filter(t => t > windowStart);
+        if (valid.length === 0) requests.delete(key);
+        else requests.set(key, valid);
+      }
+    }
+
+    next();
+  };
+};
+
+const loginRateLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: 'Too many authentication attempts from this IP. Please try again after 15 minutes.'
+});
+
+const publicOrderRateLimiter = createRateLimiter({
+  windowMs: 5 * 60 * 1000,
+  max: 30,
+  message: 'Order submission rate limit exceeded. Please wait a moment before sending another order.'
+});
+
+// Order Idempotency Cache
+const orderIdempotencyMap = new Map();
+setInterval(() => {
+  const tenMinutesAgo = Date.now() - 10 * 60 * 1000;
+  for (const [k, v] of orderIdempotencyMap.entries()) {
+    if (v.timestamp < tenMinutesAgo) orderIdempotencyMap.delete(k);
+  }
+}, 60 * 1000);
 
 // Database file setup
 const DATA_DIR = path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'restaurantos.json');
+const BACKUP_FILE = path.join(DATA_DIR, 'restaurantos.backup.json');
 
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -478,31 +574,60 @@ const getInitialData = () => {
   };
 };
 
-// Database persistence helper
+// Database persistence helpers with Atomic Write & Backup
 const loadDatabase = () => {
   try {
     if (!fs.existsSync(DATA_FILE)) {
+      if (fs.existsSync(BACKUP_FILE)) {
+        console.warn('Primary database file missing. Restoring from backup...');
+        const backupData = fs.readFileSync(BACKUP_FILE, 'utf-8');
+        fs.writeFileSync(DATA_FILE, backupData, 'utf-8');
+        return JSON.parse(backupData);
+      }
       const initial = getInitialData();
       fs.writeFileSync(DATA_FILE, JSON.stringify(initial, null, 2));
+      fs.writeFileSync(BACKUP_FILE, JSON.stringify(initial, null, 2));
       return initial;
     }
     const raw = fs.readFileSync(DATA_FILE, 'utf-8');
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    return parsed;
   } catch (err) {
-    console.error('Error loading database, reverting to seed:', err);
+    console.error('Error loading database, attempting recovery from backup:', err);
+    try {
+      if (fs.existsSync(BACKUP_FILE)) {
+        const backupRaw = fs.readFileSync(BACKUP_FILE, 'utf-8');
+        return JSON.parse(backupRaw);
+      }
+    } catch (bErr) {
+      console.error('Backup restoration failed:', bErr);
+    }
     return getInitialData();
   }
 };
 
 const saveDatabase = (db) => {
   try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2));
+    const jsonString = JSON.stringify(db, null, 2);
+    const tempFile = `${DATA_FILE}.tmp.${Date.now()}.${Math.floor(Math.random() * 10000)}`;
+    fs.writeFileSync(tempFile, jsonString, 'utf-8');
+    fs.renameSync(tempFile, DATA_FILE);
   } catch (err) {
-    console.error('Error writing database:', err);
+    console.error('CRITICAL: Error writing database file atomically:', err);
+    throw new Error('Database write failed');
   }
 };
 
-// Auth Middleware
+// Initial Backup on Startup
+try {
+  if (fs.existsSync(DATA_FILE)) {
+    fs.copyFileSync(DATA_FILE, BACKUP_FILE);
+  }
+} catch (e) {
+  console.warn('Initial backup snapshot skipped:', e.message);
+}
+
+// Auth Middleware: Token Verification and Active User Check
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -513,11 +638,37 @@ const authenticateToken = (req, res, next) => {
 
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) {
-      return res.status(403).json({ success: false, message: 'Invalid or expired token' });
+      return res.status(401).json({ success: false, message: 'Invalid or expired session token' });
     }
-    req.user = decoded;
+
+    // Verify user is active in the database
+    const db = loadDatabase();
+    const user = (db.users || []).find(u => u.id === decoded.id);
+    if (!user || user.isActive === false) {
+      return res.status(403).json({ success: false, message: 'Access denied: user account is deactivated' });
+    }
+
+    req.user = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    };
     next();
   });
+};
+
+// Role-Based Access Control (RBAC) Middleware
+const requireRole = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user || !allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `Forbidden: Required permission level: [${allowedRoles.join(', ')}]`
+      });
+    }
+    next();
+  };
 };
 
 /* ========================================================
@@ -606,23 +757,79 @@ app.get('/api/public/menu/:id', (req, res) => {
 });
 
 // 4. Submit Reservation
+// 4. Submit Reservation (Strictly Validated)
 app.post('/api/public/reservations', (req, res) => {
   const { name, phone, email, reservationDate, reservationTime, guests, specialRequest } = req.body;
 
-  if (!name || !phone || !email || !reservationDate || !reservationTime || !guests) {
-    return res.status(400).json({ success: false, message: 'All booking fields are required.' });
+  // 1. Customer Name Validation
+  if (!name || typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 100) {
+    return res.status(400).json({
+      success: false,
+      message: 'Valid customer name is required (2 to 100 characters).'
+    });
+  }
+
+  // 2. Email Address Validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || typeof email !== 'string' || !emailRegex.test(email.trim())) {
+    return res.status(400).json({
+      success: false,
+      message: 'A valid email address is required for booking confirmation.'
+    });
+  }
+
+  // 3. Telephone Validation (8-20 characters, minimum 8 digits)
+  const phoneClean = String(phone || '').trim();
+  const digitsOnly = phoneClean.replace(/\D/g, '');
+  if (!phoneClean || digitsOnly.length < 8 || digitsOnly.length > 15) {
+    return res.status(400).json({
+      success: false,
+      message: 'A valid telephone number is required (8 to 15 digits).'
+    });
+  }
+
+  // 4. Date Validation (YYYY-MM-DD, today or future only)
+  if (!reservationDate || !/^\d{4}-\d{2}-\d{2}$/.test(reservationDate)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Reservation date must be provided in YYYY-MM-DD format.'
+    });
+  }
+  const todayDateStr = new Date().toISOString().split('T')[0];
+  if (reservationDate < todayDateStr) {
+    return res.status(400).json({
+      success: false,
+      message: 'Reservation date cannot be in the past.'
+    });
+  }
+
+  // 5. Time Validation (HH:mm format, standard operating window)
+  if (!reservationTime || !/^([01]\d|2[0-3]):[0-5]\d$/.test(reservationTime)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Reservation time must be provided in HH:mm 24-hour format.'
+    });
+  }
+
+  // 6. Guest Count Validation (1 to 20 guests)
+  const guestCount = Math.floor(Number(guests));
+  if (!guestCount || guestCount < 1 || guestCount > 20) {
+    return res.status(400).json({
+      success: false,
+      message: 'Guest count must be between 1 and 20 guests.'
+    });
   }
 
   const db = loadDatabase();
   const newReservation = {
     id: db.reservations.length > 0 ? Math.max(...db.reservations.map(r => r.id)) + 1 : 1,
     name: name.trim(),
-    phone: phone.trim(),
-    email: email.trim(),
+    phone: phoneClean,
+    email: email.trim().toLowerCase(),
     reservationDate,
     reservationTime,
-    guests: Number(guests),
-    specialRequest: specialRequest ? specialRequest.trim() : '',
+    guests: guestCount,
+    specialRequest: specialRequest ? String(specialRequest).trim().slice(0, 500) : '',
     status: 'PENDING',
     tableNumber: '',
     adminNote: '',
@@ -635,73 +842,139 @@ app.post('/api/public/reservations', (req, res) => {
 
   res.status(201).json({
     success: true,
-    message: 'Your reservation request has been received. Our concierge will review and confirm shortly.',
+    message: 'Your reservation request has been received. Our concierge team will review and confirm shortly.',
     data: newReservation
   });
 });
 
-// 5. Submit Order (QR Table Ordering)
-app.post('/api/public/orders', (req, res) => {
+// 5. Submit Order (QR Table Ordering with Server-Authoritative Pricing & Idempotency)
+app.post('/api/public/orders', publicOrderRateLimiter, (req, res) => {
   const { tableNumber, items, customerName, customerPhone, notes } = req.body;
+  const idempotencyKey = req.headers['idempotency-key'] || req.body.idempotencyKey;
 
-  if (!tableNumber || !Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ success: false, message: 'Valid table number and order items are required.' });
+  // Idempotency check: prevent double charging or accidental duplicate orders
+  if (idempotencyKey && orderIdempotencyMap.has(idempotencyKey)) {
+    const cached = orderIdempotencyMap.get(idempotencyKey);
+    return res.status(200).json({
+      success: true,
+      message: 'Order already processed (idempotent submission).',
+      data: cached.order
+    });
   }
 
-  // Sanitize and validate table identifier
-  const cleanTable = String(tableNumber).trim().toUpperCase();
-  if (!/^T[0-9]{1,2}$/.test(cleanTable) && !/^TABLE\s*[0-9]{1,2}$/i.test(cleanTable)) {
-    return res.status(400).json({
-      success: false,
-      message: 'Invalid dining table identifier. Please use a valid station (e.g. T01 to T12).'
-    });
+  if (!tableNumber) {
+    return res.status(400).json({ success: false, message: 'Table number identifier is required.' });
+  }
+
+  if (!Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ success: false, message: 'Order must contain at least one menu item.' });
   }
 
   const db = loadDatabase();
 
-  // Validate that no ordered items are currently marked as unavailable
-  for (const it of items) {
-    const dish = db.menuItems.find(m => m.id === it.menuItemId || m.name === it.name);
-    if (dish && dish.isAvailable === false) {
-      return res.status(400).json({
-        success: false,
-        message: `Dish "${dish.name}" is currently sold out and unavailable for order.`
-      });
-    }
+  // Validate table against registered restaurant stations
+  const cleanTable = String(tableNumber).trim().toUpperCase();
+  const tbl = (db.tables || []).find(t => t.tableNumber.toUpperCase() === cleanTable);
+  if (!tbl) {
+    return res.status(400).json({
+      success: false,
+      message: `Table station "${cleanTable}" is not recognized in the restaurant system. Please verify table signage.`
+    });
   }
 
-  const subtotal = items.reduce((acc, it) => acc + (Number(it.price) * Number(it.quantity)), 0);
-  const tax = Number((subtotal * 0.05).toFixed(2));
+  // Load menu items from database, enforce server pricing, check availability & validate quantities
+  const validatedItems = [];
+  let subtotal = 0;
+
+  for (let idx = 0; idx < items.length; idx++) {
+    const it = items[idx];
+    const menuItemId = Number(it.menuItemId || it.id);
+    const dish = (db.menuItems || []).find(m => m.id === menuItemId);
+
+    if (!dish) {
+      return res.status(400).json({
+        success: false,
+        message: `Menu item with ID ${menuItemId} does not exist in our catalog.`
+      });
+    }
+
+    if (dish.isAvailable === false) {
+      return res.status(400).json({
+        success: false,
+        message: `Dish "${dish.name}" is currently sold out and unavailable for ordering.`
+      });
+    }
+
+    const quantity = Math.floor(Number(it.quantity));
+    if (!quantity || quantity < 1 || quantity > 50) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid quantity (${it.quantity}) for dish "${dish.name}". Quantity must be between 1 and 50.`
+      });
+    }
+
+    // SERVER IS THE SOLE AUTHORITY FOR UNIT PRICE
+    const unitPrice = Number(dish.price);
+    const lineTotal = Number((unitPrice * quantity).toFixed(2));
+    subtotal += lineTotal;
+
+    validatedItems.push({
+      id: idx + 1,
+      menuItemId: dish.id,
+      name: dish.name,
+      price: unitPrice, // Server-verified price!
+      quantity: quantity,
+      specialInstructions: typeof it.specialInstructions === 'string' ? it.specialInstructions.trim().slice(0, 200) : '',
+      imageUrl: dish.imageUrl || '',
+      isVeg: Boolean(dish.isVeg)
+    });
+  }
+
+  subtotal = Number(subtotal.toFixed(2));
+
+  // Dynamic tax calculation from verified restaurant settings
+  const taxPercentage = typeof db.settings?.taxPercentage === 'number' && !isNaN(db.settings.taxPercentage)
+    ? db.settings.taxPercentage
+    : 5;
+  const taxRate = taxPercentage / 100;
+  const tax = Number((subtotal * taxRate).toFixed(2));
   const total = Number((subtotal + tax).toFixed(2));
 
-  const orderNumber = `FZ-${Math.floor(1000 + Math.random() * 9000)}`;
+  // Stable, collision-resistant order number
+  const uniqueCode = Date.now().toString(36).toUpperCase() + '-' + Math.floor(100 + Math.random() * 900);
+  const orderNumber = `FZ-${uniqueCode}`;
 
   const newOrder = {
     id: db.orders.length > 0 ? Math.max(...db.orders.map(o => o.id)) + 1 : 1,
     orderNumber,
     tableNumber: cleanTable,
-    customerName: customerName ? customerName.trim() : 'Guest Diners',
-    customerPhone: customerPhone ? customerPhone.trim() : '',
-    items,
+    customerName: customerName && String(customerName).trim() ? String(customerName).trim().slice(0, 100) : `Table ${cleanTable} Guest`,
+    customerPhone: customerPhone ? String(customerPhone).trim().slice(0, 25) : '',
+    items: validatedItems,
     subtotal,
     tax,
     total,
     status: 'PENDING',
-    notes: notes || '',
+    notes: notes ? String(notes).trim().slice(0, 500) : '',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
 
   db.orders.unshift(newOrder);
 
-  // Mark table as occupied if present
-  const tbl = db.tables.find(t => t.tableNumber.toUpperCase() === String(tableNumber).toUpperCase());
-  if (tbl) {
-    tbl.status = 'OCCUPIED';
-    tbl.activeOrderId = newOrder.id;
-  }
+  // Mark table as occupied and link order
+  tbl.status = 'OCCUPIED';
+  tbl.activeOrderId = newOrder.id;
 
   saveDatabase(db);
+
+  // Store in idempotency cache
+  if (idempotencyKey) {
+    orderIdempotencyMap.set(idempotencyKey, {
+      order: newOrder,
+      timestamp: Date.now()
+    });
+  }
 
   res.status(201).json({
     success: true,
@@ -761,19 +1034,26 @@ app.get('/api/public/reviews', (req, res) => {
 
 app.post('/api/public/reviews', (req, res) => {
   const { customerName, rating, comment } = req.body;
-  if (!customerName || !rating) {
-    return res.status(400).json({ success: false, message: 'Name and rating are required' });
+  if (!customerName || typeof customerName !== 'string' || customerName.trim().length < 2) {
+    return res.status(400).json({ success: false, message: 'Valid customer name is required.' });
+  }
+
+  const numRating = Math.floor(Number(rating));
+  if (!numRating || numRating < 1 || numRating > 5) {
+    return res.status(400).json({ success: false, message: 'Rating must be an integer between 1 and 5.' });
   }
 
   const db = loadDatabase();
+  if (!db.reviews) db.reviews = [];
+
   const newRev = {
-    id: db.reviews.length + 1,
-    customerName: customerName.trim(),
-    rating: Number(rating),
-    comment: comment || '',
+    id: db.reviews.length > 0 ? Math.max(...db.reviews.map(r => r.id)) + 1 : 1,
+    customerName: customerName.trim().slice(0, 100),
+    rating: numRating,
+    comment: comment ? String(comment).trim().slice(0, 1000) : '',
     source: 'WEBSITE',
     status: 'APPROVED',
-    isFeatured: Number(rating) >= 5,
+    isFeatured: numRating >= 5,
     createdAt: new Date().toISOString().split('T')[0]
   };
 
@@ -788,28 +1068,65 @@ app.get('/api/public/settings', (req, res) => {
   res.json({ success: true, data: db.settings });
 });
 
-/* ========================================================
-   AUTH API ENDPOINTS
-   ======================================================== */
-
-// Login
-app.post('/api/auth/login', (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ success: false, message: 'Email and password required' });
+// 12. Submit Contact Inquiry
+app.post('/api/public/contact', (req, res) => {
+  const { name, email, phone, subject, message } = req.body;
+  if (!name || typeof name !== 'string' || name.trim().length < 2) {
+    return res.status(400).json({ success: false, message: 'Valid customer name is required.' });
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || typeof email !== 'string' || !emailRegex.test(email.trim())) {
+    return res.status(400).json({ success: false, message: 'A valid email address is required.' });
+  }
+  if (!message || typeof message !== 'string' || message.trim().length < 5) {
+    return res.status(400).json({ success: false, message: 'Message content of at least 5 characters is required.' });
   }
 
   const db = loadDatabase();
-  const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase().trim());
+  if (!db.contactMessages) db.contactMessages = [];
+  const newMsg = {
+    id: db.contactMessages.length > 0 ? Math.max(...db.contactMessages.map(m => m.id)) + 1 : 1,
+    name: name.trim().slice(0, 100),
+    email: email.trim().toLowerCase().slice(0, 100),
+    phone: phone ? String(phone).trim().slice(0, 25) : '',
+    subject: subject ? String(subject).trim().slice(0, 150) : 'General Inquiry',
+    message: message.trim().slice(0, 2000),
+    status: 'NEW',
+    createdAt: new Date().toISOString()
+  };
 
-  if (!user) {
-    return res.status(401).json({ success: false, message: 'Invalid email credentials' });
+  db.contactMessages.unshift(newMsg);
+  saveDatabase(db);
+  res.status(201).json({ success: true, message: 'Inquiry received. Our concierge will be in touch shortly.', data: newMsg });
+});
+
+/* ========================================================
+   AUTH API ENDPOINTS (RATE-LIMITED & PROTECTED)
+   ======================================================== */
+
+// Login with Rate Limiting and Inactive User Checks
+app.post('/api/auth/login', loginRateLimiter, (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ success: false, message: 'Email and password credentials are required' });
   }
 
-  const isMatch = bcrypt.compareSync(password, user.passwordHash);
+  const db = loadDatabase();
+  const cleanEmail = String(email).toLowerCase().trim();
+  const user = (db.users || []).find(u => u.email.toLowerCase() === cleanEmail);
+
+  if (!user) {
+    return res.status(401).json({ success: false, message: 'Invalid email or password credentials' });
+  }
+
+  if (user.isActive === false) {
+    return res.status(403).json({ success: false, message: 'This user account is deactivated. Contact system administrator.' });
+  }
+
+  const isMatch = bcrypt.compareSync(String(password), user.passwordHash);
   if (!isMatch) {
-    return res.status(401).json({ success: false, message: 'Invalid password credentials' });
+    return res.status(401).json({ success: false, message: 'Invalid email or password credentials' });
   }
 
   // Update last login
@@ -840,12 +1157,12 @@ app.post('/api/auth/login', (req, res) => {
   });
 });
 
-// Current User
+// Current User (Session check with DB active validation)
 app.get('/api/auth/me', authenticateToken, (req, res) => {
   const db = loadDatabase();
-  const user = db.users.find(u => u.id === req.user.id);
-  if (!user) {
-    return res.status(404).json({ success: false, message: 'User not found' });
+  const user = (db.users || []).find(u => u.id === req.user.id);
+  if (!user || user.isActive === false) {
+    return res.status(403).json({ success: false, message: 'User account is inactive or not found' });
   }
 
   res.json({
@@ -863,20 +1180,20 @@ app.get('/api/auth/me', authenticateToken, (req, res) => {
 });
 
 /* ========================================================
-   ADMIN API ENDPOINTS (PROTECTED WITH JWT)
+   ADMIN API ENDPOINTS (PROTECTED WITH JWT & RBAC)
    ======================================================== */
 
-// 1. Dashboard Analytics
-app.get('/api/admin/analytics', authenticateToken, (req, res) => {
+// 1. Dashboard Analytics (Role: ADMIN, MANAGER)
+app.get('/api/admin/analytics', authenticateToken, requireRole('ADMIN', 'MANAGER'), (req, res) => {
   const db = loadDatabase();
 
-  const totalRevenue = db.orders.reduce((sum, o) => sum + (o.status !== 'CANCELLED' ? o.total : 0), 0);
-  const totalOrders = db.orders.length;
-  const pendingOrders = db.orders.filter(o => o.status === 'PENDING' || o.status === 'IN_KITCHEN').length;
-  const totalReservations = db.reservations.length;
-  const upcomingReservations = db.reservations.filter(r => r.status === 'CONFIRMED' || r.status === 'PENDING').length;
-  const totalMenuItems = db.menuItems.length;
-  const availableMenuItems = db.menuItems.filter(i => i.isAvailable !== false).length;
+  const totalRevenue = (db.orders || []).reduce((sum, o) => sum + (o.status !== 'CANCELLED' ? o.total : 0), 0);
+  const totalOrders = (db.orders || []).length;
+  const pendingOrders = (db.orders || []).filter(o => o.status === 'PENDING' || o.status === 'IN_KITCHEN').length;
+  const totalReservations = (db.reservations || []).length;
+  const upcomingReservations = (db.reservations || []).filter(r => r.status === 'CONFIRMED' || r.status === 'PENDING').length;
+  const totalMenuItems = (db.menuItems || []).length;
+  const availableMenuItems = (db.menuItems || []).filter(i => i.isAvailable !== false).length;
 
   // Dynamic calculation of sales by day from real orders
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -887,7 +1204,7 @@ app.get('/api/admin/analytics', authenticateToken, (req, res) => {
     dayMap[key] = { date: key, sales: 0, orders: 0 };
   }
 
-  db.orders.forEach(o => {
+  (db.orders || []).forEach(o => {
     if (o.status !== 'CANCELLED' && o.createdAt) {
       const d = new Date(o.createdAt);
       const key = dayNames[d.getDay()];
@@ -902,14 +1219,14 @@ app.get('/api/admin/analytics', authenticateToken, (req, res) => {
 
   // Popular dishes calculation
   const dishCountMap = {};
-  db.orders.forEach(o => {
-    o.items.forEach(it => {
+  (db.orders || []).forEach(o => {
+    (o.items || []).forEach(it => {
       dishCountMap[it.name] = (dishCountMap[it.name] || 0) + it.quantity;
     });
   });
 
   const popularDishes = Object.keys(dishCountMap).map(name => {
-    const item = db.menuItems.find(m => m.name === name);
+    const item = (db.menuItems || []).find(m => m.name === name);
     return {
       name,
       category: item ? item.categoryName || 'Tapas' : 'Specials',
@@ -939,8 +1256,8 @@ app.get('/api/admin/analytics', authenticateToken, (req, res) => {
       upcomingReservations,
       totalMenuItems,
       availableMenuItems,
-      recentOrders: db.orders.slice(0, 10),
-      recentReservations: db.reservations.slice(0, 10),
+      recentOrders: (db.orders || []).slice(0, 10),
+      recentReservations: (db.reservations || []).slice(0, 10),
       salesByDay,
       popularDishes: popularDishes.length > 0 ? popularDishes : [
         { name: 'Dal Chawal Arancini', category: 'Tapas', orderCount: 42, revenue: 20790 },
@@ -959,33 +1276,33 @@ app.get('/api/admin/analytics', authenticateToken, (req, res) => {
   });
 });
 
-// 2. Admin Menu Items (Full CRUD)
-app.get('/api/admin/menu', authenticateToken, (req, res) => {
+// 2. Admin Menu Items (Role: ADMIN, MANAGER)
+app.get('/api/admin/menu', authenticateToken, requireRole('ADMIN', 'MANAGER'), (req, res) => {
   const db = loadDatabase();
-  const categoryMap = new Map(db.categories.map(c => [c.id, c.name]));
-  const enriched = db.menuItems.map(item => ({
+  const categoryMap = new Map((db.categories || []).map(c => [c.id, c.name]));
+  const enriched = (db.menuItems || []).map(item => ({
     ...item,
     categoryName: categoryMap.get(item.categoryId) || 'Specialties'
   }));
   res.json({ success: true, data: enriched });
 });
 
-app.post('/api/admin/menu', authenticateToken, (req, res) => {
+app.post('/api/admin/menu', authenticateToken, requireRole('ADMIN', 'MANAGER'), (req, res) => {
   const db = loadDatabase();
   const data = req.body;
 
-  if (!data.name || !data.categoryId || !data.price) {
-    return res.status(400).json({ success: false, message: 'Name, Category, and Price are required.' });
+  if (!data.name || !data.categoryId || data.price === undefined) {
+    return res.status(400).json({ success: false, message: 'Dish name, category, and price are required.' });
   }
 
-  const category = db.categories.find(c => c.id === Number(data.categoryId));
+  const category = (db.categories || []).find(c => c.id === Number(data.categoryId));
   const newItem = {
     id: db.menuItems.length > 0 ? Math.max(...db.menuItems.map(i => i.id)) + 1 : 1,
     categoryId: Number(data.categoryId),
     categoryName: category ? category.name : 'Curations',
-    name: data.name.trim(),
-    slug: data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    description: data.description || '',
+    name: String(data.name).trim(),
+    slug: String(data.name).toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    description: data.description ? String(data.description).trim() : '',
     price: Number(data.price),
     imageUrl: data.imageUrl || 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop',
     ingredients: data.ingredients || '',
@@ -1009,16 +1326,16 @@ app.post('/api/admin/menu', authenticateToken, (req, res) => {
   res.status(201).json({ success: true, message: 'Dish created successfully', data: newItem });
 });
 
-app.put('/api/admin/menu/:id', authenticateToken, (req, res) => {
+app.put('/api/admin/menu/:id', authenticateToken, requireRole('ADMIN', 'MANAGER'), (req, res) => {
   const db = loadDatabase();
   const id = Number(req.params.id);
-  const index = db.menuItems.findIndex(i => i.id === id);
+  const index = (db.menuItems || []).findIndex(i => i.id === id);
 
   if (index === -1) {
     return res.status(404).json({ success: false, message: 'Dish not found' });
   }
 
-  const category = db.categories.find(c => c.id === Number(req.body.categoryId || db.menuItems[index].categoryId));
+  const category = (db.categories || []).find(c => c.id === Number(req.body.categoryId || db.menuItems[index].categoryId));
   const updated = {
     ...db.menuItems[index],
     ...req.body,
@@ -1035,11 +1352,11 @@ app.put('/api/admin/menu/:id', authenticateToken, (req, res) => {
   res.json({ success: true, message: 'Dish updated successfully', data: updated });
 });
 
-app.delete('/api/admin/menu/:id', authenticateToken, (req, res) => {
+app.delete('/api/admin/menu/:id', authenticateToken, requireRole('ADMIN', 'MANAGER'), (req, res) => {
   const db = loadDatabase();
   const id = Number(req.params.id);
   const initialLength = db.menuItems.length;
-  db.menuItems = db.menuItems.filter(i => i.id !== id);
+  db.menuItems = (db.menuItems || []).filter(i => i.id !== id);
 
   if (db.menuItems.length === initialLength) {
     return res.status(404).json({ success: false, message: 'Dish not found' });
@@ -1049,23 +1366,25 @@ app.delete('/api/admin/menu/:id', authenticateToken, (req, res) => {
   res.json({ success: true, message: 'Dish deleted successfully' });
 });
 
-// 3. Admin Categories (Full CRUD)
-app.get('/api/admin/categories', authenticateToken, (req, res) => {
+// 3. Admin Categories (Role: ADMIN)
+app.get('/api/admin/categories', authenticateToken, requireRole('ADMIN', 'MANAGER'), (req, res) => {
   const db = loadDatabase();
-  res.json({ success: true, data: db.categories });
+  res.json({ success: true, data: db.categories || [] });
 });
 
-app.post('/api/admin/categories', authenticateToken, (req, res) => {
+app.post('/api/admin/categories', authenticateToken, requireRole('ADMIN'), (req, res) => {
   const db = loadDatabase();
   const { name, description, displayOrder } = req.body;
 
-  if (!name) return res.status(400).json({ success: false, message: 'Category name is required' });
+  if (!name || typeof name !== 'string' || name.trim().length === 0) {
+    return res.status(400).json({ success: false, message: 'Category name is required' });
+  }
 
   const newCat = {
     id: db.categories.length > 0 ? Math.max(...db.categories.map(c => c.id)) + 1 : 1,
     name: name.trim(),
     slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    description: description || '',
+    description: description ? String(description).trim() : '',
     displayOrder: displayOrder ? Number(displayOrder) : db.categories.length + 1,
     isVisible: true
   };
@@ -1075,54 +1394,69 @@ app.post('/api/admin/categories', authenticateToken, (req, res) => {
   res.status(201).json({ success: true, data: newCat });
 });
 
-// 4. Admin Reservations Management
-app.get('/api/admin/reservations', authenticateToken, (req, res) => {
+// 4. Admin Reservations Management (Role: ADMIN, MANAGER, STAFF)
+app.get('/api/admin/reservations', authenticateToken, requireRole('ADMIN', 'MANAGER', 'STAFF'), (req, res) => {
   const db = loadDatabase();
-  res.json({ success: true, data: db.reservations });
+  res.json({ success: true, data: db.reservations || [] });
 });
 
-app.put('/api/admin/reservations/:id', authenticateToken, (req, res) => {
+app.put('/api/admin/reservations/:id', authenticateToken, requireRole('ADMIN', 'MANAGER', 'STAFF'), (req, res) => {
   const db = loadDatabase();
   const id = Number(req.params.id);
-  const r = db.reservations.find(res => res.id === id);
+  const r = (db.reservations || []).find(res => res.id === id);
 
   if (!r) return res.status(404).json({ success: false, message: 'Reservation not found' });
 
   const { status, tableNumber, adminNote } = req.body;
-  if (status) r.status = status;
-  if (tableNumber !== undefined) r.tableNumber = tableNumber;
-  if (adminNote !== undefined) r.adminNote = adminNote;
+  if (status) {
+    const validStatuses = ['PENDING', 'CONFIRMED', 'REJECTED', 'SEATED', 'COMPLETED', 'CANCELLED'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: `Invalid status: ${status}` });
+    }
+    r.status = status;
+  }
+  if (tableNumber !== undefined) {
+    const cleanTbl = String(tableNumber).trim().toUpperCase();
+    if (cleanTbl) {
+      const exists = (db.tables || []).some(t => t.tableNumber.toUpperCase() === cleanTbl);
+      if (!exists) {
+        return res.status(400).json({ success: false, message: `Station "${cleanTbl}" is not a recognized table.` });
+      }
+    }
+    r.tableNumber = cleanTbl;
+  }
+  if (adminNote !== undefined) r.adminNote = String(adminNote).trim().slice(0, 500);
   r.updatedAt = new Date().toISOString();
 
   saveDatabase(db);
   res.json({ success: true, message: 'Reservation updated', data: r });
 });
 
-// 5. Admin Orders Management (Kitchen Display & Status Flow)
-app.get('/api/admin/orders', authenticateToken, (req, res) => {
+// 5. Admin Orders Management (Kitchen Display & Status Flow, Role: ADMIN, MANAGER, STAFF)
+app.get('/api/admin/orders', authenticateToken, requireRole('ADMIN', 'MANAGER', 'STAFF'), (req, res) => {
   const db = loadDatabase();
-  res.json({ success: true, data: db.orders });
+  res.json({ success: true, data: db.orders || [] });
 });
 
-app.put('/api/admin/orders/:id/status', authenticateToken, (req, res) => {
+app.put('/api/admin/orders/:id/status', authenticateToken, requireRole('ADMIN', 'MANAGER', 'STAFF'), (req, res) => {
   const db = loadDatabase();
   const id = Number(req.params.id);
-  const order = db.orders.find(o => o.id === id);
+  const order = (db.orders || []).find(o => o.id === id);
 
   if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
 
   const { status } = req.body;
   const validStatuses = ['PENDING', 'CONFIRMED', 'IN_KITCHEN', 'READY', 'SERVED', 'COMPLETED', 'CANCELLED'];
   if (!validStatuses.includes(status)) {
-    return res.status(400).json({ success: false, message: 'Invalid status' });
+    return res.status(400).json({ success: false, message: `Invalid status '${status}'` });
   }
 
   order.status = status;
   order.updatedAt = new Date().toISOString();
 
-  // If order completed or cancelled, free the table
+  // If order completed or cancelled, automatically free the restaurant table
   if (status === 'COMPLETED' || status === 'CANCELLED') {
-    const tbl = db.tables.find(t => t.tableNumber.toUpperCase() === order.tableNumber.toUpperCase());
+    const tbl = (db.tables || []).find(t => t.tableNumber.toUpperCase() === order.tableNumber.toUpperCase());
     if (tbl) {
       tbl.status = 'AVAILABLE';
       tbl.activeOrderId = null;
@@ -1133,33 +1467,100 @@ app.put('/api/admin/orders/:id/status', authenticateToken, (req, res) => {
   res.json({ success: true, message: `Order status changed to ${status}`, data: order });
 });
 
-// 6. Admin Tables Management
-app.get('/api/admin/tables', authenticateToken, (req, res) => {
+// 6. Admin Tables Management (Role: ADMIN, MANAGER, STAFF)
+app.get('/api/admin/tables', authenticateToken, requireRole('ADMIN', 'MANAGER', 'STAFF'), (req, res) => {
   const db = loadDatabase();
-  res.json({ success: true, data: db.tables });
+  res.json({ success: true, data: db.tables || [] });
 });
 
-app.put('/api/admin/tables/:id/status', authenticateToken, (req, res) => {
+app.put('/api/admin/tables/:id/status', authenticateToken, requireRole('ADMIN', 'MANAGER', 'STAFF'), (req, res) => {
   const db = loadDatabase();
   const id = Number(req.params.id);
-  const table = db.tables.find(t => t.id === id);
+  const table = (db.tables || []).find(t => t.id === id);
 
   if (!table) return res.status(404).json({ success: false, message: 'Table not found' });
 
+  const validTableStatuses = ['AVAILABLE', 'OCCUPIED', 'RESERVED'];
+  if (!validTableStatuses.includes(req.body.status)) {
+    return res.status(400).json({ success: false, message: 'Invalid table status' });
+  }
+
   table.status = req.body.status;
+  if (req.body.status === 'AVAILABLE') {
+    table.activeOrderId = null;
+  }
   saveDatabase(db);
   res.json({ success: true, data: table });
 });
 
-// 7. Admin Settings Update
-app.put('/api/admin/settings', authenticateToken, (req, res) => {
+// 7. Admin Settings Update (Role: ADMIN only)
+app.put('/api/admin/settings', authenticateToken, requireRole('ADMIN'), (req, res) => {
   const db = loadDatabase();
   db.settings = { ...db.settings, ...req.body, id: 1 };
   saveDatabase(db);
   res.json({ success: true, message: 'Settings saved', data: db.settings });
 });
 
+// 8. Admin Contact Messages (Role: ADMIN, MANAGER, STAFF)
+app.get('/api/admin/contact', authenticateToken, requireRole('ADMIN', 'MANAGER', 'STAFF'), (req, res) => {
+  const db = loadDatabase();
+  res.json({ success: true, data: db.contactMessages || [] });
+});
+
+// 404 Handler for API
+app.use('/api', (req, res) => {
+  res.status(404).json({ success: false, message: `Endpoint '${req.method} ${req.originalUrl}' not found.` });
+});
+
+// Centralized Error Handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled server error:', err.message);
+  res.status(err.status || 500).json({
+    success: false,
+    message: isProduction ? 'An unexpected internal error occurred' : err.message
+  });
+});
+
+// CLI Provisioning Command Handler
+const args = process.argv.slice(2);
+if (args[0] === '--provision-admin') {
+  const email = args[1];
+  const password = args[2];
+  const role = args[3] || 'ADMIN';
+  if (!email || !password) {
+    console.error('Usage: node server/index.js --provision-admin <email> <password> [role]');
+    process.exit(1);
+  }
+  const db = loadDatabase();
+  if (!db.users) db.users = [];
+  const cleanEmail = String(email).toLowerCase().trim();
+  const existingUser = db.users.find(u => u.email.toLowerCase() === cleanEmail);
+  const passwordHash = bcrypt.hashSync(password, 10);
+  if (existingUser) {
+    existingUser.passwordHash = passwordHash;
+    existingUser.role = role;
+    existingUser.isActive = true;
+    existingUser.updatedAt = new Date().toISOString();
+    console.log(`[Farzi Security] Successfully updated administrator account: ${cleanEmail} (Role: ${role})`);
+  } else {
+    const newUser = {
+      id: db.users.length > 0 ? Math.max(...db.users.map(u => u.id)) + 1 : 1,
+      name: 'Executive Administrator',
+      email: cleanEmail,
+      passwordHash,
+      role,
+      isActive: true,
+      createdAt: new Date().toISOString()
+    };
+    db.users.push(newUser);
+    console.log(`[Farzi Security] Successfully created administrator account: ${cleanEmail} (Role: ${role})`);
+  }
+  saveDatabase(db);
+  process.exit(0);
+}
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`🚀 Farzi RestaurantOS Backend running on http://localhost:${PORT}`);
 });
+
