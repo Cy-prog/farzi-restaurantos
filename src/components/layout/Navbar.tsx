@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, QrCode, Calendar, Shield, Sparkles } from 'lucide-react';
+import { Menu, X, ShoppingBag, QrCode, Calendar, Shield, Sparkles, Film } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 import { Button } from '../ui/Button';
+import { FarziIntro } from '../ui/FarziIntro';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showIntroModal, setShowIntroModal] = useState(false);
   const location = useLocation();
   const { totalCount, setIsCartOpen, tableNumber } = useCart();
 
@@ -40,6 +42,14 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
+      {/* Replay Intro when requested */}
+      {showIntroModal && (
+        <FarziIntro
+          forcePlay={true}
+          onComplete={() => setShowIntroModal(false)}
+        />
+      )}
+
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
           isScrolled
@@ -48,20 +58,24 @@ export const Navbar: React.FC = () => {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Brand Logo */}
+          {/* Brand Logo with Official Farzi Emblem */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="relative">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold-400 via-gold-500 to-copper-600 flex items-center justify-center text-charcoal-950 font-serif font-black text-lg shadow-lg shadow-gold-500/25 group-hover:scale-105 transition-transform duration-300">
-                ✦
+              <div className="w-10 h-10 rounded-full bg-charcoal-900 border border-gold-500/50 p-1.5 flex items-center justify-center shadow-lg shadow-gold-500/20 group-hover:border-gold-400 group-hover:scale-105 transition-all duration-300">
+                <img
+                  src="/farzi-logo.svg"
+                  alt="Farzi Cafe Logo"
+                  className="w-full h-full object-contain filter invert drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+                />
               </div>
               <div className="absolute -inset-1 rounded-full bg-gold-400/20 blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <div className="flex flex-col">
-              <span className="font-display tracking-[0.25em] text-xl font-bold text-ivory-50 uppercase group-hover:text-gold-300 transition-colors">
-                FARZI
+              <span className="font-display tracking-[0.25em] text-xl font-black text-ivory-50 uppercase group-hover:text-gold-300 transition-colors">
+                FARZI <span className="gold-gradient-text">CAFÉ</span>
               </span>
-              <span className="text-[9px] font-mono tracking-widest text-gold-400/90 uppercase -mt-1 flex items-center gap-1">
-                <span>Progressive Modern Indian</span>
+              <span className="text-[8px] font-mono tracking-widest text-gold-400/90 uppercase -mt-1 flex items-center gap-1 font-semibold">
+                <span>Creating an illusion</span>
               </span>
             </div>
           </Link>
@@ -92,6 +106,16 @@ export const Navbar: React.FC = () => {
 
           {/* Right Action Icons & Buttons */}
           <div className="flex items-center gap-3">
+            {/* Replay Intro Button */}
+            <button
+              onClick={() => setShowIntroModal(true)}
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono text-gold-400/90 hover:text-gold-300 bg-charcoal-900 border border-charcoal-700/80 hover:border-gold-500/40 transition-all"
+              title="Replay Farzi Animated Intro"
+            >
+              <Film className="w-3.5 h-3.5 text-gold-400" />
+              <span>Intro</span>
+            </button>
+
             {/* Table Badge */}
             {tableNumber && (
               <Link
@@ -176,9 +200,9 @@ export const Navbar: React.FC = () => {
               <div className="space-y-5">
                 <div className="pb-4 border-b border-charcoal-800 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-                    <span className="text-xs uppercase font-mono tracking-widest text-gold-400">
-                      Farzi Navigation
+                    <img src="/farzi-logo.svg" alt="Farzi" className="w-5 h-5 filter invert" />
+                    <span className="text-xs uppercase font-mono tracking-widest text-gold-400 font-bold">
+                      Farzi Café
                     </span>
                   </div>
                   {tableNumber && (
@@ -201,6 +225,16 @@ export const Navbar: React.FC = () => {
                       {link.name}
                     </Link>
                   ))}
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setShowIntroModal(true);
+                    }}
+                    className="w-full text-left py-3 px-3.5 rounded-xl text-sm font-medium text-gold-400 hover:bg-charcoal-900 flex items-center gap-2"
+                  >
+                    <Film className="w-4 h-4" />
+                    <span>Watch Farzi Intro Animation</span>
+                  </button>
                 </div>
               </div>
 

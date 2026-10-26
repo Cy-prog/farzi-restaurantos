@@ -5,6 +5,7 @@ import { CartProvider } from './context/CartContext';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { CartDrawer } from './components/cart/CartDrawer';
+import { FarziIntro } from './components/ui/FarziIntro';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -33,7 +34,10 @@ const PublicLayout: React.FC = () => {
   const isTableMenu = location.pathname === '/qr' || searchParams.has('table');
 
   return (
-    <div className="flex flex-col min-h-screen bg-charcoal-950 text-ivory-100">
+    <div className="flex flex-col min-h-screen bg-charcoal-975 text-ivory-100">
+      {/* Animated Farzi Cafe Intro Screen */}
+      <FarziIntro />
+
       {!isTableMenu && <Navbar />}
       <CartDrawer />
       <div className="flex-1">

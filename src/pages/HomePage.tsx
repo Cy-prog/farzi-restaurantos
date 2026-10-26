@@ -14,18 +14,18 @@ import { ImageWithFallback } from '../components/ui/ImageWithFallback';
 const HERO_IMAGES = [
   {
     url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1600&auto=format&fit=crop',
-    title: 'An Illusion of Taste',
-    subtitle: 'Where ancient Indian recipes surrender to modern molecular gastronomy.'
+    title: 'Creating an Illusion',
+    subtitle: 'Where ancient Indian recipes surrender to progressive molecular gastronomy and culinary illusion.'
   },
   {
     url: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1600&auto=format&fit=crop',
-    title: 'Progressive Culinary Alchemy',
-    subtitle: 'Sensory deception, theatrical textures, and unapologetic flavor.'
+    title: 'Progressive Modern Indian',
+    subtitle: 'Sensory deception, theatrical textures, liquid nitrogen, and unapologetic flavor.'
   },
   {
     url: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1600&auto=format&fit=crop',
-    title: 'The Alchemical Bar',
-    subtitle: 'Smoked botanicals, liquid nitrogen infusions, and bespoke mixology.'
+    title: 'The Farzi Mixology Lab',
+    subtitle: 'Smoked botanicals, liquid nitrogen infusions, and bespoke avant-garde mixology.'
   }
 ];
 
@@ -67,7 +67,7 @@ export const HomePage: React.FC = () => {
   return (
     <div className="relative">
       {/* 1. CINEMATIC HERO SECTION */}
-      <section className="relative h-screen min-h-[640px] flex items-center justify-center overflow-hidden bg-charcoal-950">
+      <section className="relative h-screen min-h-[640px] flex items-center justify-center overflow-hidden bg-charcoal-975">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentHeroIdx}
@@ -83,8 +83,8 @@ export const HomePage: React.FC = () => {
               className="w-full h-full object-cover"
             />
             {/* Cinematic Gradient Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950 via-charcoal-950/60 to-black/40" />
-            <div className="absolute inset-0 bg-radial-gradient from-transparent via-charcoal-950/40 to-charcoal-950/80" />
+            <div className="absolute inset-0 bg-gradient-to-t from-charcoal-975 via-charcoal-975/60 to-black/40" />
+            <div className="absolute inset-0 bg-radial-ambient opacity-80" />
           </motion.div>
         </AnimatePresence>
 
@@ -94,10 +94,10 @@ export const HomePage: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-300 text-xs font-mono uppercase tracking-widest mb-6"
+            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-charcoal-900/90 border border-gold-500/40 text-gold-300 text-xs font-mono uppercase tracking-widest mb-6 shadow-xl shadow-gold-500/10 backdrop-blur-md"
           >
-            <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-            <span>Modern Indian Gastronomy & Mixology Lab</span>
+            <img src="/farzi-logo.svg" alt="Farzi Emblem" className="w-4 h-4 filter invert drop-shadow-[0_0_6px_rgba(212,175,55,0.7)]" />
+            <span>Farzi Café • Creating an Illusion</span>
           </motion.div>
 
           <motion.h1
@@ -105,7 +105,7 @@ export const HomePage: React.FC = () => {
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-black tracking-tight text-ivory-50 mb-6 leading-[1.05]"
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-black tracking-tight text-ivory-50 mb-6 leading-[1.05]"
           >
             {HERO_IMAGES[currentHeroIdx].title}
           </motion.h1>
