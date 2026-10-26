@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    --color-charcoal-975: #060709;
     --color-charcoal-950: #0A0B0E;
     --color-gold-500: #D4AF37;
     --color-copper-500: #C57D56;
@@ -27,22 +28,34 @@
   }
   ::-webkit-scrollbar-thumb {
     background: #2A2F3D;
-    border-radius: 3px;
+    border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #D4AF37;
   }
+
+  /* Focus rings */
+  :focus-visible {
+    outline: 2px solid #D4AF37;
+    outline-offset: 2px;
+  }
 }
 
-/* Luxury visual accents */
+/* Luxury visual accents & gradient typography */
 .gold-gradient-text {
-  background: linear-gradient(135deg, #FAF8F5 0%, #D4AF37 50%, #C57D56 100%);
+  background: linear-gradient(135deg, #FAF8F5 0%, #E5C358 45%, #C57D56 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .copper-gradient-text {
-  background: linear-gradient(135deg, #F3D985 0%, #C57D56 70%, #A9643F 100%);
+  background: linear-gradient(135deg, #F3D985 0%, #C57D56 60%, #A9643F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.silver-gradient-text {
+  background: linear-gradient(135deg, #FAF8F5 0%, #D4CAB7 50%, #A89E8C 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -55,15 +68,51 @@
   border-color: rgba(212, 175, 55, 0.4);
 }
 
+/* Glassmorphism and Luxury Cards */
 .card-glass {
-  background: rgba(18, 20, 26, 0.75);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(18, 20, 26, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .card-luxury {
-  background: linear-gradient(180deg, rgba(27, 30, 38, 0.8) 0%, rgba(18, 20, 26, 0.95) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.12);
+  background: linear-gradient(180deg, rgba(23, 25, 34, 0.85) 0%, rgba(14, 16, 22, 0.95) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+}
+
+.card-luxury-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-luxury-hover:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(212, 175, 55, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Skeleton Loading Shimmer */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(26, 29, 39, 0.6) 0%,
+    rgba(42, 47, 61, 0.8) 50%,
+    rgba(26, 29, 39, 0.6) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite ease-in-out;
+}
+
+/* Reduced Motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Print styling for QR tent cards */
@@ -78,6 +127,15 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  @page {
+    margin: 1cm;
+    size: auto;
   }
 }

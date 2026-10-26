@@ -18,7 +18,7 @@
       "role": "ADMIN",
       "isActive": true,
       "createdAt": "2026-10-18T13:26:37.569Z",
-      "lastLoginAt": "2026-10-18T13:46:08.137Z"
+      "lastLoginAt": "2026-10-18T13:52:32.090Z"
     },
     {
       "id": 3,
@@ -27,7 +27,8 @@
       "passwordHash": "$2a$10$XAzvjOmLrHaDD357crfDOO1EAs7WqWDTi8hjq3t5mucCupl9iJkgW",
       "role": "STAFF",
       "isActive": true,
-      "createdAt": "2026-10-18T13:50:31.733Z"
+      "createdAt": "2026-10-18T13:50:31.733Z",
+      "lastLoginAt": "2026-10-18T13:52:32.385Z"
     }
   ],
   "categories": [
@@ -507,6 +508,21 @@
   ],
   "reservations": [
     {
+      "id": 8,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-18T13:52:32.655Z",
+      "updatedAt": "2026-10-18T13:52:32.684Z"
+    },
+    {
       "id": 7,
       "name": "Dr. Kabir Roy",
       "phone": "+91 98111 22233",
@@ -613,6 +629,32 @@
     }
   ],
   "orders": [
+    {
+      "id": 7,
+      "orderNumber": "FZ-MVDVXGYG-647",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 495,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 990,
+      "tax": 49.5,
+      "total": 1039.5,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-18T13:52:32.536Z",
+      "updatedAt": "2026-10-18T13:52:32.594Z"
+    },
     {
       "id": 6,
       "orderNumber": "FZ-MVDVP8FK-965",
@@ -901,7 +943,7 @@
       "tripadvisor": "https://tripadvisor.com"
     },
     "currencySymbol": "₹",
-    "taxPercentage": 5
+    "taxPercentage": 12
   },
   "qrScans": [
     {
@@ -942,6 +984,16 @@
     }
   ],
   "contactMessages": [
+    {
+      "id": 4,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-18T13:52:32.746Z"
+    },
     {
       "id": 3,
       "name": "Meera Rajput",

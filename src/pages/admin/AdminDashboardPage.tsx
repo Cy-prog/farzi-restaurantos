@@ -10,7 +10,11 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  Plus
+  Plus,
+  Sparkles,
+  ChevronRight,
+  Flame,
+  ArrowRight
 } from 'lucide-react';
 import {
   AreaChart,
@@ -20,8 +24,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  BarChart,
-  Bar
 } from 'recharts';
 import { DashboardAnalytics, Order, Reservation } from '../../types';
 import { api } from '../../services/api';
@@ -69,8 +71,9 @@ export const AdminDashboardPage: React.FC = () => {
 
   if (isLoading || !analytics) {
     return (
-      <div className="p-8 text-center text-charcoal-400 font-mono text-xs">
-        Loading live RestaurantOS metrics...
+      <div className="p-8 text-center text-charcoal-400 font-mono text-xs min-h-[50vh] flex flex-col items-center justify-center gap-3">
+        <div className="w-8 h-8 rounded-full border-2 border-gold-400 border-t-transparent animate-spin" />
+        <span>Synchronizing live RestaurantOS metrics & orders...</span>
       </div>
     );
   }
@@ -79,40 +82,48 @@ export const AdminDashboardPage: React.FC = () => {
     {
       label: 'Gross Culinary Revenue',
       value: `₹${analytics.totalRevenue.toLocaleString()}`,
-      trend: 'Calculated from completed & active orders',
-      icon: <TrendingUp className="w-5 h-5 text-emerald-400" />
+      trend: 'Calculated across all orders',
+      icon: <TrendingUp className="w-5 h-5 text-emerald-400" />,
+      accent: 'border-emerald-500/20'
     },
     {
       label: 'Active Kitchen Orders',
       value: `${analytics.pendingOrders} / ${analytics.totalOrders}`,
-      trend: `${analytics.pendingOrders} active in Kitchen Display`,
-      icon: <UtensilsCrossed className="w-5 h-5 text-gold-400" />
+      trend: `${analytics.pendingOrders} live in kitchen stream`,
+      icon: <UtensilsCrossed className="w-5 h-5 text-gold-400" />,
+      accent: 'border-gold-500/30'
     },
     {
       label: 'Guest Reservations',
       value: `${analytics.upcomingReservations} Upcoming`,
       trend: `${analytics.totalReservations} total bookings recorded`,
-      icon: <Calendar className="w-5 h-5 text-copper-400" />
+      icon: <Calendar className="w-5 h-5 text-copper-400" />,
+      accent: 'border-copper-500/20'
     },
     {
       label: 'Active Menu Creations',
       value: `${analytics.availableMenuItems} / ${analytics.totalMenuItems}`,
-      trend: `${analytics.totalMenuItems - analytics.availableMenuItems} marked sold out`,
-      icon: <ShoppingBag className="w-5 h-5 text-blue-400" />
+      trend: `${analytics.totalMenuItems - analytics.availableMenuItems} marked unavailable`,
+      icon: <ShoppingBag className="w-5 h-5 text-blue-400" />,
+      accent: 'border-blue-500/20'
     }
   ];
 
   return (
-    <div className="p-6 sm:p-10 space-y-8">
+    <div className="p-6 sm:p-10 space-y-8 max-w-7xl">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-charcoal-800">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-gold-400 font-semibold">
-            Operational Overview
+          <span className="text-[10px] font-mono uppercase tracking-widest text-gold-400 font-semibold flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            Operations Overview • Farzi RestaurantOS
           </span>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-ivory-50 mt-0.5">
-            Command Center & Analytics
+            Command Center & Culinary Analytics
           </h1>
+          <p className="text-xs text-charcoal-400 mt-1">
+            Real-time floor telemetry, kitchen load balancing, and reservation concierge.
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -134,16 +145,16 @@ export const AdminDashboardPage: React.FC = () => {
         {statCards.map((c, i) => (
           <div
             key={i}
-            className="bg-charcoal-900 border border-charcoal-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between"
+            className={`bg-charcoal-900/90 border rounded-2xl p-5 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-gold-500/30 ${c.accent}`}
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs text-charcoal-400 font-medium">{c.label}</span>
-              <div className="p-2 rounded-xl bg-charcoal-950 border border-charcoal-800">
+              <span className="text-xs text-charcoal-400 font-medium font-mono uppercase tracking-wider">{c.label}</span>
+              <div className="p-2.5 rounded-xl bg-charcoal-950 border border-charcoal-800 shadow-inner">
                 {c.icon}
               </div>
             </div>
             <div>
-              <span className="font-serif text-2xl font-bold text-ivory-50 block">
+              <span className="font-serif text-2xl sm:text-3xl font-bold text-ivory-50 block">
                 {c.value}
               </span>
               <span className="text-[11px] text-charcoal-400 font-mono mt-1 block">
@@ -157,16 +168,19 @@ export const AdminDashboardPage: React.FC = () => {
       {/* Recharts Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Weekly Revenue Curve */}
-        <div className="lg:col-span-2 bg-charcoal-900 border border-charcoal-800 rounded-2xl p-6 shadow-xl">
+        <div className="lg:col-span-2 bg-charcoal-900 border border-charcoal-800 rounded-3xl p-6 sm:p-7 shadow-xl">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="font-serif font-bold text-base text-ivory-100">
-                Weekly Revenue Progression
-              </h3>
-              <p className="text-xs text-charcoal-400">Daily sales in INR across all dining stations</p>
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-gold-400" />
+                <h3 className="font-serif font-bold text-base text-ivory-100">
+                  Weekly Revenue Progression
+                </h3>
+              </div>
+              <p className="text-xs text-charcoal-400 mt-0.5">Daily sales in INR across all dining stations</p>
             </div>
-            <span className="text-xs font-mono text-emerald-400 bg-emerald-950/40 px-2.5 py-1 rounded border border-emerald-800/40">
-              Active Peak
+            <span className="text-xs font-mono text-gold-400 bg-gold-500/10 px-2.5 py-1 rounded-full border border-gold-500/30 font-semibold">
+              Peak Service
             </span>
           </div>
 
@@ -175,7 +189,7 @@ export const AdminDashboardPage: React.FC = () => {
               <AreaChart data={analytics.salesByDay}>
                 <defs>
                   <linearGradient id="goldRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.4} />
+                    <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.45} />
                     <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
                   </linearGradient>
                 </defs>
@@ -183,7 +197,7 @@ export const AdminDashboardPage: React.FC = () => {
                 <XAxis dataKey="date" stroke="#606676" tick={{ fontSize: 11 }} />
                 <YAxis stroke="#606676" tick={{ fontSize: 11 }} tickFormatter={(val) => `₹${val / 1000}k`} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#12141A', borderColor: '#2A2F3D', borderRadius: '8px', color: '#FAF8F5' }}
+                  contentStyle={{ backgroundColor: '#0A0B0E', borderColor: 'rgba(212,175,55,0.3)', borderRadius: '12px', color: '#FAF8F5', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.8)' }}
                   formatter={(val: unknown) => [`₹${Number(val).toLocaleString()}`, 'Daily Revenue']}
                 />
                 <Area type="monotone" dataKey="sales" stroke="#D4AF37" strokeWidth={2.5} fillOpacity={1} fill="url(#goldRevenue)" />
@@ -193,21 +207,24 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
 
         {/* Popular Dishes Ranking */}
-        <div className="bg-charcoal-900 border border-charcoal-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+        <div className="bg-charcoal-900 border border-charcoal-800 rounded-3xl p-6 sm:p-7 shadow-xl flex flex-col justify-between">
           <div>
-            <h3 className="font-serif font-bold text-base text-ivory-100 mb-1">
-              Top Guest Selections
-            </h3>
+            <div className="flex items-center gap-2 mb-1">
+              <Flame className="w-4 h-4 text-orange-400" />
+              <h3 className="font-serif font-bold text-base text-ivory-100">
+                Top Guest Selections
+              </h3>
+            </div>
             <p className="text-xs text-charcoal-400 mb-4">Most ordered laboratory creations</p>
 
             <div className="space-y-3">
               {analytics.popularDishes.map((dish, i) => (
-                <div key={i} className="flex items-center justify-between text-xs pb-2 border-b border-charcoal-800/80">
+                <div key={i} className="flex items-center justify-between text-xs pb-2.5 border-b border-charcoal-800/80">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="font-mono text-gold-400 font-bold w-4">{i + 1}.</span>
                     <span className="text-ivory-200 truncate font-medium">{dish.name}</span>
                   </div>
-                  <span className="font-mono text-charcoal-400 whitespace-nowrap pl-2">
+                  <span className="font-mono text-gold-300 whitespace-nowrap pl-2 bg-charcoal-950 px-2 py-0.5 rounded border border-charcoal-800">
                     {dish.orderCount} orders
                   </span>
                 </div>
@@ -216,9 +233,9 @@ export const AdminDashboardPage: React.FC = () => {
           </div>
 
           <div className="pt-4 border-t border-charcoal-800">
-            <Link to="/admin/menu" className="text-xs text-gold-400 hover:text-gold-300 font-mono flex items-center justify-between">
+            <Link to="/admin/menu" className="text-xs text-gold-400 hover:text-gold-300 font-mono flex items-center justify-between group">
               <span>View full menu catalog</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
@@ -227,31 +244,35 @@ export const AdminDashboardPage: React.FC = () => {
       {/* Real-time Order Queue & Upcoming Reservations */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
-        <div className="bg-charcoal-900 border border-charcoal-800 rounded-2xl p-6 shadow-xl">
+        <div className="bg-charcoal-900 border border-charcoal-800 rounded-3xl p-6 sm:p-7 shadow-xl">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-serif font-bold text-base text-ivory-100">
-              Live Kitchen Orders Queue
-            </h3>
-            <Link to="/admin/orders" className="text-xs text-gold-400 hover:text-gold-300 font-mono">
-              View All Orders →
+            <div className="flex items-center gap-2">
+              <UtensilsCrossed className="w-4 h-4 text-gold-400" />
+              <h3 className="font-serif font-bold text-base text-ivory-100">
+                Live Kitchen Orders Stream
+              </h3>
+            </div>
+            <Link to="/admin/orders" className="text-xs text-gold-400 hover:text-gold-300 font-mono flex items-center gap-1">
+              <span>All Orders</span>
+              <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           <div className="space-y-3">
             {analytics.recentOrders.length === 0 ? (
-              <p className="text-xs text-charcoal-500 py-6 text-center">No active kitchen orders.</p>
+              <p className="text-xs text-charcoal-500 py-8 text-center font-mono">No active kitchen orders currently.</p>
             ) : (
               analytics.recentOrders.slice(0, 4).map((order) => (
-                <div key={order.id} className="bg-charcoal-950 p-3.5 rounded-xl border border-charcoal-800 flex items-center justify-between">
+                <div key={order.id} className="bg-charcoal-950 p-3.5 rounded-2xl border border-charcoal-800 flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-mono font-bold text-xs text-gold-300">{order.orderNumber}</span>
-                      <span className="font-mono text-xs text-ivory-200 bg-charcoal-850 px-2 py-0.5 rounded">
+                      <span className="font-mono text-xs text-ivory-200 bg-charcoal-900 px-2 py-0.5 rounded border border-charcoal-700">
                         Table {order.tableNumber}
                       </span>
                       <StatusBadge status={order.status} />
                     </div>
-                    <p className="text-xs text-charcoal-400 mt-1">
+                    <p className="text-xs text-charcoal-400 mt-1 font-light">
                       {order.items.length} items • ₹{order.total}
                     </p>
                   </div>
@@ -259,7 +280,7 @@ export const AdminDashboardPage: React.FC = () => {
                   {order.status === 'PENDING' && (
                     <button
                       onClick={() => handleQuickOrderStatus(order.id, 'IN_KITCHEN')}
-                      className="px-2.5 py-1 rounded bg-blue-500/20 text-blue-300 text-xs font-semibold hover:bg-blue-500 hover:text-white transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-blue-600/25 text-blue-300 text-xs font-semibold hover:bg-blue-600 hover:text-white transition-colors border border-blue-500/30"
                     >
                       Start Kitchen
                     </button>
@@ -267,9 +288,17 @@ export const AdminDashboardPage: React.FC = () => {
                   {order.status === 'IN_KITCHEN' && (
                     <button
                       onClick={() => handleQuickOrderStatus(order.id, 'READY')}
-                      className="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 text-xs font-semibold hover:bg-emerald-500 hover:text-white transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-emerald-600/25 text-emerald-300 text-xs font-semibold hover:bg-emerald-600 hover:text-white transition-colors border border-emerald-500/30"
                     >
                       Mark Ready
+                    </button>
+                  )}
+                  {order.status === 'READY' && (
+                    <button
+                      onClick={() => handleQuickOrderStatus(order.id, 'SERVED')}
+                      className="px-3 py-1.5 rounded-xl bg-purple-600/25 text-purple-300 text-xs font-semibold hover:bg-purple-600 hover:text-white transition-colors border border-purple-500/30"
+                    >
+                      Mark Served
                     </button>
                   )}
                 </div>
@@ -279,29 +308,33 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
 
         {/* Recent Reservations */}
-        <div className="bg-charcoal-900 border border-charcoal-800 rounded-2xl p-6 shadow-xl">
+        <div className="bg-charcoal-900 border border-charcoal-800 rounded-3xl p-6 sm:p-7 shadow-xl">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-serif font-bold text-base text-ivory-100">
-              Upcoming Reservations
-            </h3>
-            <Link to="/admin/reservations" className="text-xs text-gold-400 hover:text-gold-300 font-mono">
-              View All Desk →
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-gold-400" />
+              <h3 className="font-serif font-bold text-base text-ivory-100">
+                Upcoming Concierge Reservations
+              </h3>
+            </div>
+            <Link to="/admin/reservations" className="text-xs text-gold-400 hover:text-gold-300 font-mono flex items-center gap-1">
+              <span>All Bookings</span>
+              <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           <div className="space-y-3">
             {analytics.recentReservations.length === 0 ? (
-              <p className="text-xs text-charcoal-500 py-6 text-center">No pending reservations.</p>
+              <p className="text-xs text-charcoal-500 py-8 text-center font-mono">No pending reservations recorded.</p>
             ) : (
               analytics.recentReservations.slice(0, 4).map((r) => (
-                <div key={r.id} className="bg-charcoal-950 p-3.5 rounded-xl border border-charcoal-800 flex items-center justify-between">
+                <div key={r.id} className="bg-charcoal-950 p-3.5 rounded-2xl border border-charcoal-800 flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-xs text-ivory-100">{r.name}</span>
-                      <span className="text-[11px] font-mono text-gold-400">{r.guests} Guests</span>
+                      <span className="text-[11px] font-mono text-gold-400 bg-charcoal-900 px-2 py-0.5 rounded border border-charcoal-700">{r.guests} Guests</span>
                       <StatusBadge status={r.status} />
                     </div>
-                    <p className="text-xs text-charcoal-400 mt-0.5">
+                    <p className="text-xs text-charcoal-400 mt-1 font-light">
                       {r.reservationDate} at {r.reservationTime}
                     </p>
                   </div>
@@ -309,7 +342,7 @@ export const AdminDashboardPage: React.FC = () => {
                   {r.status === 'PENDING' && (
                     <button
                       onClick={() => handleQuickReservationConfirm(r.id)}
-                      className="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 text-xs font-semibold hover:bg-emerald-500 hover:text-white transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-emerald-600/25 text-emerald-300 text-xs font-semibold hover:bg-emerald-600 hover:text-white transition-colors border border-emerald-500/30"
                     >
                       Confirm
                     </button>
