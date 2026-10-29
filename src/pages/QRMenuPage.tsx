@@ -13,8 +13,9 @@ import {
   Ban,
   X,
   ChevronLeft,
-  SlidersHorizontal,
-  Flame
+  Flame,
+  Clock,
+  CheckCircle2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MenuItem, MenuCategory } from '../types';
@@ -121,19 +122,19 @@ export const QRMenuPage: React.FC = () => {
   });
 
   return (
-    <PageTransition className="min-h-screen bg-charcoal-975 pb-32 text-ivory-100">
-      {/* Dedicated In-Restaurant Mobile Header */}
-      <div className="sticky top-0 z-30 bg-charcoal-950/95 backdrop-blur-xl border-b border-charcoal-800/80 px-4 py-3 shadow-2xl">
+    <PageTransition className="min-h-screen bg-[#FAF9F5] pb-32 text-[#12141A]">
+      {/* 1. DEDICATED IN-RESTAURANT EDITORIAL MOBILE HEADER */}
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-xl border-b border-black/10 px-4 py-3 shadow-sm">
         <div className="max-w-md mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group" title="Return to Farzi Main Experience">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold-400 via-gold-500 to-copper-600 flex items-center justify-center text-charcoal-950 font-serif font-black text-sm shadow-md shadow-gold-500/20 group-hover:scale-105 transition-transform">
-              ✦
+            <div className="w-9 h-9 rounded-full bg-black border border-black/10 p-1 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+              <img src="/farzi-logo.svg" alt="Farzi Café" className="w-full h-full object-contain filter invert" />
             </div>
-            <div className="flex flex-col">
-              <span className="font-display font-bold tracking-[0.22em] text-sm text-ivory-50 uppercase group-hover:text-gold-300 transition-colors">
-                FARZI
+            <div className="flex flex-col text-left">
+              <span className="font-display font-black tracking-[0.22em] text-sm text-black uppercase group-hover:text-[#D4AF37] transition-colors">
+                FARZI <span className="text-[#D4AF37]">CAFÉ</span>
               </span>
-              <span className="text-[8px] font-mono tracking-widest text-gold-400/90 uppercase -mt-0.5">
+              <span className="text-[9px] font-mono tracking-widest text-[#D4AF37] font-bold uppercase -mt-0.5">
                 Digital Table Menu
               </span>
             </div>
@@ -144,11 +145,11 @@ export const QRMenuPage: React.FC = () => {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsTableModalOpen(true)}
-              className="inline-flex items-center gap-1.5 bg-charcoal-900 border border-gold-500/40 hover:border-gold-400 px-3 py-1 rounded-full text-xs font-mono font-bold text-gold-300 shadow-sm transition-all"
-              title="Click to change assigned table"
+              className="inline-flex items-center gap-1.5 bg-[#FAF9F5] border border-black/20 hover:border-black px-3 py-1.5 rounded-full text-xs font-mono font-bold text-black shadow-sm transition-all"
+              title="Click to switch assigned dining station"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <TableIcon className="w-3.5 h-3.5 text-gold-400" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <TableIcon className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>Table {tableNumber}</span>
             </motion.button>
 
@@ -157,11 +158,11 @@ export const QRMenuPage: React.FC = () => {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsCartOpen(true)}
-                className="relative p-2 rounded-full bg-charcoal-900 border border-charcoal-700 text-gold-400 hover:text-white"
+                className="relative p-2 rounded-full bg-black text-white hover:bg-[#D4AF37] hover:text-black shadow-md"
                 aria-label="View Cart"
               >
-                <ShoppingBag className="w-4 h-4" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gold-400 text-charcoal-950 flex items-center justify-center text-[10px] font-bold">
+                <ShoppingBag className="w-4 h-4 text-[#D4AF37]" />
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#D4AF37] text-black flex items-center justify-center text-[10px] font-bold">
                   {totalCount}
                 </span>
               </motion.button>
@@ -172,42 +173,42 @@ export const QRMenuPage: React.FC = () => {
         {/* Search & Dietary Bar */}
         <div className="max-w-md mx-auto mt-2.5 space-y-2">
           <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-charcoal-500" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400" />
             <input
               type="text"
               placeholder="Search molecular dishes, spices, truffle..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-8 py-2 rounded-xl bg-charcoal-900 border border-charcoal-800 text-xs text-ivory-100 placeholder-charcoal-500 focus:outline-none focus:border-gold-500/50 transition-colors"
+              className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#FAF9F5] border border-black/15 text-xs text-black placeholder-neutral-500 focus:outline-none focus:border-black transition-colors"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-charcoal-400 hover:text-white"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
 
-          {/* Quick Dietary Filters */}
+          {/* Quick Dietary Filters (All / Veg / Non-Veg / Chef Specials) */}
           <div className="flex items-center gap-1.5 text-xs overflow-x-auto scrollbar-none pb-0.5">
             <button
               onClick={() => setDietFilter('all')}
-              className={`px-3 py-1 rounded-full whitespace-nowrap text-[11px] font-medium transition-all ${
+              className={`px-3 py-1 rounded-full whitespace-nowrap text-[11px] font-bold transition-all ${
                 dietFilter === 'all'
-                  ? 'bg-gold-500 text-charcoal-950 font-bold shadow-sm'
-                  : 'bg-charcoal-900 text-ivory-300 border border-charcoal-800'
+                  ? 'bg-black text-white shadow-sm'
+                  : 'bg-[#FAF9F5] text-neutral-700 border border-black/10'
               }`}
             >
               All Items
             </button>
             <button
               onClick={() => setDietFilter('veg')}
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full whitespace-nowrap text-[11px] font-medium transition-all ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full whitespace-nowrap text-[11px] font-bold transition-all ${
                 dietFilter === 'veg'
-                  ? 'bg-emerald-500 text-charcoal-950 font-bold shadow-sm'
-                  : 'bg-charcoal-900 text-ivory-300 border border-charcoal-800'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'bg-[#FAF9F5] text-neutral-700 border border-black/10'
               }`}
             >
               <VegBadge size="sm" />
@@ -215,10 +216,10 @@ export const QRMenuPage: React.FC = () => {
             </button>
             <button
               onClick={() => setDietFilter('non-veg')}
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full whitespace-nowrap text-[11px] font-medium transition-all ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full whitespace-nowrap text-[11px] font-bold transition-all ${
                 dietFilter === 'non-veg'
-                  ? 'bg-rose-500 text-white font-bold shadow-sm'
-                  : 'bg-charcoal-900 text-ivory-300 border border-charcoal-800'
+                  ? 'bg-rose-600 text-white shadow-sm'
+                  : 'bg-[#FAF9F5] text-neutral-700 border border-black/10'
               }`}
             >
               <NonVegBadge size="sm" />
@@ -226,26 +227,26 @@ export const QRMenuPage: React.FC = () => {
             </button>
             <button
               onClick={() => setDietFilter('special')}
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full whitespace-nowrap text-[11px] font-medium transition-all ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full whitespace-nowrap text-[11px] font-bold transition-all ${
                 dietFilter === 'special'
-                  ? 'bg-gold-500 text-charcoal-950 font-bold shadow-sm'
-                  : 'bg-charcoal-900 text-ivory-300 border border-charcoal-800'
+                  ? 'bg-[#D4AF37] text-black shadow-sm'
+                  : 'bg-[#FAF9F5] text-neutral-700 border border-black/10'
               }`}
             >
-              <Sparkles className="w-3 h-3 text-gold-400" />
+              <Sparkles className="w-3 h-3 text-[#D4AF37]" />
               <span>Chef's Lab</span>
             </button>
           </div>
         </div>
 
         {/* Horizontal Category Carousel */}
-        <div className="max-w-md mx-auto flex items-center gap-1.5 overflow-x-auto pt-2 scrollbar-none border-t border-charcoal-800/80 mt-1.5">
+        <div className="max-w-md mx-auto flex items-center gap-1.5 overflow-x-auto pt-2 scrollbar-none border-t border-black/10 mt-1.5">
           <button
             onClick={() => setActiveCategory('all')}
-            className={`px-3 py-1 rounded-lg text-[11px] whitespace-nowrap font-medium transition-all ${
+            className={`px-3 py-1 rounded-lg text-[11px] whitespace-nowrap font-bold transition-all ${
               activeCategory === 'all'
-                ? 'bg-charcoal-850 text-gold-300 font-bold border border-gold-500/40 shadow-sm'
-                : 'text-ivory-400 hover:text-white'
+                ? 'bg-black text-white shadow-sm'
+                : 'text-neutral-700 hover:text-black'
             }`}
           >
             All Curations
@@ -254,10 +255,10 @@ export const QRMenuPage: React.FC = () => {
             <button
               key={c.id}
               onClick={() => setActiveCategory(c.slug)}
-              className={`px-3 py-1 rounded-lg text-[11px] whitespace-nowrap font-medium transition-all ${
+              className={`px-3 py-1 rounded-lg text-[11px] whitespace-nowrap font-bold transition-all ${
                 activeCategory === c.slug
-                  ? 'bg-charcoal-850 text-gold-300 font-bold border border-gold-500/40 shadow-sm'
-                  : 'text-ivory-400 hover:text-white'
+                  ? 'bg-black text-white shadow-sm'
+                  : 'text-neutral-700 hover:text-black'
               }`}
             >
               {c.name}
@@ -266,35 +267,35 @@ export const QRMenuPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Container */}
+      {/* 2. MAIN CONTAINER */}
       <div className="max-w-md mx-auto px-4 pt-3.5 space-y-3.5">
         {/* Table Notice if invalid query param provided */}
         {tableNotice && (
-          <div className="bg-amber-950/40 border border-amber-800/50 rounded-xl p-3 text-xs text-amber-300 flex items-center justify-between">
+          <div className="bg-amber-50 border border-amber-300 rounded-xl p-3 text-xs text-amber-900 flex items-center justify-between">
             <span>{tableNotice}</span>
-            <button onClick={() => setTableNotice(null)} className="text-amber-400 hover:text-white">
+            <button onClick={() => setTableNotice(null)} className="text-amber-800 hover:text-black">
               <X className="w-4 h-4" />
             </button>
           </div>
         )}
 
-        {/* Welcome Table Banner */}
-        <div className="bg-gradient-to-r from-charcoal-900 via-charcoal-850 to-charcoal-900 border border-gold-500/20 rounded-2xl p-4 shadow-xl flex items-center justify-between">
-          <div>
+        {/* Bar Topas & Farzi Inspired Status Card */}
+        <div className="bg-white border border-black/10 rounded-2xl p-4 shadow-sm flex items-center justify-between">
+          <div className="text-left">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[10px] font-mono uppercase tracking-widest text-gold-400 font-semibold">
-                Live In-Restaurant Dining
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] font-bold">
+                In-Restaurant Table Order
               </span>
             </div>
-            <h2 className="text-sm sm:text-base font-serif font-bold text-ivory-50 mt-0.5">
-              Station {tableNumber} • Farzi Kitchen Online
+            <h2 className="text-sm sm:text-base font-serif font-black text-black mt-0.5">
+              Station {tableNumber} • Kitchen Connected
             </h2>
-            <p className="text-[11px] text-ivory-400 mt-0.5 font-light">
+            <p className="text-[11px] text-neutral-600 mt-0.5 font-normal">
               Tap any dish to inspect molecular ingredients or add directly.
             </p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-gold-500/10 border border-gold-500/30 flex items-center justify-center text-gold-400 flex-shrink-0 shadow-inner">
+          <div className="w-10 h-10 rounded-full bg-[#FAF9F5] border border-black/10 flex items-center justify-center text-[#D4AF37] flex-shrink-0 shadow-sm">
             <Sparkles className="w-4 h-4" />
           </div>
         </div>
@@ -303,32 +304,32 @@ export const QRMenuPage: React.FC = () => {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3, 4, 5].map((n) => (
-              <div key={n} className="h-28 rounded-2xl skeleton-shimmer border border-charcoal-800" />
+              <div key={n} className="h-28 rounded-2xl bg-neutral-200/60 animate-pulse border border-black/5" />
             ))}
           </div>
         ) : loadError ? (
-          <div className="p-8 text-center bg-charcoal-900 border border-charcoal-800 rounded-2xl space-y-3 shadow-xl">
-            <AlertCircle className="w-8 h-8 text-rose-400 mx-auto" />
-            <p className="text-xs text-ivory-300">{loadError}</p>
+          <div className="p-8 text-center bg-white border border-black/10 rounded-2xl space-y-3 shadow-sm">
+            <AlertCircle className="w-8 h-8 text-rose-500 mx-auto" />
+            <p className="text-xs text-neutral-700">{loadError}</p>
             <button
               onClick={loadMenuData}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-500 text-charcoal-950 font-mono text-xs font-bold shadow-md hover:bg-gold-400 transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-black text-white hover:bg-[#D4AF37] hover:text-black font-mono text-xs font-bold shadow-md transition-colors"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Retry Loading Menu</span>
             </button>
           </div>
         ) : filteredItems.length === 0 ? (
-          <div className="p-8 text-center bg-charcoal-900 border border-charcoal-800 rounded-2xl shadow-xl">
-            <AlertCircle className="w-8 h-8 text-charcoal-500 mx-auto mb-2" />
-            <p className="text-xs text-ivory-300">No dishes match your active filter.</p>
+          <div className="p-8 text-center bg-white border border-black/10 rounded-2xl shadow-sm">
+            <AlertCircle className="w-8 h-8 text-neutral-400 mx-auto mb-2" />
+            <p className="text-xs text-neutral-600">No dishes match your active filter.</p>
             <button
               onClick={() => {
                 setActiveCategory('all');
                 setDietFilter('all');
                 setSearchQuery('');
               }}
-              className="mt-3 text-xs text-gold-400 underline font-mono"
+              className="mt-3 text-xs text-[#D4AF37] underline font-mono font-bold"
             >
               Reset Filters
             </button>
@@ -344,14 +345,14 @@ export const QRMenuPage: React.FC = () => {
                 <div
                   key={item.id}
                   onClick={() => setSelectedDish(item)}
-                  className={`bg-charcoal-900/90 border rounded-2xl p-3 flex gap-3 cursor-pointer shadow-lg active:scale-[0.99] transition-all duration-300 ${
+                  className={`bg-white border rounded-2xl p-3 flex gap-3 cursor-pointer shadow-sm active:scale-[0.99] transition-all duration-300 ${
                     isAvailable
-                      ? 'border-charcoal-800 hover:border-gold-500/40 hover:shadow-black/50'
-                      : 'border-charcoal-800/60 opacity-80'
+                      ? 'border-black/10 hover:border-black/30 hover:shadow-md'
+                      : 'border-black/5 opacity-75'
                   }`}
                 >
                   {/* Left: Thumbnail with Fallback */}
-                  <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-charcoal-950 flex-shrink-0">
+                  <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-black flex-shrink-0">
                     <ImageWithFallback
                       src={item.imageUrl}
                       alt={item.name}
@@ -366,18 +367,18 @@ export const QRMenuPage: React.FC = () => {
                   </div>
 
                   {/* Right: Info & Controls */}
-                  <div className="flex-1 min-w-0 flex flex-col justify-between">
+                  <div className="flex-1 min-w-0 flex flex-col justify-between text-left">
                     <div>
                       <div className="flex items-start justify-between gap-1 mb-1">
-                        <h3 className="font-serif font-bold text-sm text-ivory-100 line-clamp-1">
+                        <h3 className="font-serif font-black text-sm text-black line-clamp-1">
                           {item.name}
                         </h3>
-                        <span className="font-serif font-bold text-gold-400 text-sm whitespace-nowrap">
+                        <span className="font-serif font-black text-[#D4AF37] text-sm whitespace-nowrap">
                           ₹{item.price}
                         </span>
                       </div>
 
-                      <p className="text-[11px] text-ivory-400 line-clamp-2 leading-tight font-light">
+                      <p className="text-[11px] text-neutral-600 line-clamp-2 leading-tight font-normal">
                         {item.description}
                       </p>
                     </div>
@@ -391,27 +392,27 @@ export const QRMenuPage: React.FC = () => {
                       {/* Add / Quantity Counter or Sold Out State */}
                       <div onClick={(e) => e.stopPropagation()}>
                         {!isAvailable ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-950/80 text-rose-300 border border-rose-800/60">
-                            <Ban className="w-3 h-3 text-rose-400" />
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-600 text-white">
+                            <Ban className="w-3 h-3 text-white" />
                             <span>Sold Out</span>
                           </span>
                         ) : qty > 0 ? (
-                          <div className="flex items-center gap-2 bg-charcoal-950 px-2 py-0.5 rounded-full border border-gold-500/40 shadow-sm">
+                          <div className="flex items-center gap-2 bg-[#FAF9F5] px-2 py-0.5 rounded-full border border-black/20 shadow-sm">
                             <motion.button
                               whileTap={{ scale: 0.85 }}
                               onClick={() => updateQuantity(item.id, -1)}
-                              className="text-ivory-300 hover:text-white p-0.5"
+                              className="text-black hover:text-[#D4AF37] p-0.5"
                               aria-label="Decrease quantity"
                             >
                               <Minus className="w-3.5 h-3.5" />
                             </motion.button>
-                            <span className="font-mono text-xs font-bold text-gold-300 min-w-[16px] text-center">
+                            <span className="font-mono text-xs font-bold text-black min-w-[16px] text-center">
                               {qty}
                             </span>
                             <motion.button
                               whileTap={{ scale: 0.85 }}
                               onClick={() => updateQuantity(item.id, 1)}
-                              className="text-ivory-300 hover:text-white p-0.5"
+                              className="text-black hover:text-[#D4AF37] p-0.5"
                               aria-label="Increase quantity"
                             >
                               <Plus className="w-3.5 h-3.5" />
@@ -421,7 +422,7 @@ export const QRMenuPage: React.FC = () => {
                           <motion.button
                             whileTap={{ scale: 0.95 }}
                             onClick={() => addToCart(item, 1)}
-                            className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-charcoal-800 text-ivory-100 hover:bg-gold-500 hover:text-charcoal-950 border border-charcoal-700 transition-colors shadow-sm"
+                            className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-black text-white hover:bg-[#D4AF37] hover:text-black border border-black transition-colors shadow-sm"
                           >
                             <Plus className="w-3 h-3" />
                             <span>Add</span>
@@ -437,23 +438,23 @@ export const QRMenuPage: React.FC = () => {
         )}
 
         {/* In-Restaurant Minimal Dining Footer */}
-        <div className="pt-6 pb-4 border-t border-charcoal-800/80 text-center space-y-2">
-          <p className="text-[11px] font-mono text-charcoal-400">
+        <div className="pt-6 pb-4 border-t border-black/10 text-center space-y-2">
+          <p className="text-[11px] font-mono text-neutral-600">
             Station {tableNumber} • Farzi Progressive Gastronomy
           </p>
-          <p className="text-[10px] text-charcoal-500">
+          <p className="text-[10px] text-neutral-500">
             Standard 5% GST included on order calculation • For sommelier pairings or table service, request your floor server.
           </p>
           <div className="pt-2">
-            <Link to="/" className="inline-flex items-center gap-1 text-[11px] text-gold-400 hover:text-gold-300 font-mono transition-colors">
-              <ChevronLeft className="w-3.5 h-3.5" />
+            <Link to="/" className="inline-flex items-center gap-1 text-[11px] text-black hover:text-[#D4AF37] font-mono font-bold transition-colors">
+              <ChevronLeft className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>Explore Main Restaurant Website</span>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Floating Bottom Cart Bar */}
+      {/* 3. FLOATING BOTTOM CART BAR */}
       <AnimatePresence>
         {totalCount > 0 && (
           <motion.div
@@ -465,16 +466,16 @@ export const QRMenuPage: React.FC = () => {
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => setIsCartOpen(true)}
-              className="w-full bg-gradient-to-r from-gold-500 via-gold-400 to-copper-500 text-charcoal-950 p-3.5 rounded-2xl shadow-2xl flex items-center justify-between font-semibold border border-gold-300/40"
+              className="w-full bg-black hover:bg-[#D4AF37] text-white hover:text-black p-3.5 rounded-2xl shadow-2xl flex items-center justify-between font-bold border border-black transition-all"
             >
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-full bg-charcoal-950 text-gold-400 flex items-center justify-center font-mono text-xs font-bold shadow-inner">
+                <div className="w-7 h-7 rounded-full bg-[#D4AF37] text-black flex items-center justify-center font-mono text-xs font-bold shadow-sm">
                   {totalCount}
                 </div>
                 <span className="text-sm font-bold tracking-wide">Review Table Order</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="font-serif font-black text-base">₹{total}</span>
+                <span className="font-serif font-black text-base text-[#D4AF37] group-hover:text-black">₹{total}</span>
                 <ArrowRight className="w-4 h-4" />
               </div>
             </motion.button>
@@ -482,32 +483,32 @@ export const QRMenuPage: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Table Station Selector Modal */}
+      {/* 4. TABLE STATION SELECTOR MODAL */}
       <AnimatePresence>
         {isTableModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="w-full max-w-sm bg-charcoal-900 border border-gold-500/30 rounded-3xl p-6 shadow-2xl"
+              className="w-full max-w-sm bg-white border border-black/10 rounded-3xl p-6 shadow-2xl text-[#12141A]"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-charcoal-800">
+              <div className="flex items-center justify-between pb-3 border-b border-black/10">
                 <div className="flex items-center gap-2">
-                  <TableIcon className="w-4 h-4 text-gold-400" />
-                  <h3 className="font-serif font-bold text-base text-ivory-100">
+                  <TableIcon className="w-4 h-4 text-[#D4AF37]" />
+                  <h3 className="font-serif font-black text-base text-black">
                     Select Dining Station
                   </h3>
                 </div>
                 <button
                   onClick={() => setIsTableModalOpen(false)}
-                  className="text-ivory-400 hover:text-white p-1 rounded-full hover:bg-charcoal-800"
+                  className="text-neutral-500 hover:text-black p-1 rounded-full hover:bg-neutral-100"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <p className="text-xs text-charcoal-400 mt-2 mb-4">
+              <p className="text-xs text-neutral-600 mt-2 mb-4 text-left">
                 Choose the station number printed on your table acrylic stand (T01 - T12):
               </p>
 
@@ -518,8 +519,8 @@ export const QRMenuPage: React.FC = () => {
                     onClick={() => handleSelectTable(tbl)}
                     className={`py-2 rounded-xl text-xs font-mono font-bold border transition-all ${
                       tableNumber === tbl
-                        ? 'bg-gold-500 text-charcoal-950 border-gold-400 shadow-md'
-                        : 'bg-charcoal-850 text-ivory-300 border-charcoal-700 hover:border-gold-500/40 hover:text-white'
+                        ? 'bg-black text-white border-black shadow-md'
+                        : 'bg-[#FAF9F5] text-neutral-800 border-black/10 hover:border-black hover:text-black'
                     }`}
                   >
                     {tbl}
@@ -529,7 +530,7 @@ export const QRMenuPage: React.FC = () => {
 
               <button
                 onClick={() => setIsTableModalOpen(false)}
-                className="w-full py-2.5 rounded-xl bg-charcoal-800 text-ivory-200 text-xs font-medium hover:bg-charcoal-700 transition-colors"
+                className="w-full py-2.5 rounded-xl bg-neutral-100 text-neutral-700 text-xs font-semibold hover:bg-neutral-200 transition-colors"
               >
                 Cancel
               </button>

@@ -50,13 +50,13 @@ export const AdminLayout: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-charcoal-975 text-ivory-100 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#07080A] text-[#F4F0E8] flex flex-col md:flex-row">
       {/* Mobile Top Header for Admin on small screens */}
-      <div className="md:hidden bg-charcoal-950 border-b border-charcoal-800 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+      <div className="md:hidden bg-neutral-950 border-b border-white/[0.08] px-4 py-3 flex items-center justify-between sticky top-0 z-40">
         <Link to="/admin" className="flex items-center gap-2">
-          <span className="text-gold-400 font-serif font-black text-lg">✦</span>
-          <span className="font-display font-bold tracking-widest text-sm text-ivory-50">FARZI OS</span>
-          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-gold-500/15 text-gold-400 border border-gold-500/30">
+          <span className="text-[#E09F27] font-serif font-black text-lg">✦</span>
+          <span className="font-display font-bold tracking-widest text-sm text-white">FARZI OS</span>
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-[#E09F27]/15 text-[#E09F27] border border-[#E09F27]/30">
             PRO
           </span>
         </Link>
@@ -64,14 +64,14 @@ export const AdminLayout: React.FC = () => {
         <div className="flex items-center gap-2">
           <Link
             to="/"
-            className="p-1.5 text-charcoal-400 hover:text-gold-300"
+            className="p-1.5 text-neutral-400 hover:text-white"
             title="Public Website"
           >
             <ExternalLink className="w-4 h-4" />
           </Link>
           <button
             onClick={() => setMobileAdminNavOpen(!mobileAdminNavOpen)}
-            className="p-1.5 rounded-lg bg-charcoal-900 border border-charcoal-800 text-ivory-200"
+            className="p-1.5 rounded-lg bg-neutral-900 border border-white/10 text-neutral-200"
             aria-label="Toggle Admin Menu"
           >
             {mobileAdminNavOpen ? <X className="w-5 h-5" /> : <MenuIcon className="w-5 h-5" />}
@@ -126,25 +126,25 @@ export const AdminLayout: React.FC = () => {
       </AnimatePresence>
 
       {/* Desktop Sidebar Navigation */}
-      <aside className="hidden md:flex w-64 bg-charcoal-950 border-r border-charcoal-800/80 flex-col justify-between flex-shrink-0 shadow-2xl">
+      <aside className="hidden md:flex w-64 bg-neutral-950 border-r border-white/[0.08] flex-col justify-between flex-shrink-0 shadow-2xl">
         <div>
           {/* Brand Badge */}
-          <div className="p-6 border-b border-charcoal-800/80 flex items-center justify-between">
+          <div className="p-6 border-b border-white/[0.08] flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold-400 to-copper-600 flex items-center justify-center text-charcoal-950 font-serif font-black text-sm shadow-md shadow-gold-500/20 group-hover:scale-105 transition-transform">
+              <div className="w-8 h-8 rounded-full bg-[#E09F27] flex items-center justify-center text-black font-serif font-black text-sm shadow-md group-hover:scale-105 transition-transform">
                 ✦
               </div>
               <div>
-                <span className="font-display font-bold tracking-widest text-base text-ivory-50 block leading-tight">
-                  FARZI
+                <span className="font-display font-black tracking-widest text-sm text-white block leading-tight">
+                  FARZI OS
                 </span>
-                <span className="text-[9px] font-mono tracking-widest text-gold-400/90 uppercase block">
-                  RestaurantOS Pro
+                <span className="text-[9px] font-mono tracking-widest text-[#E09F27] uppercase block">
+                  Operations Console
                 </span>
               </div>
             </Link>
-            <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-gold-500/10 text-gold-400 border border-gold-500/30">
-              v2.4
+            <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-[#E09F27]/10 text-[#E09F27] border border-[#E09F27]/30">
+              v2.5
             </span>
           </div>
 
@@ -156,13 +156,13 @@ export const AdminLayout: React.FC = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-mono transition-all duration-200 ${
                     isActive
-                      ? 'bg-gradient-to-r from-gold-500/20 via-gold-500/10 to-transparent text-gold-300 font-semibold border-l-2 border-gold-400 shadow-sm'
-                      : 'text-ivory-400 hover:text-ivory-100 hover:bg-charcoal-900'
+                      ? 'bg-neutral-900 text-[#E09F27] font-bold border-l-2 border-[#E09F27] shadow-sm'
+                      : 'text-neutral-400 hover:text-white hover:bg-neutral-900/60'
                   }`}
                 >
-                  <span className={isActive ? 'text-gold-400' : 'text-charcoal-500'}>
+                  <span className={isActive ? 'text-[#E09F27]' : 'text-neutral-500'}>
                     {item.icon}
                   </span>
                   <span>{item.label}</span>

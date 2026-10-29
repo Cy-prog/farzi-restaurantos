@@ -18,7 +18,7 @@
       "role": "ADMIN",
       "isActive": true,
       "createdAt": "2026-10-18T13:26:37.569Z",
-      "lastLoginAt": "2026-10-18T13:52:32.090Z"
+      "lastLoginAt": "2026-10-27T15:25:51.915Z"
     },
     {
       "id": 3,
@@ -28,7 +28,7 @@
       "role": "STAFF",
       "isActive": true,
       "createdAt": "2026-10-18T13:50:31.733Z",
-      "lastLoginAt": "2026-10-18T13:52:32.385Z"
+      "lastLoginAt": "2026-10-27T15:25:52.317Z"
     }
   ],
   "categories": [
@@ -508,6 +508,111 @@
   ],
   "reservations": [
     {
+      "id": 15,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-27T15:25:52.604Z",
+      "updatedAt": "2026-10-27T15:25:52.629Z"
+    },
+    {
+      "id": 14,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-27T15:19:45.127Z",
+      "updatedAt": "2026-10-27T15:19:45.160Z"
+    },
+    {
+      "id": 13,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-27T15:05:58.803Z",
+      "updatedAt": "2026-10-27T15:05:58.826Z"
+    },
+    {
+      "id": 12,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-27T14:51:42.483Z",
+      "updatedAt": "2026-10-27T14:51:42.518Z"
+    },
+    {
+      "id": 11,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-27T14:40:11.249Z",
+      "updatedAt": "2026-10-27T14:40:11.281Z"
+    },
+    {
+      "id": 10,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-26T14:52:19.181Z",
+      "updatedAt": "2026-10-26T14:52:19.214Z"
+    },
+    {
+      "id": 9,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-26T14:25:31.266Z",
+      "updatedAt": "2026-10-26T14:25:31.282Z"
+    },
+    {
       "id": 8,
       "name": "Dr. Kabir Roy",
       "phone": "+91 98111 22233",
@@ -629,6 +734,188 @@
     }
   ],
   "orders": [
+    {
+      "id": 14,
+      "orderNumber": "FZ-MVQU85WG-503",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 495,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 990,
+      "tax": 118.8,
+      "total": 1108.8,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-27T15:25:52.480Z",
+      "updatedAt": "2026-10-27T15:25:52.536Z"
+    },
+    {
+      "id": 13,
+      "orderNumber": "FZ-MVQU0AD8-391",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 495,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 990,
+      "tax": 118.8,
+      "total": 1108.8,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-27T15:19:45.020Z",
+      "updatedAt": "2026-10-27T15:19:45.067Z"
+    },
+    {
+      "id": 12,
+      "orderNumber": "FZ-MVQTIKS0-760",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 495,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 990,
+      "tax": 118.8,
+      "total": 1108.8,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-27T15:05:58.705Z",
+      "updatedAt": "2026-10-27T15:05:58.746Z"
+    },
+    {
+      "id": 11,
+      "orderNumber": "FZ-MVQT0812-408",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 495,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 990,
+      "tax": 118.8,
+      "total": 1108.8,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-27T14:51:42.374Z",
+      "updatedAt": "2026-10-27T14:51:42.411Z"
+    },
+    {
+      "id": 10,
+      "orderNumber": "FZ-MVQSLENV-907",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 495,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 990,
+      "tax": 118.8,
+      "total": 1108.8,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-27T14:40:11.131Z",
+      "updatedAt": "2026-10-27T14:40:11.192Z"
+    },
+    {
+      "id": 9,
+      "orderNumber": "FZ-MVPDL5NT-891",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 495,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 990,
+      "tax": 118.8,
+      "total": 1108.8,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-26T14:52:19.049Z",
+      "updatedAt": "2026-10-26T14:52:19.106Z"
+    },
+    {
+      "id": 8,
+      "orderNumber": "FZ-MVPCMP09-796",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 495,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 990,
+      "tax": 118.8,
+      "total": 1108.8,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-26T14:25:31.161Z",
+      "updatedAt": "2026-10-26T14:25:31.224Z"
+    },
     {
       "id": 7,
       "orderNumber": "FZ-MVDVXGYG-647",
@@ -947,6 +1234,42 @@
   },
   "qrScans": [
     {
+      "id": 12,
+      "table": "T04",
+      "timestamp": "2026-10-27T16:16:26.558Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+    },
+    {
+      "id": 11,
+      "table": "T04",
+      "timestamp": "2026-10-27T16:16:26.526Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+    },
+    {
+      "id": 10,
+      "table": "T04",
+      "timestamp": "2026-10-27T16:16:22.395Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+    },
+    {
+      "id": 9,
+      "table": "T04",
+      "timestamp": "2026-10-27T16:16:22.355Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+    },
+    {
+      "id": 8,
+      "table": "T04",
+      "timestamp": "2026-10-27T15:28:28.807Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+    },
+    {
+      "id": 7,
+      "table": "T04",
+      "timestamp": "2026-10-27T15:28:28.762Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+    },
+    {
       "id": 6,
       "table": "T04",
       "timestamp": "2026-10-16T13:49:09.546Z",
@@ -984,6 +1307,76 @@
     }
   ],
   "contactMessages": [
+    {
+      "id": 11,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-27T15:25:52.714Z"
+    },
+    {
+      "id": 10,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-27T15:19:45.220Z"
+    },
+    {
+      "id": 9,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-27T15:05:58.907Z"
+    },
+    {
+      "id": 8,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-27T14:51:42.593Z"
+    },
+    {
+      "id": 7,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-27T14:40:11.361Z"
+    },
+    {
+      "id": 6,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-26T14:52:19.304Z"
+    },
+    {
+      "id": 5,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-26T14:25:31.343Z"
+    },
     {
       "id": 4,
       "name": "Meera Rajput",

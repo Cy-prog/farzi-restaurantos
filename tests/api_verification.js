@@ -44,6 +44,13 @@ async function runTests() {
   console.log('   FARZI RESTAURANTOS — VERIFICATION SUITE');
   console.log('======================================================\n');
 
+  // Pre-test setup: Clear rate limit counters if endpoint available
+  try {
+    await request('/api/test/reset-rate-limit', { method: 'POST' });
+  } catch {
+    // Ignore if not present
+  }
+
   // Test 1: Health Check
   console.log('▶ [Test 1] Health Check');
   const health = await request('/api/health');

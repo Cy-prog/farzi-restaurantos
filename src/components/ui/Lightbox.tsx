@@ -65,7 +65,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
             e.stopPropagation();
             onClose();
           }}
-          className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-charcoal-900/80 text-ivory-200 hover:text-gold-400 hover:bg-charcoal-800 transition-colors border border-charcoal-700"
+          className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-white/90 text-black hover:bg-[#D4AF37] hover:text-black transition-colors border border-black/20 shadow-md"
           aria-label="Close Lightbox"
         >
           <X className="w-6 h-6" />
@@ -78,7 +78,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
               e.stopPropagation();
               onNavigate((currentIndex - 1 + images.length) % images.length);
             }}
-            className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-charcoal-900/80 text-ivory-200 hover:text-gold-400 hover:bg-charcoal-800 transition-colors border border-charcoal-700"
+            className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/90 text-black hover:bg-[#D4AF37] hover:text-black transition-colors border border-black/20 shadow-md"
             aria-label="Previous Image"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -92,7 +92,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
               e.stopPropagation();
               onNavigate((currentIndex + 1) % images.length);
             }}
-            className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-charcoal-900/80 text-ivory-200 hover:text-gold-400 hover:bg-charcoal-800 transition-colors border border-charcoal-700"
+            className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/90 text-black hover:bg-[#D4AF37] hover:text-black transition-colors border border-black/20 shadow-md"
             aria-label="Next Image"
           >
             <ChevronRight className="w-6 h-6" />
@@ -115,18 +115,18 @@ export const Lightbox: React.FC<LightboxProps> = ({
             onError={(e) => {
               (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1600';
             }}
-            className="max-h-[75vh] w-auto object-contain rounded-lg shadow-2xl border border-charcoal-800"
+            className="max-h-[75vh] w-auto object-contain rounded-2xl shadow-2xl border border-white/20"
           />
           <div className="mt-4 text-center">
             {currentImage.categoryName && (
-              <span className="text-xs uppercase font-mono tracking-widest text-gold-400">
+              <span className="text-xs uppercase font-mono tracking-widest text-[#D4AF37] font-semibold">
                 {currentImage.categoryName}
               </span>
             )}
-            <h3 className="text-lg font-serif font-medium text-ivory-100 mt-1">
+            <h3 className="text-lg font-serif font-bold text-white mt-1">
               {currentImage.title}
             </h3>
-            <p className="text-xs text-ivory-400 mt-0.5">
+            <p className="text-xs text-neutral-400 mt-0.5 font-mono">
               {currentIndex + 1} of {images.length}
             </p>
           </div>

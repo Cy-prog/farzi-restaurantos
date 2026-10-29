@@ -47,19 +47,33 @@ app.use(cors({
 // Body parser with explicit size limit (1MB max to prevent memory exhaustion)
 app.use(express.json({ limit: '1mb' }));
 
-// Security Headers Middleware
+// Enhanced Enterprise Security Headers Middleware
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' http://localhost:* ws://localhost:*; frame-ancestors 'none';"
+  );
   next();
 });
+
+// Input Sanitization Helper: trims and neutralizes direct script injection tags
+export const sanitizeInput = (val) => {
+  if (typeof val === 'string') {
+    return val.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '').trim();
+  }
+  return val;
+};
 
 // Sliding-window in-memory rate limiter factory
 const createRateLimiter = ({ windowMs, max, message }) => {
   const requests = new Map();
-  return (req, res, next) => {
+  const middleware = (req, res, next) => {
     const rawIp = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
     const ip = String(rawIp).split(',')[0].trim();
     const now = Date.now();
@@ -88,6 +102,13 @@ const createRateLimiter = ({ windowMs, max, message }) => {
 
     next();
   };
+
+  middleware.reset = (ip) => {
+    if (ip) requests.delete(ip);
+    else requests.clear();
+  };
+
+  return middleware;
 };
 
 const loginRateLimiter = createRateLimiter({
@@ -693,6 +714,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Test helper: Reset rate limits (dev/test environments only)
+if (!isProduction) {
+  app.post('/api/test/reset-rate-limit', (req, res) => {
+    loginRateLimiter.reset();
+    publicOrderRateLimiter.reset();
+    res.json({ success: true, message: 'Rate limit counters cleared.' });
+  });
+}
+
 // 1. Categories
 app.get('/api/public/categories', (req, res) => {
   const db = loadDatabase();
@@ -704,7 +734,7 @@ app.get('/api/public/categories', (req, res) => {
 app.get('/api/public/menu', (req, res) => {
   const db = loadDatabase();
   const { categoryId, categorySlug, isVeg, isChefSpecial, isAvailable, availableOnly, search } = req.query;
-  
+
   let items = [...db.menuItems];
 
   if (availableOnly === 'true' || isAvailable === 'true') {
@@ -763,7 +793,39 @@ app.get('/api/public/menu/:id', (req, res) => {
   res.json({ success: true, data: { ...item, categoryName: cat ? cat.name : '' } });
 });
 
-// 4. Submit Reservation
+// 4a. Check Reservation Table Availability
+app.get('/api/public/reservations/availability', (req, res) => {
+  const { date, time, guests } = req.query;
+  const guestCount = Math.max(1, Math.min(20, Math.floor(Number(guests)) || 2));
+  const db = loadDatabase();
+  const tables = db.tables || [];
+
+  // Count tables that can seat this party size
+  const suitableTables = tables.filter(t => t.capacity >= guestCount && t.isActive !== false);
+
+  // Check how many are booked for that date and overlapping time window (+/- 90 mins)
+  const existing = (db.reservations || []).filter(r =>
+    r.reservationDate === date &&
+    r.status === 'CONFIRMED' &&
+    Math.abs((parseInt(r.reservationTime?.replace(':', '')) || 0) - (parseInt(String(time)?.replace(':', '')) || 0)) < 130
+  );
+
+  const availableCount = Math.max(0, suitableTables.length - existing.length);
+  const isAvailable = suitableTables.length > 0 && availableCount > 0;
+
+  res.json({
+    success: true,
+    data: {
+      available: isAvailable,
+      suitableTablesCount: availableCount,
+      totalSuitable: suitableTables.length,
+      message: isAvailable
+        ? `${availableCount} ${availableCount === 1 ? 'table' : 'tables'} available for ${guestCount} ${guestCount === 1 ? 'guest' : 'guests'}`
+        : 'All suitable tables are reserved for this time slot. Please try an alternate hour.'
+    }
+  });
+});
+
 // 4. Submit Reservation (Strictly Validated)
 app.post('/api/public/reservations', (req, res) => {
   const { name, phone, email, reservationDate, reservationTime, guests, specialRequest } = req.body;

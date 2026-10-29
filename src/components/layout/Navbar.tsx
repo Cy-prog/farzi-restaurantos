@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, QrCode, Calendar, Shield, Sparkles, Film } from 'lucide-react';
+import { Menu, X, ShoppingBag, QrCode, Phone, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
-import { Button } from '../ui/Button';
 import { FarziIntro } from '../ui/FarziIntro';
 
 export const Navbar: React.FC = () => {
@@ -11,7 +10,7 @@ export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showIntroModal, setShowIntroModal] = useState(false);
   const location = useLocation();
-  const { totalCount, setIsCartOpen, tableNumber } = useCart();
+  const { totalCount, setIsCartOpen, tableNumber, total } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,13 +25,17 @@ export const Navbar: React.FC = () => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const navLinks = [
-    { name: 'Story', path: '/about' },
-    { name: 'A La Carte', path: '/menu' },
-    { name: 'QR Digital Menu', path: `/menu?table=${tableNumber || 'T04'}` },
-    { name: 'Culinary Gallery', path: '/gallery' },
-    { name: 'Reservations', path: '/reservation' },
-    { name: 'Contact & Bistro', path: '/contact' },
+  const leftNavLinks = [
+    { name: 'MENU', path: '/menu' },
+    { name: 'PHILOSOPHY', path: '/about' },
+    { name: 'GALLERY', path: '/gallery' },
+  ];
+
+  const secondaryNavLinks = [
+    { name: 'TABLE QR ORDERING', path: `/menu?table=${tableNumber || 'T04'}` },
+    { name: 'RESERVE A CHAMBER', path: '/reservation' },
+    { name: 'CONCIERGE & CONTACT', path: '/contact' },
+    { name: 'ADMIN OPERATIONS OS', path: '/admin/login' },
   ];
 
   const isActive = (path: string) => {
@@ -40,9 +43,19 @@ export const Navbar: React.FC = () => {
     return location.pathname === path;
   };
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    sessionStorage.removeItem('farzi_intro_shown_v2');
+    if (location.pathname === '/') {
+      setShowIntroModal(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.location.href = '/';
+    }
+  };
+
   return (
     <>
-      {/* Replay Intro when requested */}
       {showIntroModal && (
         <FarziIntro
           forcePlay={true}
@@ -51,208 +64,150 @@ export const Navbar: React.FC = () => {
       )}
 
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
           isScrolled
-            ? 'bg-charcoal-975/95 backdrop-blur-xl border-b border-charcoal-800/80 py-3 shadow-2xl shadow-black/80'
-            : 'bg-gradient-to-b from-charcoal-975/90 via-charcoal-975/50 to-transparent py-5'
+            ? 'bg-[#FAF9F5]/95 backdrop-blur-xl border-b border-black/10 py-3 shadow-md'
+            : 'bg-[#FAF9F5]/85 backdrop-blur-md border-b border-black/5 py-4 sm:py-5'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Brand Logo with Official Farzi Emblem */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="relative">
-              <div className="w-10 h-10 rounded-full bg-charcoal-900 border border-gold-500/50 p-1.5 flex items-center justify-center shadow-lg shadow-gold-500/20 group-hover:border-gold-400 group-hover:scale-105 transition-all duration-300">
-                <img
-                  src="/farzi-logo.svg"
-                  alt="Farzi Cafe Logo"
-                  className="w-full h-full object-contain filter invert drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
-                />
-              </div>
-              <div className="absolute -inset-1 rounded-full bg-gold-400/20 blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-display tracking-[0.25em] text-xl font-black text-ivory-50 uppercase group-hover:text-gold-300 transition-colors">
-                FARZI <span className="gold-gradient-text">CAFÉ</span>
-              </span>
-              <span className="text-[8px] font-mono tracking-widest text-gold-400/90 uppercase -mt-1 flex items-center gap-1 font-semibold">
-                <span>Creating an illusion</span>
-              </span>
-            </div>
-          </Link>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            
+            {/* 1. LEFT NAV: MENU | PHILOSOPHY | GALLERY */}
+            <nav className="hidden md:flex items-center space-x-7">
+              {leftNavLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  data-cursor="NAV"
+                  className={`text-xs tracking-[0.24em] font-mono uppercase transition-colors relative py-1 ${
+                    isActive(link.path)
+                      ? 'text-[#D4AF37] font-bold'
+                      : 'text-neutral-700 hover:text-black font-medium'
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6">
-            {navLinks.map((link) => (
               <Link
-                key={link.name}
-                to={link.path}
-                className={`text-xs uppercase font-medium tracking-widest transition-colors relative py-1 ${
-                  isActive(link.path)
-                    ? 'text-gold-400 font-semibold'
-                    : 'text-ivory-300 hover:text-gold-300'
-                }`}
+                to={`/menu?table=${tableNumber || 'T04'}`}
+                data-cursor="QR"
+                className="text-[11px] tracking-widest font-mono uppercase text-[#D4AF37] hover:text-[#B87E14] font-semibold flex items-center gap-1.5 transition-colors"
               >
-                {link.name}
-                {isActive(link.path) && (
-                  <motion.span
-                    layoutId="navbar-indicator"
-                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-gold-400 via-gold-500 to-copper-500 rounded-full shadow-[0_0_8px_rgba(212,175,55,0.6)]"
-                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                  />
-                )}
+                <QrCode className="w-3.5 h-3.5" />
+                <span>QR Menu</span>
               </Link>
-            ))}
-          </nav>
-
-          {/* Right Action Icons & Buttons */}
-          <div className="flex items-center gap-3">
-            {/* Replay Intro Button */}
-            <button
-              onClick={() => setShowIntroModal(true)}
-              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono text-gold-400/90 hover:text-gold-300 bg-charcoal-900 border border-charcoal-700/80 hover:border-gold-500/40 transition-all"
-              title="Replay Farzi Animated Intro"
-            >
-              <Film className="w-3.5 h-3.5 text-gold-400" />
-              <span>Intro</span>
-            </button>
-
-            {/* Table Badge */}
-            {tableNumber && (
-              <Link
-                to={`/menu?table=${tableNumber}`}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-gold-500/10 text-gold-300 border border-gold-500/30 hover:bg-gold-500/20 hover:border-gold-500/50 transition-all shadow-sm"
-                title="Active Dining Station Table"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <QrCode className="w-3.5 h-3.5 text-gold-400" />
-                <span>Station {tableNumber}</span>
-              </Link>
-            )}
-
-            {/* Cart Trigger */}
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsCartOpen(true)}
-              className="relative p-2.5 rounded-full bg-charcoal-900 text-ivory-200 border border-charcoal-700/80 hover:text-gold-300 hover:border-gold-500/40 transition-colors shadow-sm"
-              aria-label={`Open Order Cart (${totalCount} items)`}
-            >
-              <ShoppingBag className="w-5 h-5" />
-              <AnimatePresence>
-                {totalCount > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gold-400 text-charcoal-950 font-mono text-[11px] font-bold flex items-center justify-center shadow-md shadow-gold-500/40"
-                  >
-                    {totalCount}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
-
-            {/* Reserve Table CTA (Desktop) */}
-            <Link to="/reservation" className="hidden sm:inline-block">
-              <Button variant="gold" size="sm" icon={<Calendar className="w-3.5 h-3.5" />}>
-                Reserve Table
-              </Button>
-            </Link>
-
-            {/* Admin Portal Shortcut */}
-            <Link
-              to="/admin"
-              className="p-2 text-charcoal-400 hover:text-gold-400 transition-colors hidden md:block"
-              title="RestaurantOS Pro Administration"
-            >
-              <Shield className="w-4 h-4" />
-            </Link>
+            </nav>
 
             {/* Mobile Hamburger Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-ivory-300 hover:text-white hover:bg-charcoal-850 transition-colors"
-              aria-label="Toggle navigation menu"
+              className="md:hidden p-2 rounded-lg text-black hover:text-[#D4AF37]"
+              aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
+
+            {/* 2. CENTER: Farzi Circular Emblem */}
+            <div className="flex items-center justify-center">
+              <button
+                onClick={handleLogoClick}
+                data-cursor="FARZI"
+                className="flex items-center gap-3 group focus:outline-none"
+                aria-label="Farzi Café - Return home or reload intro"
+              >
+                <div className="relative w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-black border border-black/10 group-hover:border-[#D4AF37] p-1.5 flex items-center justify-center transition-all duration-300 group-hover:scale-105 shadow-md">
+                  <img
+                    src="/farzi-logo.svg"
+                    alt="Farzi Seal"
+                    className="w-full h-full object-contain filter invert drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]"
+                  />
+                </div>
+                <div className="hidden lg:flex flex-col text-left">
+                  <span className="font-display font-black text-sm tracking-[0.25em] uppercase text-black group-hover:text-[#D4AF37] transition-colors">
+                    FARZI CAFÉ
+                  </span>
+                  <span className="text-[8px] font-mono tracking-[0.3em] uppercase text-neutral-500">
+                    MODERN INDIAN BISTRO
+                  </span>
+                </div>
+              </button>
+            </div>
+
+            {/* 3. RIGHT ACTIONS: Reserve | Cart Bag Trigger */}
+            <div className="flex items-center space-x-3 sm:space-x-4">
+              <Link
+                to="/reservation"
+                data-cursor="RESERVE"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest text-black border border-black/20 hover:bg-black hover:text-white transition-all shadow-sm"
+              >
+                <span>Reserve</span>
+              </Link>
+
+              {/* Cart Drawer Trigger */}
+              <button
+                onClick={() => setIsCartOpen(true)}
+                data-cursor="CART"
+                className="relative px-3.5 py-2 rounded-xl bg-black hover:bg-[#D4AF37] text-white hover:text-black flex items-center gap-2.5 transition-all shadow-md active:scale-95"
+                aria-label="View Cart"
+              >
+                <ShoppingBag className="w-4 h-4 text-[#D4AF37] group-hover:text-black" />
+                <span className="hidden sm:inline text-xs font-mono font-bold">
+                  {totalCount > 0 ? `₹${total}` : 'CART'}
+                </span>
+                {totalCount > 0 && (
+                  <span className="w-5 h-5 rounded-full bg-[#D4AF37] text-black font-mono font-bold text-[10px] flex items-center justify-center">
+                    {totalCount}
+                  </span>
+                )}
+              </button>
+            </div>
+
           </div>
         </div>
       </header>
 
-      {/* Mobile Drawer Navigation with Framer Motion */}
+      {/* Full-Screen Mobile Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <div className="fixed inset-0 z-50 lg:hidden">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/80 backdrop-blur-md"
-              onClick={() => setMobileMenuOpen(false)}
-            />
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="fixed top-0 right-0 bottom-0 w-80 bg-charcoal-950 border-l border-charcoal-800 p-6 flex flex-col justify-between pt-24 shadow-2xl"
-            >
-              <div className="space-y-5">
-                <div className="pb-4 border-b border-charcoal-800 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img src="/farzi-logo.svg" alt="Farzi" className="w-5 h-5 filter invert" />
-                    <span className="text-xs uppercase font-mono tracking-widest text-gold-400 font-bold">
-                      Farzi Café
-                    </span>
-                  </div>
-                  {tableNumber && (
-                    <span className="text-xs font-mono text-gold-300 bg-charcoal-900 px-2.5 py-0.5 rounded-full border border-gold-500/30">
-                      Table {tableNumber}
-                    </span>
-                  )}
-                </div>
-                <div className="space-y-1.5">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.name}
-                      to={link.path}
-                      className={`block py-3 px-3.5 rounded-xl text-sm font-medium transition-all ${
-                        isActive(link.path)
-                          ? 'bg-gradient-to-r from-gold-500/20 to-transparent text-gold-300 font-semibold border-l-2 border-gold-400'
-                          : 'text-ivory-200 hover:bg-charcoal-900 hover:text-white'
-                      }`}
-                    >
-                      {link.name}
-                    </Link>
-                  ))}
-                  <button
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      setShowIntroModal(true);
-                    }}
-                    className="w-full text-left py-3 px-3.5 rounded-xl text-sm font-medium text-gold-400 hover:bg-charcoal-900 flex items-center gap-2"
-                  >
-                    <Film className="w-4 h-4" />
-                    <span>Watch Farzi Intro Animation</span>
-                  </button>
-                </div>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="fixed inset-0 z-30 bg-[#FAF9F5] text-[#12141A] pt-24 px-6 flex flex-col justify-between pb-8 md:hidden overflow-y-auto"
+          >
+            <div className="space-y-6 pt-4">
+              <div className="text-[10px] font-mono tracking-[0.3em] uppercase text-[#D4AF37] font-bold">
+                [ NAVIGATION ANTHOLOGY ]
               </div>
 
-              <div className="space-y-3 pt-6 border-t border-charcoal-800">
-                <Link to="/reservation" className="block w-full">
-                  <Button variant="gold" size="md" className="w-full justify-center">
-                    Reserve Experience
-                  </Button>
-                </Link>
-                <Link
-                  to="/admin"
-                  className="block text-center text-xs text-charcoal-400 hover:text-gold-300 py-1 transition-colors"
-                >
-                  RestaurantOS Operations Desk →
-                </Link>
+              <div className="space-y-4">
+                {[...leftNavLinks, ...secondaryNavLinks].map((link, idx) => (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center justify-between py-3 text-xl font-display font-black tracking-wider uppercase border-b border-black/10 hover:text-[#D4AF37] transition-colors"
+                  >
+                    <span>{link.name}</span>
+                    <span className="text-xs font-mono text-neutral-400">[0{idx + 1}]</span>
+                  </Link>
+                ))}
               </div>
-            </motion.div>
-          </div>
+            </div>
+
+            <div className="pt-8 border-t border-black/10 space-y-4">
+              <div className="flex items-center justify-between text-xs font-mono text-neutral-600">
+                <span>STATION: {tableNumber || 'TABLE T04'}</span>
+                <span className="text-[#D4AF37] font-bold">SERVICE ACTIVE</span>
+              </div>
+              <p className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest text-center">
+                Farzi Café · Creating An Illusion
+              </p>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

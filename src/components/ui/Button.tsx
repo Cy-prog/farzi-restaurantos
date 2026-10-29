@@ -18,21 +18,21 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyles = 'relative inline-flex items-center justify-center font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:ring-offset-2 focus:ring-offset-charcoal-950 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 tracking-wide';
+  const baseStyles = 'relative inline-flex items-center justify-center font-mono uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#E09F27]/50 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none';
 
   const sizeStyles = {
-    sm: 'text-xs px-3.5 py-1.5 rounded-full gap-1.5',
-    md: 'text-sm px-5 py-2.5 rounded-full gap-2',
-    lg: 'text-base px-7 py-3.5 rounded-full gap-2.5'
+    sm: 'text-[11px] px-3.5 py-1.5 rounded-xl gap-1.5 font-bold',
+    md: 'text-xs px-5 py-2.5 rounded-xl gap-2 font-bold',
+    lg: 'text-xs px-7 py-3.5 rounded-xl gap-2.5 font-bold'
   };
 
   const variantStyles = {
-    gold: 'bg-gradient-to-r from-gold-500 via-gold-400 to-copper-500 text-charcoal-950 font-semibold shadow-lg shadow-gold-500/15 hover:shadow-gold-500/30 hover:brightness-105 border border-gold-300/30',
-    outline: 'border border-gold-500/40 text-gold-300 bg-transparent hover:bg-gold-500/10 hover:border-gold-500/70',
-    subtle: 'bg-charcoal-800/80 text-ivory-200 border border-charcoal-700 hover:bg-charcoal-700 hover:text-white',
-    copper: 'bg-gradient-to-r from-copper-500 to-copper-600 text-white font-medium shadow-md shadow-copper-500/20 hover:brightness-105',
-    danger: 'bg-red-950/80 text-red-300 border border-red-800/50 hover:bg-red-900/80',
-    ghost: 'text-ivory-300 hover:text-gold-400 hover:bg-white/5'
+    gold: 'bg-[#E09F27] hover:bg-[#EEB446] text-black shadow-lg shadow-[#E09F27]/20 border border-[#E09F27]',
+    outline: 'border border-white/20 text-neutral-200 bg-transparent hover:border-[#E09F27] hover:text-white',
+    subtle: 'bg-neutral-900 text-neutral-300 border border-white/10 hover:border-white/25 hover:text-white',
+    copper: 'bg-[#C57D56] hover:bg-[#D48D65] text-black',
+    danger: 'bg-rose-950/80 text-rose-300 border border-rose-800/60 hover:bg-rose-900',
+    ghost: 'text-neutral-400 hover:text-white hover:bg-white/5'
   };
 
   return (

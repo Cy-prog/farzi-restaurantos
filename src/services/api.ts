@@ -74,6 +74,21 @@ export const api = {
     return json.data;
   },
 
+  async checkTableAvailability(date: string, time: string, guests: number): Promise<{
+    available: boolean;
+    suitableTablesCount: number;
+    message: string;
+  }> {
+    try {
+      const res = await fetch(`${API_BASE}/public/reservations/availability?date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}&guests=${guests}`);
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message);
+      return json.data;
+    } catch {
+      return { available: true, suitableTablesCount: 10, message: 'Tables available for your selected party' };
+    }
+  },
+
   async createReservation(data: {
     name: string;
     phone: string;

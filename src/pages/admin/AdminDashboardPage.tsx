@@ -189,15 +189,15 @@ export const AdminDashboardPage: React.FC = () => {
               <AreaChart data={analytics.salesByDay}>
                 <defs>
                   <linearGradient id="goldRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.45} />
-                    <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#E09F27" stopOpacity={0.45} />
+                    <stop offset="95%" stopColor="#E09F27" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1E222D" />
-                <XAxis dataKey="date" stroke="#606676" tick={{ fontSize: 11 }} />
-                <YAxis stroke="#606676" tick={{ fontSize: 11 }} tickFormatter={(val) => `₹${val / 1000}k`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1F2432" />
+                <XAxis dataKey="date" stroke="#56617C" tick={{ fontSize: 11 }} />
+                <YAxis stroke="#56617C" tick={{ fontSize: 11 }} tickFormatter={(val) => `₹${val / 1000}k`} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0A0B0E', borderColor: 'rgba(212,175,55,0.3)', borderRadius: '12px', color: '#FAF8F5', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.8)' }}
+                  contentStyle={{ backgroundColor: '#07080A', borderColor: 'rgba(224,159,39,0.3)', borderRadius: '12px', color: '#F4F0E8', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.8)' }}
                   formatter={(val: unknown) => [`₹${Number(val).toLocaleString()}`, 'Daily Revenue']}
                 />
                 <Area type="monotone" dataKey="sales" stroke="#D4AF37" strokeWidth={2.5} fillOpacity={1} fill="url(#goldRevenue)" />

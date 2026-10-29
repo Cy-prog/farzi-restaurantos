@@ -6,6 +6,8 @@ import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { CartDrawer } from './components/cart/CartDrawer';
 import { FarziIntro } from './components/ui/FarziIntro';
+import { WhatsAppButton } from './components/ui/WhatsAppButton';
+import { CustomCursor } from './components/ui/CustomCursor';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -34,7 +36,10 @@ const PublicLayout: React.FC = () => {
   const isTableMenu = location.pathname === '/qr' || searchParams.has('table');
 
   return (
-    <div className="flex flex-col min-h-screen bg-charcoal-975 text-ivory-100">
+    <div className="flex flex-col min-h-screen bg-[#FAF9F5] text-[#12141A]">
+      {/* Interactive Custom Cursor for desktop */}
+      <CustomCursor />
+
       {/* Animated Farzi Cafe Intro Screen */}
       <FarziIntro />
 
@@ -43,6 +48,8 @@ const PublicLayout: React.FC = () => {
       <div className="flex-1">
         <Outlet />
       </div>
+      {/* Floating WhatsApp Chat Widget (matching farzicafe.com) */}
+      <WhatsAppButton />
       {!isTableMenu && <Footer />}
     </div>
   );

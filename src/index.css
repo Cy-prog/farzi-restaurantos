@@ -4,115 +4,137 @@
 
 @layer base {
   :root {
-    --color-charcoal-975: #060709;
-    --color-charcoal-950: #0A0B0E;
-    --color-gold-500: #D4AF37;
-    --color-copper-500: #C57D56;
-    --color-ivory-50: #FAF8F5;
+    --bg-slate: #FAF9F5;
+    --text-parchment: #12141A;
+    --accent-saffron: #D4AF37;
+    --accent-terracotta: #D44A1E;
+    --border-subtle: rgba(0, 0, 0, 0.08);
   }
 
-  body {
-    background-color: #0A0B0E;
-    color: #F3EFE6;
+  html {
+    background-color: #FAF9F5;
+    color: #12141A;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    scroll-behavior: smooth;
     overflow-x: hidden;
   }
 
-  /* Custom luxury scrollbar */
+  body {
+    background-color: #FAF9F5;
+    color: #12141A;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Custom editorial scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #0A0B0E;
+    background: #FAF9F5;
   }
   ::-webkit-scrollbar-thumb {
-    background: #2A2F3D;
-    border-radius: 4px;
+    background: #D8D4C7;
+    border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #D4AF37;
   }
 
-  /* Focus rings */
+  /* Accessible focus indicators */
   :focus-visible {
     outline: 2px solid #D4AF37;
-    outline-offset: 2px;
+    outline-offset: 3px;
   }
 }
 
-/* Luxury visual accents & gradient typography */
-.gold-gradient-text {
-  background: linear-gradient(135deg, #FAF8F5 0%, #E5C358 45%, #C57D56 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Editorial Hollow & Outlined Typography (Black Outline on Light Canvas) */
+.text-stroke {
+  -webkit-text-stroke: 1.5px #12141A;
+  color: transparent;
+  transition: all 0.4s ease;
 }
 
-.copper-gradient-text {
-  background: linear-gradient(135deg, #F3D985 0%, #C57D56 60%, #A9643F 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.text-stroke:hover {
+  -webkit-text-stroke: 1.5px #D4AF37;
+  color: #D4AF37;
 }
 
-.silver-gradient-text {
-  background: linear-gradient(135deg, #FAF8F5 0%, #D4CAB7 50%, #A89E8C 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.text-stroke-strong {
+  -webkit-text-stroke: 2px #12141A;
+  color: transparent;
 }
 
-.subtle-border {
-  border: 1px solid rgba(212, 175, 55, 0.15);
+.text-stroke-gold {
+  -webkit-text-stroke: 1.5px #D4AF37;
+  color: transparent;
 }
 
-.subtle-border-hover:hover {
-  border-color: rgba(212, 175, 55, 0.4);
+/* Subtle Film Grain Noise Texture */
+.grain-overlay {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
 }
 
-/* Glassmorphism and Luxury Cards */
-.card-glass {
-  background: rgba(18, 20, 26, 0.78);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Editorial Edge-to-Edge Grid Dividers */
+.editorial-border-b {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.card-luxury {
-  background: linear-gradient(180deg, rgba(23, 25, 34, 0.85) 0%, rgba(14, 16, 22, 0.95) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.15);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+.editorial-border-t {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.card-luxury-hover {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+.editorial-border-r {
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
 }
-.card-luxury-hover:hover {
-  border-color: rgba(212, 175, 55, 0.4);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(212, 175, 55, 0.15);
-  transform: translateY(-2px);
+
+.editorial-border-l {
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Smooth Image Clip Mask Transition */
+.clip-diagonal {
+  clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
+}
+
+.clip-slanted {
+  clip-path: polygon(0 6%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+/* Custom Interactive Cursor Follower */
+@media (hover: hover) and (pointer: fine) {
+  .custom-cursor-follower {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    border-radius: 9999px;
+    transform: translate(-50%, -50%);
+    transition: width 0.22s ease-out, height 0.22s ease-out, background-color 0.22s ease-out, border-color 0.22s ease-out, opacity 0.22s ease-out;
+    mix-blend-mode: difference;
+  }
 }
 
 /* Skeleton Loading Shimmer */
 .skeleton-shimmer {
   background: linear-gradient(
     90deg,
-    rgba(26, 29, 39, 0.6) 0%,
-    rgba(42, 47, 61, 0.8) 50%,
-    rgba(26, 29, 39, 0.6) 100%
+    rgba(17, 20, 28, 0.6) 0%,
+    rgba(31, 36, 50, 0.8) 50%,
+    rgba(17, 20, 28, 0.6) 100%
   );
   background-size: 200% 100%;
   animation: shimmer 2s infinite ease-in-out;
 }
 
-/* Reduced Motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  ::before,
-  ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 /* Print styling for QR tent cards */
@@ -137,5 +159,17 @@
   @page {
     margin: 1cm;
     size: auto;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
