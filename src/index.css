@@ -51,6 +51,21 @@
   }
 }
 
+::selection {
+  color: #211b16;
+  background: rgba(189, 84, 45, 0.28);
+}
+
+.farzi-ember {
+  pointer-events: none;
+  animation: ember-drift 8s ease-in-out infinite alternate;
+}
+
+@keyframes ember-drift {
+  from { transform: translate3d(-12px, 8px, 0) scale(0.92); opacity: 0.55; }
+  to { transform: translate3d(18px, -14px, 0) scale(1.12); opacity: 0.9; }
+}
+
 /* Editorial Hollow & Outlined Typography (Black Outline on Light Canvas) */
 .text-stroke {
   -webkit-text-stroke: 1.5px #12141A;

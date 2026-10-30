@@ -5,9 +5,7 @@ import { CartProvider } from './context/CartContext';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { CartDrawer } from './components/cart/CartDrawer';
-import { FarziIntro } from './components/ui/FarziIntro';
 import { WhatsAppButton } from './components/ui/WhatsAppButton';
-import { CustomCursor } from './components/ui/CustomCursor';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -37,12 +35,6 @@ const PublicLayout: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FAF9F5] text-[#12141A]">
-      {/* Interactive Custom Cursor for desktop */}
-      <CustomCursor />
-
-      {/* Animated Farzi Cafe Intro Screen */}
-      <FarziIntro />
-
       {!isTableMenu && <Navbar />}
       <CartDrawer />
       <div className="flex-1">

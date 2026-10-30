@@ -26,16 +26,16 @@ export const Navbar: React.FC = () => {
   }, [location.pathname]);
 
   const leftNavLinks = [
-    { name: 'MENU', path: '/menu' },
-    { name: 'PHILOSOPHY', path: '/about' },
-    { name: 'GALLERY', path: '/gallery' },
+    { name: 'Menu', path: '/menu' },
+    { name: 'Our story', path: '/about' },
+    { name: 'The space', path: '/gallery' },
   ];
 
   const secondaryNavLinks = [
-    { name: 'TABLE QR ORDERING', path: `/menu?table=${tableNumber || 'T04'}` },
-    { name: 'RESERVE A CHAMBER', path: '/reservation' },
-    { name: 'CONCIERGE & CONTACT', path: '/contact' },
-    { name: 'ADMIN OPERATIONS OS', path: '/admin/login' },
+    { name: 'Order at your table', path: `/menu?table=${tableNumber || 'T04'}` },
+    { name: 'Reservations', path: '/reservation' },
+    { name: 'Contact', path: '/contact' },
+    { name: 'Restaurant team', path: '/admin/login' },
   ];
 
   const isActive = (path: string) => {
@@ -66,11 +66,11 @@ export const Navbar: React.FC = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
           isScrolled
-            ? 'bg-[#FAF9F5]/95 backdrop-blur-xl border-b border-black/10 py-3 shadow-md'
-            : 'bg-[#FAF9F5]/85 backdrop-blur-md border-b border-black/5 py-4 sm:py-5'
+            ? 'bg-[#fbfaf6]/95 backdrop-blur-xl border-b border-[#202019]/15 py-2.5'
+            : 'bg-[#fbfaf6]/95 backdrop-blur-md border-b border-[#202019]/10 py-3 sm:py-4'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12">
           <div className="flex items-center justify-between">
             
             {/* 1. LEFT NAV: MENU | PHILOSOPHY | GALLERY */}
@@ -80,7 +80,7 @@ export const Navbar: React.FC = () => {
                   key={link.name}
                   to={link.path}
                   data-cursor="NAV"
-                  className={`text-xs tracking-[0.24em] font-mono uppercase transition-colors relative py-1 ${
+                  className={`text-xs tracking-[0.04em] transition-colors relative py-1 ${
                     isActive(link.path)
                       ? 'text-[#D4AF37] font-bold'
                       : 'text-neutral-700 hover:text-black font-medium'
@@ -90,14 +90,6 @@ export const Navbar: React.FC = () => {
                 </Link>
               ))}
 
-              <Link
-                to={`/menu?table=${tableNumber || 'T04'}`}
-                data-cursor="QR"
-                className="text-[11px] tracking-widest font-mono uppercase text-[#D4AF37] hover:text-[#B87E14] font-semibold flex items-center gap-1.5 transition-colors"
-              >
-                <QrCode className="w-3.5 h-3.5" />
-                <span>QR Menu</span>
-              </Link>
             </nav>
 
             {/* Mobile Hamburger Button */}
@@ -125,11 +117,11 @@ export const Navbar: React.FC = () => {
                   />
                 </div>
                 <div className="hidden lg:flex flex-col text-left">
-                  <span className="font-display font-black text-sm tracking-[0.25em] uppercase text-black group-hover:text-[#D4AF37] transition-colors">
-                    FARZI CAFÉ
+                  <span className="font-serif font-semibold text-xl tracking-[-0.04em] text-[#202019] group-hover:text-[#a74326] transition-colors sm:text-2xl">
+                    FARZI <span className="italic text-[#a74326]">CAFÉ</span>
                   </span>
-                  <span className="text-[8px] font-mono tracking-[0.3em] uppercase text-neutral-500">
-                    MODERN INDIAN BISTRO
+                  <span className="text-[8px] tracking-[0.2em] uppercase text-neutral-500">
+                    Modern Indian dining
                   </span>
                 </div>
               </button>
@@ -140,7 +132,7 @@ export const Navbar: React.FC = () => {
               <Link
                 to="/reservation"
                 data-cursor="RESERVE"
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest text-black border border-black/20 hover:bg-black hover:text-white transition-all shadow-sm"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-xs text-[#202019] border border-[#202019]/25 hover:bg-[#202019] hover:text-white transition-all"
               >
                 <span>Reserve</span>
               </Link>
@@ -149,7 +141,7 @@ export const Navbar: React.FC = () => {
               <button
                 onClick={() => setIsCartOpen(true)}
                 data-cursor="CART"
-                className="relative px-3.5 py-2 rounded-xl bg-black hover:bg-[#D4AF37] text-white hover:text-black flex items-center gap-2.5 transition-all shadow-md active:scale-95"
+                className="relative px-3.5 py-2 bg-[#202019] hover:bg-[#a74326] text-white flex items-center gap-2.5 transition-all active:scale-95"
                 aria-label="View Cart"
               >
                 <ShoppingBag className="w-4 h-4 text-[#D4AF37] group-hover:text-black" />
@@ -176,11 +168,11 @@ export const Navbar: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="fixed inset-0 z-30 bg-[#FAF9F5] text-[#12141A] pt-24 px-6 flex flex-col justify-between pb-8 md:hidden overflow-y-auto"
+            className="fixed inset-0 z-30 bg-[#fbfaf6] text-[#202019] pt-24 px-6 flex flex-col justify-between pb-8 md:hidden overflow-y-auto"
           >
             <div className="space-y-6 pt-4">
-              <div className="text-[10px] font-mono tracking-[0.3em] uppercase text-[#D4AF37] font-bold">
-                [ NAVIGATION ANTHOLOGY ]
+              <div className="text-[10px] tracking-[0.22em] uppercase text-[#a74326]">
+                Come on in
               </div>
 
               <div className="space-y-4">
@@ -189,7 +181,7 @@ export const Navbar: React.FC = () => {
                     key={link.name}
                     to={link.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between py-3 text-xl font-display font-black tracking-wider uppercase border-b border-black/10 hover:text-[#D4AF37] transition-colors"
+                    className="flex items-center justify-between py-3 text-xl font-serif border-b border-black/10 hover:text-[#a74326] transition-colors"
                   >
                     <span>{link.name}</span>
                     <span className="text-xs font-mono text-neutral-400">[0{idx + 1}]</span>
