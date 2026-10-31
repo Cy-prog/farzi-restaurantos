@@ -97,6 +97,9 @@ export const api = {
     reservationTime: string;
     guests: number;
     specialRequest?: string;
+    eventType?: string;
+    eventName?: string;
+    seatingPreference?: string;
   }): Promise<Reservation> {
     const res = await fetch(`${API_BASE}/public/reservations`, {
       method: 'POST',

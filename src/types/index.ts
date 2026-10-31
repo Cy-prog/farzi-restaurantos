@@ -63,11 +63,28 @@ export interface Reservation {
   reservationTime: string; // HH:mm
   guests: number;
   specialRequest?: string;
+  eventType?: 'DINING' | 'SUFI_NIGHT' | 'MIXOLOGY_MASTERCLASS' | 'CHEFS_TABLE' | 'CELEBRATION' | 'CORPORATE_GALA';
+  eventName?: string;
+  seatingPreference?: string;
   status: ReservationStatus;
   tableNumber?: string;
   adminNote?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface FarziEvent {
+  id: string;
+  title: string;
+  category: string;
+  tag: string;
+  dateText: string;
+  time: string;
+  description: string;
+  inclusions: string[];
+  priceText: string;
+  image: string;
+  badgeColor?: string;
 }
 
 export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'IN_KITCHEN' | 'READY' | 'SERVED' | 'COMPLETED' | 'CANCELLED';

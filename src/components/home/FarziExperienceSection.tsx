@@ -56,7 +56,7 @@ export const FarziExperienceSection: React.FC = () => {
                 src="/dining-ambience.jpg"
                 alt="Farzi Dining Ambience"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter contrast-105"
-                fallbackSrc="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop"
+                fallbackSrc="/dining-ambience.jpg"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
               <div className="absolute bottom-4 left-4 z-10">
@@ -91,7 +91,7 @@ export const FarziExperienceSection: React.FC = () => {
                 src="/chef-plating.jpg"
                 alt="Chef Tweezers Plating"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter contrast-105"
-                fallbackSrc="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1200&auto=format&fit=crop"
+                fallbackSrc="/chef-plating.jpg"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent pointer-events-none" />
               <div className="absolute bottom-5 left-6 right-6 z-10 flex items-end justify-between">

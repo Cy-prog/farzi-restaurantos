@@ -8,13 +8,13 @@ export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { totalCount, setIsCartOpen, tableNumber, total } = useCart();
+  const { totalCount, setIsCartOpen, tableNumber } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 25);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -43,10 +43,10 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ease-out ${
           isScrolled
-            ? 'bg-[#090A0E]/95 backdrop-blur-xl border-b border-[#D4AF37]/15 py-3.5 shadow-2xl shadow-black/80'
-            : 'bg-[#090A0E]/75 backdrop-blur-md border-b border-white/5 py-5'
+            ? 'bg-[#090A0E]/85 backdrop-blur-xl border-b border-[#D4AF37]/15 py-3.5 shadow-[0_10px_35px_rgba(0,0,0,0.85)]'
+            : 'bg-transparent border-b border-transparent py-5 sm:py-6'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,7 +59,7 @@ export const Navbar: React.FC = () => {
               aria-label="Farzi Café - Home"
             >
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-[#161922] border border-[#D4AF37]/40 p-1 flex items-center justify-center shadow-lg group-hover:border-[#D4AF37] transition-colors">
+                <div className="w-8 h-8 rounded-full bg-[#161922]/80 backdrop-blur-md border border-[#D4AF37]/40 p-1 flex items-center justify-center shadow-lg group-hover:border-[#D4AF37] transition-all group-hover:scale-105">
                   <img
                     src="/farzi-logo.svg"
                     alt="Farzi"
@@ -67,10 +67,10 @@ export const Navbar: React.FC = () => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-serif tracking-[0.2em] text-lg sm:text-xl font-bold uppercase text-[#FFF5DE] group-hover:text-[#E5B869] transition-colors">
+                  <span className="font-serif tracking-[0.2em] text-lg sm:text-xl font-bold uppercase text-[#FFF5DE] group-hover:text-[#E5B869] transition-colors drop-shadow-sm">
                     FARZI <span className="text-[#D4AF37]">CAFÉ</span>
                   </span>
-                  <span className="text-[7.5px] font-mono tracking-[0.35em] uppercase text-[#D4AF37]/80">
+                  <span className="text-[7.5px] font-mono tracking-[0.35em] uppercase text-[#D4AF37]/90 -mt-0.5">
                     CONTEMPORARY BISTRO
                   </span>
                 </div>
@@ -79,16 +79,26 @@ export const Navbar: React.FC = () => {
 
             {/* 2. CENTER NAVIGATION: Menu | Story | Locations | Reserve */}
             <nav className="hidden md:flex items-center space-x-8 lg:space-x-10">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.href}
-                  onClick={(e) => handleNavClick(e, link)}
-                  className="text-xs tracking-[0.18em] font-sans text-neutral-300 hover:text-[#E5B869] transition-colors relative py-1 font-medium"
-                >
-                  {link.name}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.href;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    onClick={(e) => handleNavClick(e, link)}
+                    className={`text-xs tracking-[0.18em] font-sans transition-all relative py-1 font-medium group ${
+                      isActive ? 'text-[#E5B869]' : 'text-neutral-200 hover:text-[#E5B869]'
+                    }`}
+                  >
+                    <span>{link.name}</span>
+                    <span
+                      className={`absolute bottom-0 left-0 h-[1.5px] bg-[#D4AF37] transition-all duration-300 rounded-full ${
+                        isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                      }`}
+                    />
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* 3. RIGHT ACTIONS: "Order at Table" Gold Button + Cart Button + Mobile Toggle */}
@@ -97,7 +107,7 @@ export const Navbar: React.FC = () => {
               {/* Order at Table QR Button */}
               <Link
                 to={`/menu?table=${tableNumber || 'T-12'}`}
-                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E5B869] to-[#C59F6D] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E5B869] to-[#C59F6D] text-black font-semibold text-xs tracking-wider uppercase shadow-[0_0_20px_rgba(212,175,55,0.25)] hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
               >
                 <QrCode className="w-3.5 h-3.5 text-black" />
                 <span>Order at Table</span>
@@ -107,7 +117,7 @@ export const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsCartOpen(true)}
-                className="relative p-2.5 rounded-xl bg-[#161922] border border-white/10 hover:border-[#D4AF37]/40 text-[#FAF8F5] hover:text-[#D4AF37] transition-all flex items-center justify-center shadow-md active:scale-95"
+                className="relative p-2.5 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-[#D4AF37]/50 text-[#FAF8F5] hover:text-[#D4AF37] transition-all flex items-center justify-center shadow-md active:scale-95 cursor-pointer"
                 aria-label="View Cart"
               >
                 <ShoppingBag className="w-4 h-4 text-[#D4AF37]" />
@@ -122,7 +132,7 @@ export const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2.5 rounded-xl bg-[#161922] border border-white/10 text-neutral-300 hover:text-white"
+                className="md:hidden p-2.5 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-neutral-300 hover:text-white cursor-pointer"
                 aria-label="Toggle navigation menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5 text-[#D4AF37]" /> : <Menu className="w-5 h-5" />}
@@ -183,3 +193,5 @@ export const Navbar: React.FC = () => {
     </>
   );
 };
+
+export default Navbar;

@@ -12,8 +12,8 @@ export const CustomCursor: React.FC = () => {
   const mouseY = useMotionValue(-100);
 
   // Smooth springs for fluid, non-laggy tracking
-  const springX = useSpring(mouseX, { damping: 28, stiffness: 350 });
-  const springY = useSpring(mouseY, { damping: 28, stiffness: 350 });
+  const springX = useSpring(mouseX, { damping: 30, stiffness: 400 });
+  const springY = useSpring(mouseY, { damping: 30, stiffness: 400 });
 
   useEffect(() => {
     // Only enable on desktop with fine pointer
@@ -27,7 +27,6 @@ export const CustomCursor: React.FC = () => {
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
-      if (!isVisible) setIsVisible(true);
 
       // Check hovered element for data-cursor or interactive tags
       const target = e.target as HTMLElement | null;
@@ -37,21 +36,25 @@ export const CustomCursor: React.FC = () => {
       if (cursorTarget) {
         setCursorText(cursorTarget.getAttribute('data-cursor') || '');
         setIsHovered(true);
+        setIsVisible(true);
       } else {
         setCursorText('');
         setIsHovered(false);
       }
 
       // Check if interactive button or link
-      const clickable = target.closest('button, a, input, textarea, select, [role="button"]');
+      const clickable = target.closest('button, a, select, [role="button"]');
       setIsPointer(!!clickable);
 
       // Hide custom cursor completely if over input/textarea to preserve native caret
-      const isInput = target.closest('input, textarea, select');
+      const isInput = target.closest('input, textarea');
       if (isInput) {
         setIsVisible(false);
-      } else {
+      } else if (cursorTarget || clickable) {
         setIsVisible(true);
+      } else {
+        // When not over a clickable or custom target, don't show a floating dot
+        setIsVisible(false);
       }
     };
 
@@ -66,7 +69,7 @@ export const CustomCursor: React.FC = () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [mouseX, mouseY, isVisible]);
+  }, [mouseX, mouseY]);
 
   if (isTouchDevice || !isVisible) return null;
 
@@ -80,12 +83,13 @@ export const CustomCursor: React.FC = () => {
       }}
       className="fixed top-0 left-0 pointer-events-none z-[9999] flex items-center justify-center rounded-full"
       animate={{
-        width: cursorText ? 84 : isPointer ? 44 : 20,
-        height: cursorText ? 84 : isPointer ? 44 : 20,
-        backgroundColor: cursorText ? 'rgba(224, 159, 39, 0.95)' : isPointer ? 'rgba(244, 240, 232, 0.15)' : 'rgba(244, 240, 232, 0.8)',
-        border: cursorText ? 'none' : isPointer ? '1px solid rgba(224, 159, 39, 0.6)' : 'none',
+        width: cursorText ? 84 : isPointer ? 38 : 0,
+        height: cursorText ? 84 : isPointer ? 38 : 0,
+        opacity: cursorText || isPointer ? 1 : 0,
+        backgroundColor: cursorText ? 'rgba(212, 175, 55, 0.95)' : 'transparent',
+        border: cursorText ? 'none' : isPointer ? '1.5px solid rgba(229, 184, 105, 0.7)' : 'none',
       }}
-      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+      transition={{ type: 'spring', damping: 25, stiffness: 350 }}
     >
       {cursorText && (
         <span className="text-[10px] font-mono tracking-widest uppercase font-bold text-black select-none text-center px-1">
@@ -95,3 +99,5 @@ export const CustomCursor: React.FC = () => {
     </motion.div>
   );
 };
+
+export default CustomCursor;

@@ -26,7 +26,7 @@ const HERO_SLIDES: HeroSlide[] = [
     dishName: 'Dal Chawal Arancini',
     tagline: 'Lentil & rice arancini encased in golden crust with house curry foam',
     price: 695,
-    image: '/cloche-dish.jpg',
+    image: '/arancini.jpg',
     isVeg: true,
     temp: 'HOT SMOKE'
   },
@@ -68,7 +68,6 @@ export const InteractiveHero: React.FC = () => {
   const [addedSuccess, setAddedSuccess] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-  const [viewMode, setViewMode] = useState<'cloche' | '3d-shader' | '3d-sphere'>('cloche');
   const videoRef = useRef<HTMLVideoElement>(null);
   const { addToCart } = useCart();
 
@@ -157,21 +156,23 @@ export const InteractiveHero: React.FC = () => {
           loop
           muted={isMuted}
           playsInline
-          className="w-full h-full object-cover filter brightness-[0.38] contrast-125 transition-opacity duration-1000"
+          className="w-full h-full object-cover filter brightness-[0.45] contrast-125 transition-opacity duration-1000"
         />
+        {/* Soft top gradient veil to keep transparent navbar readable without an opaque bar */}
+        <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-[#090A0E]/85 via-[#090A0E]/30 to-transparent pointer-events-none z-[1]" />
         {/* Luxury dark gold film vignette and gradient falloff */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#090A0E] via-[#090A0E]/80 to-[#090A0E]/60 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#090A0E] via-[#090A0E]/70 to-transparent pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_35%,rgba(212,175,55,0.18)_0%,transparent_65%)] pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_80%,rgba(197,125,86,0.10)_0%,transparent_50%)] pointer-events-none" />
         <div className="absolute inset-0 grain-overlay pointer-events-none opacity-25" />
       </div>
 
-      {/* Top Ambient Reel Status Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-2 relative z-10">
-        <div className="flex items-center justify-between py-2 text-[10px] font-mono tracking-[0.25em] text-neutral-400 uppercase border-b border-white/10">
+      {/* Top Ambient Reel Status Bar - Floating Luxury Capsule */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-3 relative z-10">
+        <div className="flex items-center justify-between py-2 px-4 sm:px-5 rounded-full bg-[#161922]/50 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-[0.25em] text-neutral-300 uppercase shadow-lg">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-neutral-300 font-semibold">FARZI BISTRO FILM · SERVICE STREAM LIVE</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
+            <span className="font-semibold text-white/90">FARZI BISTRO FILM · SERVICE STREAM LIVE</span>
           </div>
 
           {/* Video Controls: Pause / Play & Mute */}
@@ -269,50 +270,22 @@ export const InteractiveHero: React.FC = () => {
 
               {/* Explore Menu CTA Button (Matching "→ Explore Menu" in design) */}
               <div className="pt-2 flex flex-wrap items-center gap-4">
-                <a
-                  href="#menu-section"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('menu-section')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="group inline-flex items-center gap-3 px-6 py-3 rounded-full border border-[#D4AF37]/40 bg-[#161922]/80 hover:bg-[#D4AF37] hover:border-[#D4AF37] text-white hover:text-black transition-all duration-300 shadow-lg text-xs font-mono uppercase tracking-[0.2em] font-semibold"
+                <Link
+                  to="/menu"
+                  className="group inline-flex items-center gap-3 px-6 py-3.5 rounded-full border border-[#D4AF37]/40 bg-[#161922]/80 hover:bg-[#D4AF37] hover:border-[#D4AF37] text-white hover:text-black transition-all duration-300 shadow-xl text-xs font-mono uppercase tracking-[0.2em] font-semibold cursor-pointer"
                 >
-                  <span className="text-[#D4AF37] group-hover:text-black group-hover:translate-x-0.5 transition-transform">
+                  <span className="text-[#E5B869] group-hover:text-black group-hover:translate-x-1 transition-transform">
                     →
                   </span>
                   <span>Explore Menu</span>
-                </a>
+                </Link>
 
-                {/* 3D Mode Switcher Pills */}
-                <div className="inline-flex items-center gap-1.5 bg-[#12141C]/80 p-1 rounded-full border border-white/10 text-[10px] font-mono">
-                  <button
-                    type="button"
-                    onClick={() => setViewMode('cloche')}
-                    className={`px-3 py-1.5 rounded-full transition-all ${
-                      viewMode === 'cloche' ? 'bg-[#D4AF37] text-black font-bold shadow' : 'text-neutral-400 hover:text-white'
-                    }`}
-                  >
-                    Cloche
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode('3d-shader')}
-                    className={`px-3 py-1.5 rounded-full transition-all ${
-                      viewMode === '3d-shader' ? 'bg-[#D4AF37] text-black font-bold shadow' : 'text-neutral-400 hover:text-white'
-                    }`}
-                  >
-                    WebGL Shader
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode('3d-sphere')}
-                    className={`px-3 py-1.5 rounded-full transition-all ${
-                      viewMode === '3d-sphere' ? 'bg-[#D4AF37] text-black font-bold shadow' : 'text-neutral-400 hover:text-white'
-                    }`}
-                  >
-                    3D Sphere
-                  </button>
-                </div>
+                <Link
+                  to="/reservation"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white transition-colors text-xs font-mono uppercase tracking-widest font-semibold cursor-pointer"
+                >
+                  <span>Reserve Table</span>
+                </Link>
               </div>
             </motion.div>
 
@@ -322,77 +295,53 @@ export const InteractiveHero: React.FC = () => {
           <div className="lg:col-span-6 relative">
             <div className="relative w-full max-w-lg mx-auto aspect-[4/3] sm:aspect-[16/11] rounded-3xl overflow-hidden border border-[#D4AF37]/25 bg-[#12141C] shadow-[0_20px_50px_rgba(0,0,0,0.85)] group">
               
-              {/* Mode 1: Cloche Reveal */}
-              {viewMode === 'cloche' && (
-                <>
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={current.dishName}
-                      initial={{ opacity: 0, scale: 1.05 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                      className="absolute inset-0"
-                    >
-                      <ImageWithFallback
-                        src={current.image}
-                        alt={current.dishName}
-                        className="w-full h-full object-cover object-center filter contrast-105"
-                        fallbackSrc="/herofarzi-main.jpg"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#090A0E] via-transparent to-black/30 pointer-events-none" />
-                    </motion.div>
-                  </AnimatePresence>
+              {/* Signature Cloche Reveal Showcase */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={current.dishName}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute inset-0"
+                >
+                  <ImageWithFallback
+                    src={current.image}
+                    alt={current.dishName}
+                    className="w-full h-full object-cover object-center filter contrast-105"
+                    fallbackSrc="/arancini.jpg"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#090A0E] via-transparent to-black/30 pointer-events-none" />
+                </motion.div>
+              </AnimatePresence>
 
-                  {/* Animated Culinary Vapor / Nitrogen Mist Layer */}
-                  <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                    <motion.div
-                      animate={{
-                        opacity: isClocheLifted ? [0.2, 0.6, 0.3] : [0.15, 0.35, 0.15],
-                        scale: isClocheLifted ? [1, 1.25, 1.1] : [1, 1.1, 1],
-                        y: isClocheLifted ? [-5, -35, -20] : [0, -10, 0]
-                      }}
-                      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                      className="absolute bottom-8 left-1/3 w-64 h-48 rounded-full bg-gradient-to-t from-white/20 via-white/5 to-transparent blur-2xl"
-                    />
-                  </div>
+              {/* Animated Culinary Vapor / Nitrogen Mist Layer */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <motion.div
+                  animate={{
+                    opacity: isClocheLifted ? [0.2, 0.6, 0.3] : [0.15, 0.35, 0.15],
+                    scale: isClocheLifted ? [1, 1.25, 1.1] : [1, 1.1, 1],
+                    y: isClocheLifted ? [-5, -35, -20] : [0, -10, 0]
+                  }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute bottom-8 left-1/3 w-64 h-48 rounded-full bg-gradient-to-t from-white/20 via-white/5 to-transparent blur-2xl"
+                />
+              </div>
 
-                  {/* Interactive Cloche Lift Toggle on Top Right */}
-                  <div className="absolute top-4 right-4 z-20">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsClocheLifted(!isClocheLifted);
-                        soundFX.playWhoosh();
-                      }}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-[#D4AF37]/40 hover:border-[#D4AF37] text-[10px] font-mono tracking-widest uppercase text-[#E5B869] shadow-lg cursor-pointer transition-all hover:scale-105"
-                    >
-                      <Sparkles className="w-3 h-3 text-[#E5B869] animate-spin-slow" />
-                      <span>{isClocheLifted ? 'Lower Cloche' : 'Lift Cloche'}</span>
-                    </button>
-                  </div>
-                </>
-              )}
-
-              {/* Mode 2: Three.js Interactive WebGL Shader Distortion Canvas */}
-              {viewMode === '3d-shader' && (
-                <div className="absolute inset-0 flex items-center justify-center bg-[#07080A]">
-                  <ShaderDistortionCanvas className="w-full h-full" variant="gold-mist" />
-                  <div className="absolute top-4 left-4 z-20 px-3 py-1 rounded-full bg-black/60 border border-[#D4AF37]/30 text-[9px] font-mono text-[#E5B869] uppercase tracking-wider">
-                    ✦ Interactive WebGL Fluid Shader (Move Cursor)
-                  </div>
-                </div>
-              )}
-
-              {/* Mode 3: Three.js Interactive 3D Molecular Sphere */}
-              {viewMode === '3d-sphere' && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#07080A] p-4">
-                  <Interactive3DMolecularSphere size={320} />
-                  <span className="text-[9px] font-mono tracking-widest text-[#E5B869] uppercase mt-2">
-                    Click & Drag to Rotate Molecular Geometry
-                  </span>
-                </div>
-              )}
+              {/* Interactive Cloche Lift Toggle on Top Right */}
+              <div className="absolute top-4 right-4 z-20">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsClocheLifted(!isClocheLifted);
+                    soundFX.playWhoosh();
+                  }}
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-[#D4AF37]/40 hover:border-[#D4AF37] text-[10px] font-mono tracking-widest uppercase text-[#E5B869] shadow-xl cursor-pointer transition-all hover:scale-105"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-[#E5B869] animate-spin-slow" />
+                  <span>{isClocheLifted ? 'Lower Cloche' : 'Lift Cloche'}</span>
+                </button>
+              </div>
 
               {/* Bottom Card Overlay Details */}
               <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 z-20 bg-gradient-to-t from-[#090A0E] via-[#090A0E]/90 to-transparent">

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Calendar, Users, Clock, Check, ChevronDown, MapPin } from 'lucide-react';
+import { ArrowRight, Calendar, Users, Clock, Check, ChevronDown, MapPin, Sparkles } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ImageWithFallback } from '../ui/ImageWithFallback';
 import { soundFX } from '../../utils/soundEffects';
@@ -23,19 +23,19 @@ const LOCATIONS: LocationItem[] = [
     id: 'mumbai',
     city: 'Mumbai',
     area: 'BKC',
-    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop'
+    image: '/dining-ambience.jpg'
   },
   {
     id: 'bengaluru',
     city: 'Bengaluru',
     area: 'UB City',
-    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1200&auto=format&fit=crop'
+    image: '/storefront.jpg'
   },
   {
     id: 'hyderabad',
     city: 'Hyderabad',
     area: 'Jubilee Hills',
-    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop'
+    image: '/dining-ambience.jpg'
   }
 ];
 
@@ -83,7 +83,7 @@ export const LocationsAndReservationSection: React.FC = () => {
                     src={activeLocation.image}
                     alt={activeLocation.city}
                     className="w-full h-full object-cover filter contrast-105"
-                    fallbackSrc="/storefront.jpg"
+                    fallbackSrc="/farzi-storefront-clean.jpg"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
                   <div className="absolute bottom-3 left-3 right-3 text-left">
@@ -232,7 +232,30 @@ export const LocationsAndReservationSection: React.FC = () => {
               </form>
             </div>
 
-            <div className="pt-4 text-center">
+            {/* Curated Farzi Events & Live Sufi Nights Teaser */}
+            <div className="mt-4 p-4 rounded-2xl bg-gradient-to-r from-[#161922] to-[#12141C] border border-[#D4AF37]/30 shadow-lg flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#E5B869] shrink-0">
+                  <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                </div>
+                <div>
+                  <span className="text-[9px] font-mono tracking-widest uppercase text-[#D4AF37] font-bold block">
+                    ✦ LIVE SUFI NIGHTS & WORKSHOPS
+                  </span>
+                  <p className="text-xs text-white font-medium">
+                    Farzi Sufi Sessions & Cryo Mixology
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/reservation?tab=events"
+                className="px-3.5 py-1.5 rounded-lg bg-white/5 border border-[#D4AF37]/40 hover:border-[#D4AF37] text-[10px] font-mono uppercase tracking-wider text-[#E5B869] hover:text-white transition-all whitespace-nowrap cursor-pointer"
+              >
+                View Events →
+              </Link>
+            </div>
+
+            <div className="pt-3 text-center">
               <span className="text-[9.5px] font-mono text-neutral-400 uppercase tracking-widest">
                 Complimentary Valet Parking Available
               </span>

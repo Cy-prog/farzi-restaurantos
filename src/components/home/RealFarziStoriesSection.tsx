@@ -18,70 +18,70 @@ export interface RealFarziImage {
 const REAL_FARZI_IMAGES: RealFarziImage[] = [
   {
     id: 1,
-    src: '/real-farzi/farzi-arancini-real.jpg',
+    src: '/arancini.jpg',
     title: 'Dal Chawal Arancini on Slate',
     category: 'Signature Tapas',
     description: 'Crisp golden lentil & rice arancini served on natural stone slate with house curry foam.'
   },
   {
     id: 2,
-    src: '/real-farzi/farzi-bar-neon.jpg',
-    title: '#Farzified Amber Bar',
+    src: '/dining-ambience.jpg',
+    title: '#FarziAfied Amber Bar',
     category: 'Mixology Chamber',
     description: 'The illuminated bar counter under warm neon ambient glow.'
   },
   {
     id: 3,
-    src: '/real-farzi/farzi-prawns-curry.jpg',
-    title: 'Curry Poured Over Spiced Prawns',
+    src: '/cloche-dish.jpg',
+    title: 'Smoked Cloche Culinary Reveal',
     category: 'Progressive Mains',
-    description: 'Slow-simmered velvety royal gravy poured tableside over spiced coastal prawns.'
+    description: 'Aromatic applewood smoke reveal tableside with delicate charred garnishes.'
   },
   {
     id: 4,
-    src: '/real-farzi/farzi-paneer-tuile.jpg',
+    src: '/paneer-tikka.jpg',
     title: 'Paneer Tikka & Coral Lace Tuile',
     category: 'Tandoor Art',
     description: 'Smoked cottage cheese crowned with delicate saffron coral lace tuile.'
   },
   {
     id: 5,
-    src: '/real-farzi/farzi-vada-spheres.jpg',
-    title: 'Vada Pav Spheres & Charred Chillies',
-    category: 'Molecular Street Food',
-    description: 'Classic Mumbai street food reimagined into crisp golden orbs with garlic crumble.'
+    src: '/chef-plating.jpg',
+    title: 'Molecular Plating Theatre',
+    category: 'Molecular Science',
+    description: 'Precision tweezers and micro-herbs applied to deconstructed royal recipes.'
   },
   {
     id: 6,
-    src: '/real-farzi/farzi-bao-steamer.jpg',
-    title: 'Steamed Bao in Bamboo Basket',
-    category: 'Dim Sum & Bao',
-    description: 'Cloud-soft steamed buns with chili-infused glaze in traditional woven bamboo.'
+    src: '/naan-bomb.jpg',
+    title: 'Truffle Naan Bomb',
+    category: 'Tandoor Reinvented',
+    description: 'Mini tandoori naans filled with molten aged cheddar and black truffle butter.'
   },
   {
     id: 7,
-    src: '/real-farzi/farzi-terrace-neon.jpg',
-    title: '"All We Have Is Now" Terrace',
+    src: '/farzi-storefront-clean.jpg',
+    title: 'The Flagship Façade & Entrance',
     category: 'Patio & Garden',
-    description: 'Lush tropical banana palms and golden neon script in the outdoor terrace lounge.'
+    description: 'Lush tropical botanical canopy and backlit bistro signage.'
   },
   {
     id: 8,
-    src: '/real-farzi/farzi-samosa-chaat.jpg',
-    title: 'Deconstructed Chaat & Pomegranate',
-    category: 'Chaat Alchemy',
-    description: 'Delicate crisp pastry nests with yogurt drizzle and ruby pomegranate pearls.'
+    src: '/tres-leches.jpg',
+    title: 'Ras Malai Tres Leches & Saffron Foam',
+    category: 'Sweet Illusion',
+    description: 'Delicate cardamom cottage cheese soaked in three-milk bath with gold dust.'
   },
   {
     id: 9,
-    src: '/real-farzi/farzi-lounge-interior.jpg',
-    title: 'Grand Velvet Art Lounge',
+    src: '/herofarzi-main.jpg',
+    title: 'Grand Velvet Art Chamber',
     category: 'Ambience',
     description: 'Plush velvet booth seating with contemporary bespoke Indian surrealist art.'
   },
   {
     id: 10,
-    src: '/real-farzi/farzi-cocktail-drink.jpg',
+    src: '/apple-foamintini.jpg',
     title: 'Botanical Nitrogen Cocktail',
     category: 'Mixology',
     description: 'Citrus botanicals with aromatic liquid nitrogen vapor and warm bar glow.'

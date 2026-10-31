@@ -177,45 +177,54 @@ export const AboutPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Interactive 3D Molecular Showcase & Visual Card */}
-          <div className="lg:col-span-6 relative">
-            <div className="relative rounded-3xl overflow-hidden border border-[#D4AF37]/25 bg-[#12141C] shadow-2xl p-2">
+          {/* Right Column: Authentic Luxury Visual Showcase & Craftsmanship */}
+          <div className="lg:col-span-6 space-y-6">
+            <div className="relative rounded-3xl overflow-hidden border border-[#D4AF37]/30 bg-[#12141C] shadow-[0_20px_50px_rgba(0,0,0,0.85)] p-3 group">
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-950">
                 <ImageWithFallback
-                  src="/real-farzi/farzi-bar-neon.jpg"
-                  alt="Farzi Cafe #FarziAfied Neon Bar"
-                  className="w-full h-full object-cover filter contrast-110"
+                  src="/dining-ambience.jpg"
+                  alt="Farzi Cafe Luxury Dining Ambience"
+                  className="w-full h-full object-cover filter contrast-105 group-hover:scale-105 transition-transform duration-700"
+                  fallbackSrc="/cloche-dish.jpg"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#090A0E] via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#090A0E] via-[#090A0E]/40 to-transparent pointer-events-none" />
                 
-                {/* Embedded 3D Molecular Simulation Overlay */}
-                <div className="absolute inset-0 pointer-events-none opacity-60">
-                  <Interactive3DMolecularSphere />
+                {/* Top Corner Pill */}
+                <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-[#090A0E]/80 backdrop-blur-md border border-[#D4AF37]/40 text-[10px] font-mono uppercase tracking-widest text-[#E5B869] font-bold">
+                  ✦ #FARZIAFIED ATMOSPHERE
                 </div>
 
-                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-[#090A0E]/80 backdrop-blur-md border border-white/10 text-left">
+                {/* Bottom Overlay Info with Pristine Spacing */}
+                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-[#090A0E]/85 backdrop-blur-md border border-white/10 text-left">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[10px] font-mono uppercase tracking-widest text-[#E5B869] font-bold">
-                      ✦ SENSORY GASTRONOMY LAB
+                      THE ALCHEMIST LOUNGE
                     </span>
-                    <span className="text-[10px] font-mono text-emerald-400">ACTIVE R&D</span>
+                    <span className="text-[10px] font-mono text-emerald-400 font-semibold">SERVICE LIVE</span>
                   </div>
-                  <p className="text-xs text-neutral-300 font-light">
-                    Every recipe balances micro-calibrated spice tinctures, sub-zero flash-freezing, and edible architecture.
+                  <p className="text-xs text-neutral-300 font-light leading-relaxed">
+                    Where high-energy modern bistro ambience meets liquid nitrogen cocktails and sensory deceptions.
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Accent Floating Badge */}
-            <div className="absolute -bottom-6 -left-6 bg-[#161922] border border-[#D4AF37]/30 p-5 rounded-2xl shadow-2xl max-w-xs hidden sm:block backdrop-blur-xl">
-              <div className="flex items-center gap-2 text-[#E5B869] text-xs font-mono font-bold uppercase tracking-widest mb-1">
-                <Sparkles className="w-4 h-4" />
-                <span>The Illusion Defined</span>
+            {/* Quote Card (In Flow with Zero Collision) */}
+            <div className="bg-[#12141C] border border-[#D4AF37]/25 p-5 sm:p-6 rounded-2xl shadow-xl flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center text-[#E5B869] flex-shrink-0 mt-0.5">
+                <Sparkles className="w-5 h-5 text-[#E5B869]" />
               </div>
-              <p className="text-xs text-neutral-300 font-light leading-relaxed">
-                “What you see is not what you eat; what you taste is what you will remember forever.”
-              </p>
+              <div className="space-y-1">
+                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#E5B869] font-bold block">
+                  THE ILLUSION PHILOSOPHY
+                </span>
+                <p className="text-xs sm:text-sm font-serif italic text-neutral-200 leading-relaxed">
+                  “What you see is not what you eat; what you taste is what you will remember forever.”
+                </p>
+                <span className="text-[10px] font-mono text-neutral-400 uppercase block pt-1">
+                  — ZORAWAR KALRA, FOUNDER OF MASSIVE RESTAURANTS
+                </span>
+              </div>
             </div>
           </div>
 
@@ -328,29 +337,29 @@ export const AboutPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
             {
-              src: '/real-farzi/farzi-arancini-real.jpg',
+              src: '/arancini.jpg',
               title: 'Signature Arancini Spheres',
               sub: 'Pappadum crust & curry foam'
             },
             {
-              src: '/real-farzi/farzi-outdoor-terrace.jpg',
-              title: 'Lush Botanical Terrace',
-              sub: 'Alfresco dining amid palms'
+              src: '/dining-ambience.jpg',
+              title: 'The Alchemist Lounge & Bar',
+              sub: 'High-energy bistro dining amid warm neon'
             },
             {
-              src: '/real-farzi/farzi-paneer-tuile.jpg',
+              src: '/paneer-tikka.jpg',
               title: 'Tandoor Smoked Paneer Tikka',
               sub: 'Coriander emulsion & tuile'
             },
             {
-              src: '/real-farzi/farzi-prawns-curry.jpg',
-              title: 'Coastal Prawns & Rice Pillow',
-              sub: 'Deconstructed coconut velouté'
+              src: '/cloche-dish.jpg',
+              title: 'Deconstructed Cloche Reveal',
+              sub: 'Aromatic applewood smoke & slow embers'
             },
             {
-              src: '/real-farzi/farzi-vada-spheres.jpg',
-              title: 'Deconstructed Vada Pav Caviar',
-              sub: 'Crispy sev & mint sphere'
+              src: '/chef-plating.jpg',
+              title: 'Molecular Plating Artistry',
+              sub: 'Tableside culinary illusions & caviar'
             },
             {
               src: '/farzi-storefront-clean.jpg',

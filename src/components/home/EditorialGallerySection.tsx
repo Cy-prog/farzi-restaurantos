@@ -18,29 +18,29 @@ export const EditorialGallerySection: React.FC<EditorialGallerySectionProps> = (
   const displayImages = images.length > 0 ? images.slice(0, 4) : [
     {
       id: 1,
-      imageUrl: '/herofarzi-main.jpg',
-      title: 'The Entrance Portal & Cryo Lab',
+      imageUrl: '/farzi-storefront-clean.jpg',
+      title: 'The Flagship Façade & Botanical Entrance',
       categoryName: 'Chambers',
-      description: 'The dramatic threshold into sensory deception'
+      description: 'Ornate backlit bistro entrance framed by tropical palm fronds'
     },
     {
       id: 2,
-      imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop',
-      title: 'Grand Dining Chamber & Amber Illumination',
+      imageUrl: '/dining-ambience.jpg',
+      title: '#FarziAfied Neon Bar & Mixology Lounge',
       categoryName: 'Theatre',
       description: 'Where 200°C tandoor heat meets -196°C cryo vapor'
     },
     {
       id: 3,
-      imageUrl: 'https://images.unsplash.com/photo-1572116469696-31de0f17cc34?q=80&w=1200&auto=format&fit=crop',
-      title: 'The Alchemist Mixology Lab',
+      imageUrl: '/storefront.jpg',
+      title: 'Botanical Terrace & Dining Pavilions',
       categoryName: 'Botanicals',
       description: 'Smoked botanicals and reverse-spherified elixirs'
     },
     {
       id: 4,
-      imageUrl: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1200&auto=format&fit=crop',
-      title: 'Plating Architecture & Tweezers',
+      imageUrl: '/arancini.jpg',
+      title: 'Deconstructed Dal Chawal Arancini',
       categoryName: 'Gastronomy',
       description: 'Geometric balance of spice, texture, and optical riddles'
     }
@@ -85,7 +85,7 @@ export const EditorialGallerySection: React.FC<EditorialGallerySectionProps> = (
                 src={displayImages[0].imageUrl}
                 alt={displayImages[0].title}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 filter contrast-[1.08] brightness-[0.88]"
-                fallbackSrc="https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=1200&auto=format&fit=crop"
+                fallbackSrc="/cloche-dish.jpg"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
               
@@ -133,7 +133,7 @@ export const EditorialGallerySection: React.FC<EditorialGallerySectionProps> = (
                     src={img.imageUrl}
                     alt={img.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 filter contrast-[1.08] brightness-[0.88]"
-                    fallbackSrc="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop"
+                    fallbackSrc="/arancini.jpg"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent pointer-events-none" />
 

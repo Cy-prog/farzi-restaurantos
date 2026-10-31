@@ -40,8 +40,8 @@ const CHAPTERS: ElementChapter[] = [
       { label: 'Spice Purity', value: '100% Single-Origin' },
       { label: 'Clay Firing Temp', value: '480°C' }
     ],
-    image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=1200&auto=format&fit=crop',
-    fallbackImage: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?q=80&w=1200&auto=format&fit=crop',
+    image: '/chef-plating.jpg',
+    fallbackImage: '/paneer-tikka.jpg',
     color: '#D4AF37'
   },
   {
@@ -65,8 +65,8 @@ const CHAPTERS: ElementChapter[] = [
       { label: 'Aroma Retention', value: '99.4%' },
       { label: 'Vapour Duration', value: '45 Seconds' }
     ],
-    image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=1200&auto=format&fit=crop',
-    fallbackImage: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1200&auto=format&fit=crop',
+    image: '/cloche-dish.jpg',
+    fallbackImage: '/apple-foamintini.jpg',
     color: '#60A5FA'
   },
   {
@@ -90,8 +90,8 @@ const CHAPTERS: ElementChapter[] = [
       { label: 'Burst Pressure', value: '0.4 PSI' },
       { label: 'Sphere Diameter', value: '24mm & 4mm' }
     ],
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=1200&auto=format&fit=crop',
-    fallbackImage: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=1200&auto=format&fit=crop',
+    image: '/arancini.jpg',
+    fallbackImage: '/chef-plating.jpg',
     color: '#34D399'
   },
   {
@@ -115,8 +115,8 @@ const CHAPTERS: ElementChapter[] = [
       { label: 'Global Bistros', value: '12 Locations' },
       { label: 'Founded By', value: 'Zorawar Kalra' }
     ],
-    image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=1200&auto=format&fit=crop',
-    fallbackImage: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1200&auto=format&fit=crop',
+    image: '/farzi-storefront-clean.jpg',
+    fallbackImage: '/arancini.jpg',
     color: '#E09F27'
   }
 ];
@@ -249,11 +249,11 @@ export const FarziKineticStory: React.FC = () => {
                   <span>{activeChapter.subtitle}</span>
                 </div>
 
-                <div className="flex items-baseline gap-4">
-                  <h2 className="text-5xl sm:text-7xl lg:text-8xl font-display font-black uppercase tracking-tight text-white">
+                <div className="flex items-baseline gap-3 flex-wrap">
+                  <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display font-black uppercase tracking-tight text-white">
                     {activeChapter.name}
                   </h2>
-                  <span className="text-2xl sm:text-4xl font-serif text-[#D4AF37]/60">
+                  <span className="text-xl sm:text-3xl font-serif text-[#D4AF37]/70">
                     {activeChapter.hindi}
                   </span>
                 </div>
@@ -310,14 +310,14 @@ export const FarziKineticStory: React.FC = () => {
 
             {/* Right Theatrical Visual Card (6 Cols) */}
             <div className="lg:col-span-6 relative">
-              <div className="relative aspect-[4/5] sm:aspect-[16/11] lg:aspect-[4/5] max-h-[580px] rounded-3xl overflow-hidden border border-white/20 bg-neutral-900 shadow-2xl group">
+              <div className="relative aspect-[4/3] sm:aspect-[16/11] rounded-3xl overflow-hidden border border-[#D4AF37]/30 bg-[#12141C] shadow-[0_20px_50px_rgba(0,0,0,0.85)] group">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeChapter.id}
-                    initial={{ opacity: 0, scale: 1.06 }}
+                    initial={{ opacity: 0, scale: 1.05 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                     className="absolute inset-0"
                   >
                     <ImageWithFallback
@@ -326,26 +326,26 @@ export const FarziKineticStory: React.FC = () => {
                       className="w-full h-full object-cover filter contrast-105 group-hover:scale-105 transition-transform duration-700"
                       fallbackSrc={activeChapter.fallbackImage}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent pointer-events-none" />
                   </motion.div>
                 </AnimatePresence>
 
                 {/* Corner Glass Badge */}
-                <div className="absolute top-5 left-5 z-20 px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-[10px] font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                <div className="absolute top-4 left-4 z-20 px-3 py-1 rounded-full bg-[#090A0E]/80 backdrop-blur-md border border-[#D4AF37]/40 text-[10px] font-mono text-[#E5B869] uppercase tracking-widest font-bold">
                   MOLECULAR EVIDENCE [0{activeChapterIdx + 1}]
                 </div>
 
                 {/* Bottom Overlay Summary */}
-                <div className="absolute bottom-6 left-6 right-6 z-20 p-5 rounded-2xl bg-black/80 backdrop-blur-md border border-white/15">
+                <div className="absolute bottom-4 left-4 right-4 z-20 p-4 sm:p-5 rounded-2xl bg-[#090A0E]/85 backdrop-blur-md border border-white/10">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-mono tracking-widest text-[#D4AF37] uppercase font-bold">
+                    <span className="text-[10px] font-mono tracking-widest text-[#E5B869] uppercase font-bold">
                       {activeChapter.subtitle}
                     </span>
                     <span className="text-[9px] font-mono text-neutral-400 uppercase">
                       FARZI MOLECULAR ARCHIVE
                     </span>
                   </div>
-                  <h4 className="font-serif font-black text-lg text-white">
+                  <h4 className="font-serif font-bold text-base sm:text-lg text-white">
                     {activeChapter.headline}
                   </h4>
                 </div>

@@ -18,7 +18,7 @@
       "role": "ADMIN",
       "isActive": true,
       "createdAt": "2026-10-18T13:26:37.569Z",
-      "lastLoginAt": "2026-10-31T07:19:49.137Z"
+      "lastLoginAt": "2026-10-31T08:42:57.274Z"
     },
     {
       "id": 3,
@@ -28,7 +28,7 @@
       "role": "STAFF",
       "isActive": true,
       "createdAt": "2026-10-18T13:50:31.733Z",
-      "lastLoginAt": "2026-10-31T07:19:49.394Z"
+      "lastLoginAt": "2026-10-31T08:42:57.653Z"
     }
   ],
   "categories": [
@@ -568,6 +568,102 @@
   ],
   "reservations": [
     {
+      "id": 27,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "eventType": "DINING",
+      "eventName": null,
+      "seatingPreference": "Main Dining Chamber",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-31T08:42:57.962Z",
+      "updatedAt": "2026-10-31T08:42:58.013Z"
+    },
+    {
+      "id": 26,
+      "name": "Kabir Oberoi",
+      "phone": "+91 98101 23456",
+      "email": "kabir.oberoi@example.com",
+      "reservationDate": "2026-11-01",
+      "reservationTime": "21:00",
+      "guests": 4,
+      "specialRequest": "Stage-facing booth requested",
+      "eventType": "SUFI_NIGHT",
+      "eventName": "Farzi Sufi Nights — Live Acoustic & Fusion Band",
+      "seatingPreference": "Stage-Facing Live Chamber",
+      "status": "PENDING",
+      "tableNumber": "",
+      "adminNote": "",
+      "createdAt": "2026-10-31T08:42:02.673Z",
+      "updatedAt": "2026-10-31T08:42:02.673Z"
+    },
+    {
+      "id": 25,
+      "name": "Kabir Oberoi",
+      "phone": "+91 98101 23456",
+      "email": "kabir.oberoi@example.com",
+      "reservationDate": "2026-11-01",
+      "reservationTime": "21:00",
+      "guests": 4,
+      "specialRequest": "Stage-facing booth requested",
+      "status": "PENDING",
+      "tableNumber": "",
+      "adminNote": "",
+      "createdAt": "2026-10-31T08:41:10.680Z",
+      "updatedAt": "2026-10-31T08:41:10.681Z"
+    },
+    {
+      "id": 24,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-31T08:40:59.891Z",
+      "updatedAt": "2026-10-31T08:40:59.926Z"
+    },
+    {
+      "id": 23,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-31T08:25:49.828Z",
+      "updatedAt": "2026-10-31T08:25:49.890Z"
+    },
+    {
+      "id": 22,
+      "name": "Dr. Kabir Roy",
+      "phone": "+91 98111 22233",
+      "email": "kabir@royhospital.com",
+      "reservationDate": "2026-12-25",
+      "reservationTime": "20:00",
+      "guests": 4,
+      "specialRequest": "Window table with tasting menu",
+      "status": "CONFIRMED",
+      "tableNumber": "T07",
+      "adminNote": "Chef notified of VIP tasting",
+      "createdAt": "2026-10-31T07:39:40.020Z",
+      "updatedAt": "2026-10-31T07:39:40.055Z"
+    },
+    {
       "id": 21,
       "name": "Dr. Kabir Roy",
       "phone": "+91 98111 22233",
@@ -884,6 +980,110 @@
     }
   ],
   "orders": [
+    {
+      "id": 24,
+      "orderNumber": "FZ-MVW5LFAK-891",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 695,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "/arancini.jpg",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 1390,
+      "tax": 166.8,
+      "total": 1556.8,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-31T08:42:57.836Z",
+      "updatedAt": "2026-10-31T08:42:57.884Z"
+    },
+    {
+      "id": 23,
+      "orderNumber": "FZ-MVW5IW6W-182",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 695,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "/arancini.jpg",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 1390,
+      "tax": 166.8,
+      "total": 1556.8,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-31T08:40:59.768Z",
+      "updatedAt": "2026-10-31T08:40:59.819Z"
+    },
+    {
+      "id": 22,
+      "orderNumber": "FZ-MVW4ZDW6-168",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 695,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "/arancini.jpg",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 1390,
+      "tax": 166.8,
+      "total": 1556.8,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-31T08:25:49.590Z",
+      "updatedAt": "2026-10-31T08:25:49.703Z"
+    },
+    {
+      "id": 21,
+      "orderNumber": "FZ-MVW3C0RB-222",
+      "tableNumber": "T02",
+      "customerName": "Test Dining Guest",
+      "customerPhone": "",
+      "items": [
+        {
+          "id": 1,
+          "menuItemId": 1,
+          "name": "Dal Chawal Arancini",
+          "price": 695,
+          "quantity": 2,
+          "specialInstructions": "",
+          "imageUrl": "/arancini.jpg",
+          "isVeg": true
+        }
+      ],
+      "subtotal": 1390,
+      "tax": 166.8,
+      "total": 1556.8,
+      "status": "COMPLETED",
+      "notes": "",
+      "createdAt": "2026-10-31T07:39:39.863Z",
+      "updatedAt": "2026-10-31T07:39:39.929Z"
+    },
     {
       "id": 20,
       "orderNumber": "FZ-MVW2MIAU-648",
@@ -1625,6 +1825,46 @@
     }
   ],
   "contactMessages": [
+    {
+      "id": 21,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-31T08:42:58.139Z"
+    },
+    {
+      "id": 20,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-31T08:40:59.998Z"
+    },
+    {
+      "id": 19,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-31T08:25:50.027Z"
+    },
+    {
+      "id": 18,
+      "name": "Meera Rajput",
+      "email": "meera@rajputmedia.com",
+      "phone": "",
+      "subject": "Private Terrace Gala Booking",
+      "message": "Looking to reserve the entire terrace garden for 35 guests next Friday.",
+      "status": "NEW",
+      "createdAt": "2026-10-31T07:39:40.169Z"
+    },
     {
       "id": 17,
       "name": "Meera Rajput",

@@ -828,7 +828,7 @@ app.get('/api/public/reservations/availability', (req, res) => {
 
 // 4. Submit Reservation (Strictly Validated)
 app.post('/api/public/reservations', (req, res) => {
-  const { name, phone, email, reservationDate, reservationTime, guests, specialRequest } = req.body;
+  const { name, phone, email, reservationDate, reservationTime, guests, specialRequest, eventType, eventName, seatingPreference } = req.body;
 
   // 1. Customer Name Validation
   if (!name || typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 100) {
@@ -899,6 +899,9 @@ app.post('/api/public/reservations', (req, res) => {
     reservationTime,
     guests: guestCount,
     specialRequest: specialRequest ? String(specialRequest).trim().slice(0, 500) : '',
+    eventType: eventType ? String(eventType).trim().slice(0, 50) : 'DINING',
+    eventName: eventName ? String(eventName).trim().slice(0, 150) : null,
+    seatingPreference: seatingPreference ? String(seatingPreference).trim().slice(0, 100) : 'Main Dining Chamber',
     status: 'PENDING',
     tableNumber: '',
     adminNote: '',
