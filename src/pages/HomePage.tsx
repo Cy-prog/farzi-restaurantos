@@ -3,10 +3,13 @@ import { MenuItem, GalleryImage } from '../types';
 import { api } from '../services/api';
 import { InteractiveHero } from '../components/home/InteractiveHero';
 import { KineticMarquee } from '../components/ui/KineticMarquee';
-import { IllusionLabMixer } from '../components/home/IllusionLabMixer';
 import { EditorialDishShowcase } from '../components/home/EditorialDishShowcase';
+import { FarziExperienceSection } from '../components/home/FarziExperienceSection';
+import { IllusionLabMixer } from '../components/home/IllusionLabMixer';
+import { RealFarziStoriesSection } from '../components/home/RealFarziStoriesSection';
+import { LocationsAndReservationSection } from '../components/home/LocationsAndReservationSection';
+import { FarziKineticStory } from '../components/home/FarziKineticStory';
 import { EditorialGallerySection } from '../components/home/EditorialGallerySection';
-import { CulinaryManifestoSection } from '../components/home/CulinaryManifestoSection';
 import { FoodDetailModal } from '../components/menu/FoodDetailModal';
 import { Lightbox } from '../components/ui/Lightbox';
 import { PageTransition } from '../components/motion/PageTransition';
@@ -38,54 +41,70 @@ export const HomePage: React.FC = () => {
   }, []);
 
   return (
-    <PageTransition className="relative bg-[#FAF9F5] text-[#12141A] overflow-hidden">
-      {/* 1. Interactive Hero with Pointer Parallax & Expressive Typography */}
+    <PageTransition className="relative bg-[#090A0E] text-[#F4F0E8] overflow-hidden selection:bg-[#D4AF37]/30 selection:text-white">
+      
+      {/* 1. Cloche Reveal & Gilded Hero (Matches Top-Left Design Board) */}
       <InteractiveHero />
 
-      {/* 2. Top Editorial Kinetic Marquee (Bold Amber) */}
+      {/* 2. Kinetic Gold Marquee */}
       <KineticMarquee
         phrases={[
-          'MODERN INDIAN GASTRONOMY',
+          'CONTEMPORARY INDIAN BISTRO',
           'TRADITION REIMAGINED',
-          'UNEXPECTED BY DESIGN',
-          'THE ART OF ILLUSION',
-          'AVANT-GARDE FLAVORS',
-          'MOLECULAR SCIENCE'
+          'CLOCHE REVEAL THEATRE',
+          'MOLECULAR SCIENCE',
+          'SPHERIFIED CAVIAR',
+          '-196°C CRYO VAPOUR'
         ]}
       />
 
-      {/* 3. The Signature Centerpiece: "The Farzi Illusion Lab" (Drag to Infuse) */}
-      <IllusionLabMixer />
-
-      {/* 4. Second Editorial Marquee (Outlined / Stroked Reverse) */}
-      <KineticMarquee
-        reverse={true}
-        outline={true}
-        phrases={[
-          '-196°C CRYO LIQUID NITROGEN',
-          'SPHERIFIED CHUTNEY CAVIAR',
-          'APPLEWOOD CHARCOAL EMBERS',
-          'SAVORY DECONSTRUCTIONS',
-          'SENSORY GASTRONOMY'
-        ]}
-      />
-
-      {/* 5. Editorial Food Presentation & Asymmetric Dish Showcase */}
+      {/* 3. "Our Menu" Interactive Filterable Showcase (Matches Top-Middle Design Board) */}
       <EditorialDishShowcase
         dishes={signatureItems}
         onSelectDish={(dish) => setSelectedDish(dish)}
       />
 
-      {/* 6. The Theatre of Experience: Asymmetric Visual Gallery */}
+      {/* 4. "The Farzi Experience" Editorial Section (Matches Middle-Left Design Board) */}
+      <FarziExperienceSection />
+
+      {/* 5. "Drag to Infuse" Molecular Lab Mixer (Effect B: Newmix Drag-to-Mix adapted for Farzi) */}
+      <IllusionLabMixer />
+
+      {/* 6. Authentic Farzi Moments & Reels Grid (14 Real Captured Photos from User Reel) */}
+      <RealFarziStoriesSection
+        onOpenImage={(src, title) => {
+          // If user clicks, open in lightbox or log
+          const foundIdx = galleryImages.findIndex(g => g.imageUrl === src);
+          if (foundIdx >= 0) setLightboxIndex(foundIdx);
+        }}
+      />
+
+      {/* 6. "Our Locations" & "Reserve a Table" Desk (Matches Middle-Right Design Board) */}
+      <LocationsAndReservationSection />
+
+      {/* 6. Kinetic Scroll Manifesto & Terroir Chapters (Soil, Cryo, Sphere, Farzi) */}
+      <FarziKineticStory />
+
+      {/* 7. Reverse Stroked Kinetic Marquee */}
+      <KineticMarquee
+        reverse={true}
+        outline={true}
+        phrases={[
+          'DAL CHAWAL ARANCINI',
+          'RAS MALAI TRES LECHES',
+          'APPLE FOAMINTINI',
+          'AMRITSARI PANEER TIKKA',
+          'TRUFFLE NAAN BOMB'
+        ]}
+      />
+
+      {/* 8. The Visual Gallery & Ambience Archive */}
       <EditorialGallerySection
         images={galleryImages}
         onOpenLightbox={(idx) => setLightboxIndex(idx)}
       />
 
-      {/* 7. Culinary Manifesto & Table Reservation Desk */}
-      <CulinaryManifestoSection />
-
-      {/* Dish Inspection Modal */}
+      {/* 9. Top-Right Dish Detail Modal (Matches Top-Right Design Board) */}
       {selectedDish && (
         <FoodDetailModal
           item={selectedDish}

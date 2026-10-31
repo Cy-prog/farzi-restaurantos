@@ -32,7 +32,8 @@ public class AdminMenuController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<MenuItem>> updateMenuItem(@PathVariable Long id, @Valid @RequestBody MenuItem item) {
+    public ResponseEntity<ApiResponse<MenuItem>> updateMenuItem(@PathVariable Long id,
+            @Valid @RequestBody MenuItem item) {
         return menuItemRepository.findById(id).map(existing -> {
             item.setId(id);
             MenuItem updated = menuItemRepository.save(item);

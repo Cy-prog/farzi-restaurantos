@@ -8,6 +8,7 @@ import { CartDrawer } from './components/cart/CartDrawer';
 import { FarziIntro } from './components/ui/FarziIntro';
 import { WhatsAppButton } from './components/ui/WhatsAppButton';
 import { CustomCursor } from './components/ui/CustomCursor';
+import { SmoothScroll } from './components/effects/SmoothScroll';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -36,22 +37,24 @@ const PublicLayout: React.FC = () => {
   const isTableMenu = location.pathname === '/qr' || searchParams.has('table');
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAF9F5] text-[#12141A]">
-      {/* Interactive Custom Cursor for desktop */}
-      <CustomCursor />
+    <SmoothScroll>
+      <div className="flex flex-col min-h-screen bg-[#090A0E] text-[#F4F0E8] selection:bg-[#D4AF37]/30 selection:text-white">
+        {/* Interactive Custom Cursor for desktop */}
+        <CustomCursor />
 
-      {/* Animated Farzi Cafe Intro Screen */}
-      <FarziIntro />
+        {/* Animated Farzi Cafe Intro Screen */}
+        <FarziIntro />
 
-      {!isTableMenu && <Navbar />}
-      <CartDrawer />
-      <div className="flex-1">
-        <Outlet />
+        {!isTableMenu && <Navbar />}
+        <CartDrawer />
+        <div className="flex-1">
+          <Outlet />
+        </div>
+        {/* Floating WhatsApp Chat Widget (matching farzicafe.com) */}
+        <WhatsAppButton />
+        {!isTableMenu && <Footer />}
       </div>
-      {/* Floating WhatsApp Chat Widget (matching farzicafe.com) */}
-      <WhatsAppButton />
-      {!isTableMenu && <Footer />}
-    </div>
+    </SmoothScroll>
   );
 };
 

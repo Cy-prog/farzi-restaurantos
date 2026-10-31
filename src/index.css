@@ -4,40 +4,40 @@
 
 @layer base {
   :root {
-    --bg-slate: #FAF9F5;
-    --text-parchment: #12141A;
+    --bg-slate: #090A0E;
+    --text-parchment: #F4F0E8;
     --accent-saffron: #D4AF37;
     --accent-terracotta: #D44A1E;
-    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-subtle: rgba(212, 175, 55, 0.15);
   }
 
   html {
-    background-color: #FAF9F5;
-    color: #12141A;
+    background-color: #090A0E;
+    color: #F4F0E8;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     scroll-behavior: smooth;
     overflow-x: hidden;
   }
 
   body {
-    background-color: #FAF9F5;
-    color: #12141A;
+    background-color: #090A0E;
+    color: #F4F0E8;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
-  /* Custom editorial scrollbar */
+  /* Custom luxury editorial scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #FAF9F5;
+    background: #090A0E;
   }
   ::-webkit-scrollbar-thumb {
-    background: #D8D4C7;
+    background: #1C202B;
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
@@ -51,9 +51,31 @@
   }
 }
 
-/* Editorial Hollow & Outlined Typography (Black Outline on Light Canvas) */
+/* Luxury Metallic & Gilded Typography */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #FFF5DE 0%, #E5B869 45%, #C59F6D 80%, #99753B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gold-metallic {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F3D38E 35%, #D4AF37 70%, #937122 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-glow {
+  text-shadow: 0 0 35px rgba(212, 175, 55, 0.45);
+}
+
+.card-gold-border {
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.06) 0%, rgba(18, 20, 28, 0.96) 100%);
+}
+
+/* Editorial Hollow & Outlined Typography */
 .text-stroke {
-  -webkit-text-stroke: 1.5px #12141A;
+  -webkit-text-stroke: 1.5px rgba(244, 240, 232, 0.85);
   color: transparent;
   transition: all 0.4s ease;
 }
@@ -64,7 +86,7 @@
 }
 
 .text-stroke-strong {
-  -webkit-text-stroke: 2px #12141A;
+  -webkit-text-stroke: 2px rgba(244, 240, 232, 0.9);
   color: transparent;
 }
 
@@ -75,25 +97,25 @@
 
 /* Subtle Film Grain Noise Texture */
 .grain-overlay {
-  background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 0);
+  background-image: radial-gradient(rgba(212, 175, 55, 0.04) 1px, transparent 0);
   background-size: 24px 24px;
 }
 
 /* Editorial Edge-to-Edge Grid Dividers */
 .editorial-border-b {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.12);
 }
 
 .editorial-border-t {
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid rgba(212, 175, 55, 0.12);
 }
 
 .editorial-border-r {
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  border-right: 1px solid rgba(212, 175, 55, 0.12);
 }
 
 .editorial-border-l {
-  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  border-left: 1px solid rgba(212, 175, 55, 0.12);
 }
 
 /* Smooth Image Clip Mask Transition */

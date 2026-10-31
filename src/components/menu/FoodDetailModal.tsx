@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { X, Plus, Minus, Clock, Flame, ShieldAlert, Sparkles, ShoppingBag, Ban, Check } from 'lucide-react';
+import { X, Plus, Minus, Check, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MenuItem } from '../../types';
-import { VegBadge, NonVegBadge, ChefSpecialBadge, SpiceBadge } from '../ui/Badge';
 import { ImageWithFallback } from '../ui/ImageWithFallback';
 import { useCart } from '../../context/CartContext';
+import { soundFX } from '../../utils/soundEffects';
 
 interface FoodDetailModalProps {
   item: MenuItem | null;
@@ -20,10 +20,12 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({ item, onClose 
   if (!item) return null;
 
   const isAvailable = item.isAvailable !== false;
+  const totalPrice = item.price * quantity;
 
   const handleAddToCart = () => {
     if (!isAvailable) return;
     addToCart(item, quantity, instructions);
+    soundFX.playChime();
     setIsAdded(true);
     setTimeout(() => {
       setIsAdded(false);
@@ -34,164 +36,152 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({ item, onClose 
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-2xl bg-white border border-black/10 rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col text-[#12141A]"
+          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-4xl bg-[#0F1117] border border-[#D4AF37]/30 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col text-[#F4F0E8]"
         >
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/90 backdrop-blur-md text-black hover:text-[#D4AF37] border border-black/10 transition-colors shadow-lg"
-            aria-label="Close Modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          {/* Top Bar: "FARZI CAFÉ" & "✕" Close Button (Matching top-right design) */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0A0C10]">
+            <div className="flex items-center gap-2">
+              <span className="font-serif tracking-[0.2em] text-sm font-bold uppercase text-[#FFF5DE]">
+                FARZI <span className="text-[#D4AF37]">CAFÉ</span>
+              </span>
+              <span className="text-[8px] font-mono tracking-widest text-[#D4AF37] uppercase">
+                · DISH ANTHOLOGY
+              </span>
+            </div>
 
-          {/* Scrollable Content */}
-          <div className="overflow-y-auto">
-            {/* Image Banner */}
-            <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-black">
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors"
+              aria-label="Close Modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Modal Split Body (Left: Zoomed Food Photo | Right: Typography & Actions) */}
+          <div className="grid grid-cols-1 md:grid-cols-12 overflow-y-auto max-h-[80vh]">
+            
+            {/* Left Column: Zoomed High-Res Photography */}
+            <div className="md:col-span-6 relative aspect-square md:aspect-auto min-h-[300px] md:min-h-[440px] bg-neutral-950 overflow-hidden">
               <ImageWithFallback
                 src={item.imageUrl}
                 alt={item.name}
-                className={`w-full h-full object-cover filter contrast-105 ${!isAvailable ? 'grayscale-[40%]' : ''}`}
+                className="w-full h-full object-cover object-center filter contrast-105"
+                fallbackSrc="/arancini.jpg"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
-
-              <div className="absolute bottom-4 left-6 flex items-center gap-2 z-10 flex-wrap">
-                {item.isVeg ? <VegBadge size="md" /> : <NonVegBadge size="md" />}
-                {item.isChefSpecial && <ChefSpecialBadge />}
-                {item.spiceLevel !== 'NONE' && <SpiceBadge level={item.spiceLevel} />}
-                {!isAvailable && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase bg-rose-600 text-white shadow-md">
-                    <Ban className="w-3.5 h-3.5 text-white" />
-                    <span>Sold Out</span>
-                  </span>
-                )}
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0F1117] via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#0F1117]" />
             </div>
 
-            {/* Details */}
-            <div className="p-6 sm:p-8 space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-black/10">
-                <div>
-                  <span className="text-[10px] font-mono tracking-widest uppercase text-[#D4AF37] font-bold block mb-1">
-                    {item.categoryName || 'Culinary Creation'}
-                  </span>
-                  <h2 className="text-2xl sm:text-3xl font-serif font-black text-black">
-                    {item.name}
-                  </h2>
-                </div>
-                <div className="text-left sm:text-right">
-                  <span className="text-2xl sm:text-3xl font-serif font-black text-[#D4AF37]">
-                    ₹{item.price}
-                  </span>
-                </div>
-              </div>
+            {/* Right Column: Title, Description, Badges, Stepper, Add to Cart */}
+            <div className="md:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+              
+              <div className="space-y-4">
+                {/* Dish Title (Large Serif) */}
+                <h2 className="font-serif font-bold text-2xl sm:text-3xl text-white leading-tight">
+                  {item.name}
+                </h2>
 
-              {/* Description */}
-              <div>
-                <h4 className="text-[10px] font-mono tracking-widest text-neutral-500 uppercase font-bold mb-2">
-                  Gastronomy & Plating Story
-                </h4>
-                <p className="text-xs sm:text-sm text-neutral-700 font-normal leading-relaxed">
+                {/* Narrative Description */}
+                <p className="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed">
                   {item.description}
                 </p>
-              </div>
 
-              {/* Ingredients & Allergens */}
-              {(item.ingredients || item.allergens) && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-[#FAF9F5] border border-black/10 text-xs">
-                  {item.ingredients && (
-                    <div>
-                      <span className="font-mono text-[10px] tracking-widest text-[#D4AF37] font-bold uppercase block mb-1">
-                        Ingredients & Spices:
-                      </span>
-                      <p className="text-neutral-700 font-normal">{item.ingredients}</p>
-                    </div>
-                  )}
-                  {item.allergens && (
-                    <div>
-                      <span className="font-mono text-[10px] tracking-widest text-neutral-600 uppercase font-bold block mb-1 flex items-center gap-1">
-                        <ShieldAlert className="w-3 h-3 text-amber-500" />
-                        <span>Allergen Transparency:</span>
-                      </span>
-                      <p className="text-neutral-700 font-normal">{item.allergens}</p>
+                {/* Badges: [● Vegetarian] [★ Chef's Special] (Matching top-right design) */}
+                <div className="flex flex-wrap items-center gap-2 pt-2">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono tracking-wider uppercase text-neutral-300">
+                    <span className={`w-2 h-2 rounded-full ${item.isVeg ? 'bg-emerald-400' : 'bg-rose-400'}`} />
+                    <span>{item.isVeg ? 'Vegetarian' : 'Non-Vegetarian'}</span>
+                  </div>
+
+                  {item.isChefSpecial && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[10px] font-mono tracking-wider uppercase text-[#E5B869] font-bold">
+                      <Star className="w-3 h-3 text-[#E5B869] fill-[#E5B869]" />
+                      <span>Chef's Special</span>
                     </div>
                   )}
                 </div>
-              )}
 
-              {/* Special Instructions Note Input */}
-              {isAvailable && (
-                <div>
-                  <label className="text-[10px] font-mono tracking-widest text-neutral-600 uppercase font-bold block mb-2">
-                    Chef Special Instructions (Optional)
+                {/* Special Instructions Note */}
+                <div className="pt-2">
+                  <label htmlFor="cooking-notes" className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 block mb-1.5">
+                    Cooking Notes / Dietary Requests
                   </label>
-                  <textarea
-                    rows={2}
+                  <input
+                    id="cooking-notes"
+                    type="text"
                     value={instructions}
                     onChange={(e) => setInstructions(e.target.value)}
-                    placeholder="e.g. Less spicy, dressing on the side, nut allergy..."
-                    className="w-full bg-[#FAF9F5] border border-black/15 rounded-xl p-3 text-xs text-black placeholder-neutral-400 focus:outline-none focus:border-black resize-none"
+                    placeholder="e.g. Less spicy, curry foam on side..."
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#161922] border border-white/10 text-xs font-mono text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
 
-          {/* Sticky Bottom Actions */}
-          {isAvailable && (
-            <div className="p-4 sm:p-6 bg-white border-t border-black/10 flex items-center justify-between gap-4">
-              {/* Quantity Counter */}
-              <div className="flex items-center gap-2 bg-[#FAF9F5] rounded-xl border border-black/10 p-1">
+              {/* Bottom Actions Row: Price + Stepper [- 1 +] + Add to Cart Button */}
+              <div className="pt-6 border-t border-white/10 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-serif font-black text-2xl sm:text-3xl text-[#E5B869]">
+                    ₹{totalPrice}
+                  </span>
+
+                  {/* Sleek Dark Stepper [- 1 +] */}
+                  <div className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full bg-[#161922] border border-white/15 shadow-inner">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={quantity <= 1}
+                      className="p-1 rounded-full text-neutral-400 hover:text-white disabled:opacity-30 transition-colors"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="font-mono text-sm font-bold w-4 text-center text-white">
+                      {quantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="p-1 rounded-full text-neutral-400 hover:text-white transition-colors"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Add to Cart Gold Button (Matching "Add to Cart ₹695" in design) */}
                 <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-black hover:bg-neutral-200 transition-colors"
-                  aria-label="Decrease quantity"
+                  type="button"
+                  onClick={handleAddToCart}
+                  disabled={!isAvailable}
+                  className={`w-full py-3.5 rounded-full font-bold text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 shadow-xl cursor-pointer ${
+                    isAdded
+                      ? 'bg-emerald-500 text-black'
+                      : isAvailable
+                      ? 'bg-gradient-to-r from-[#D4AF37] via-[#E5B869] to-[#C59F6D] text-black hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] hover:scale-[1.01] active:scale-[0.98]'
+                      : 'bg-neutral-800 text-neutral-500 cursor-not-allowed'
+                  }`}
                 >
-                  <Minus className="w-3.5 h-3.5" />
-                </button>
-                <span className="w-8 text-center font-mono font-bold text-sm text-black">
-                  {quantity}
-                </span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-black hover:bg-neutral-200 transition-colors"
-                  aria-label="Increase quantity"
-                >
-                  <Plus className="w-3.5 h-3.5" />
+                  {isAdded ? (
+                    <>
+                      <Check className="w-4 h-4 text-black" />
+                      <span>Added to Your Cart</span>
+                    </>
+                  ) : (
+                    <span>Add to Cart ₹{totalPrice}</span>
+                  )}
                 </button>
               </div>
 
-              {/* Add to Cart button */}
-              <button
-                onClick={handleAddToCart}
-                data-cursor="ADD"
-                className={`flex-1 py-3.5 px-6 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-xl shadow-black/10 ${
-                  isAdded
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-black hover:bg-[#D4AF37] text-white hover:text-black active:scale-[0.98]'
-                }`}
-              >
-                {isAdded ? (
-                  <>
-                    <Check className="w-4 h-4" />
-                    <span>Added To Table Order</span>
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4 text-[#D4AF37] group-hover:text-black" />
-                    <span>Add To Order · ₹{item.price * quantity}</span>
-                  </>
-                )}
-              </button>
             </div>
-          )}
+
+          </div>
         </motion.div>
       </div>
     </AnimatePresence>

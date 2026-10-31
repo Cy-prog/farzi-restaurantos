@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Table } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, QrCode } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
-import { Button } from '../ui/Button';
 import { api } from '../../services/api';
 import { Order } from '../../types';
 import { OrderSuccessModal } from './OrderSuccessModal';
+import { ImageWithFallback } from '../ui/ImageWithFallback';
+import { soundFX } from '../../utils/soundEffects';
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -30,20 +31,18 @@ export const CartDrawer: React.FC = () => {
   const [submittedOrder, setSubmittedOrder] = useState<Order | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
+  const effectiveTable = tableNumber || 'T-12';
+
   const handleSubmitOrder = async () => {
     if (items.length === 0) return;
-    if (!tableNumber) {
-      setErrorMsg('Please assign a table number for kitchen delivery.');
-      return;
-    }
 
     setIsSubmitting(true);
     setErrorMsg('');
 
     try {
       const created = await api.createOrder({
-        tableNumber,
-        customerName,
+        tableNumber: effectiveTable,
+        customerName: customerName || 'Farzi Guest',
         customerPhone,
         items,
         notes
@@ -51,6 +50,7 @@ export const CartDrawer: React.FC = () => {
       clearCart();
       setIsCartOpen(false);
       setSubmittedOrder(created);
+      soundFX.playChime();
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'Error transmitting order to kitchen station');
     } finally {
@@ -69,50 +69,50 @@ export const CartDrawer: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsCartOpen(false)}
-              className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+              className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity"
             />
 
-            {/* Drawer */}
             <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
               <motion.div
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="w-screen max-w-md bg-white border-l border-black/10 shadow-2xl flex flex-col text-[#12141A]"
+                transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+                className="w-screen max-w-md bg-[#0F1117] border-l border-[#D4AF37]/30 text-[#F4F0E8] flex flex-col shadow-2xl"
               >
-                {/* Header */}
-                <div className="p-6 border-b border-black/10 flex items-center justify-between bg-[#FAF9F5]">
-                  <div className="flex items-center gap-2.5">
-                    <ShoppingBag className="w-5 h-5 text-[#D4AF37]" />
-                    <h2 className="font-serif text-lg font-bold text-black">
-                      Your Order ({totalCount})
+                {/* Header (Matching "Your Cart (2)" in design board) */}
+                <div className="p-6 border-b border-white/10 flex items-center justify-between bg-[#0A0C10]">
+                  <div className="flex items-center gap-3">
+                    <h2 className="font-serif font-bold text-xl text-white">
+                      Your Cart ({totalCount})
                     </h2>
                   </div>
+
                   <button
                     onClick={() => setIsCartOpen(false)}
-                    className="p-2 rounded-full text-neutral-500 hover:text-black hover:bg-neutral-100 transition-colors"
+                    className="p-1.5 rounded-full text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
+                    aria-label="Close cart"
                   >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
 
-                {/* Table Bar */}
-                <div className="bg-white px-6 py-3 border-b border-black/10 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2 text-neutral-600">
-                    <Table className="w-4 h-4 text-[#D4AF37]" />
-                    <span>Dine-in Station:</span>
+                {/* Table Station Pill Bar */}
+                <div className="bg-[#141722] px-6 py-2.5 border-b border-white/5 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 text-neutral-400">
+                    <QrCode className="w-3.5 h-3.5 text-[#E5B869]" />
+                    <span className="font-mono text-[10px] tracking-wider uppercase">Table Station:</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-[#D4AF37] bg-black px-2.5 py-0.5 rounded shadow-sm">
-                      Table {tableNumber}
+                    <span className="font-mono font-bold text-[#E5B869] bg-black/60 px-2.5 py-0.5 rounded border border-[#D4AF37]/30 text-[11px]">
+                      {effectiveTable}
                     </span>
                     <button
                       onClick={() => {
-                        const newTbl = prompt('Enter Table Number (e.g. T01 - T12):', tableNumber);
+                        const newTbl = prompt('Enter Table Number (e.g. T-01 - T-12):', effectiveTable);
                         if (newTbl) setTableNumber(newTbl.trim().toUpperCase());
                       }}
-                      className="text-neutral-500 hover:text-[#D4AF37] underline text-[11px] font-medium"
+                      className="text-neutral-400 hover:text-[#E5B869] text-[10px] font-mono underline"
                     >
                       Change
                     </button>
@@ -120,134 +120,109 @@ export const CartDrawer: React.FC = () => {
                 </div>
 
                 {/* Items List */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#FAF9F5]">
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
                   {items.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-center text-neutral-500 py-12">
-                      <ShoppingBag className="w-12 h-12 text-neutral-300 mb-3" />
-                      <p className="font-serif text-lg text-black mb-1">Your order is empty</p>
-                      <p className="text-xs text-neutral-500 max-w-xs">
-                        Explore our progressive culinary creations and select your dishes.
+                    <div className="h-full flex flex-col items-center justify-center text-center text-neutral-400 py-16">
+                      <div className="w-16 h-16 rounded-full bg-[#161922] border border-white/10 flex items-center justify-center mb-4 text-[#D4AF37]">
+                        <ShoppingBag className="w-7 h-7" />
+                      </div>
+                      <p className="font-serif text-lg text-white mb-1">Your cart is empty</p>
+                      <p className="text-xs text-neutral-400 max-w-xs font-light">
+                        Select dishes from our culinary anthology to begin your dining experience.
                       </p>
                     </div>
                   ) : (
                     items.map((item) => (
                       <div
                         key={item.id}
-                        className="bg-white border border-black/10 rounded-xl p-3.5 flex gap-3 items-center justify-between shadow-sm"
+                        className="bg-[#161922] border border-white/10 rounded-2xl p-4 flex gap-3.5 items-center justify-between shadow-lg"
                       >
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium text-black truncate">
-                            {item.name}
-                          </h4>
-                          <span className="text-xs font-serif font-bold text-[#D4AF37]">
-                            ₹{item.price * item.quantity}
-                          </span>
-                          {item.specialInstructions && (
-                            <p className="text-[11px] text-neutral-500 italic truncate mt-0.5">
-                              Note: {item.specialInstructions}
-                            </p>
-                          )}
+                        {/* Thumbnail */}
+                        <div className="w-14 h-14 rounded-xl overflow-hidden bg-neutral-950 flex-shrink-0 border border-white/10">
+                          <ImageWithFallback
+                            src={item.imageUrl}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                            fallbackSrc="/arancini.jpg"
+                          />
                         </div>
 
-                        {/* Quantity Controls */}
-                        <div className="flex items-center gap-2 bg-[#FAF9F5] px-2.5 py-1 rounded-full border border-black/15 shadow-inner">
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-serif font-bold text-white truncate">
+                            {item.name}
+                          </h4>
+                          <span className="text-xs font-mono font-bold text-[#E5B869]">
+                            ₹{item.price * item.quantity}
+                          </span>
+                        </div>
+
+                        {/* Stepper [- 1 +] */}
+                        <div className="flex items-center gap-2.5 bg-[#0A0C10] px-3 py-1 rounded-full border border-white/15">
                           <button
+                            type="button"
                             onClick={() => updateQuantity(item.menuItemId, -1)}
-                            className="text-neutral-600 hover:text-black font-bold"
+                            className="text-neutral-400 hover:text-white"
+                            aria-label="Decrease"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
-                          <span className="font-mono text-xs font-bold text-black min-w-[16px] text-center">
+                          <span className="font-mono text-xs font-bold text-white min-w-[14px] text-center">
                             {item.quantity}
                           </span>
                           <button
+                            type="button"
                             onClick={() => updateQuantity(item.menuItemId, 1)}
-                            className="text-neutral-600 hover:text-black font-bold"
+                            className="text-neutral-400 hover:text-white"
+                            aria-label="Increase"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
                         </div>
-
-                        <button
-                          onClick={() => removeFromCart(item.menuItemId)}
-                          className="p-1.5 text-neutral-400 hover:text-rose-500 transition-colors"
-                          title="Remove item"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
                       </div>
                     ))
                   )}
                 </div>
 
-                {/* Footer and Checkout Form */}
+                {/* Footer Breakdown & Place Order Button (Matching exact totals in design: Subtotal, Taxes 5%, Total, Place Order) */}
                 {items.length > 0 && (
-                  <div className="p-6 border-t border-black/10 bg-white space-y-4 shadow-lg">
-                    {/* Guest Info */}
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <input
-                        type="text"
-                        placeholder="Guest Name (Optional)"
-                        value={customerName}
-                        onChange={(e) => setCustomerName(e.target.value)}
-                        className="px-3 py-2 rounded-lg bg-[#FAF9F5] border border-black/15 text-black placeholder-neutral-400 focus:outline-none focus:border-black"
-                      />
-                      <input
-                        type="tel"
-                        placeholder="Phone (For order updates)"
-                        value={customerPhone}
-                        onChange={(e) => setCustomerPhone(e.target.value)}
-                        className="px-3 py-2 rounded-lg bg-[#FAF9F5] border border-black/15 text-black placeholder-neutral-400 focus:outline-none focus:border-black"
-                      />
-                    </div>
-
-                    <input
-                      type="text"
-                      placeholder="Chef order notes (e.g. serve together, extra napkins)"
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-[#FAF9F5] border border-black/15 text-xs text-black placeholder-neutral-400 focus:outline-none focus:border-black"
-                    />
-
+                  <div className="p-6 border-t border-white/10 bg-[#0A0C10] space-y-4">
                     {errorMsg && (
-                      <p className="text-xs text-rose-700 bg-rose-50 p-2 rounded border border-rose-200">
+                      <p className="text-xs font-mono text-rose-400 bg-rose-950/40 p-2.5 rounded-lg border border-rose-800">
                         {errorMsg}
                       </p>
                     )}
 
-                    {/* Financial Breakdown */}
-                    <div className="space-y-1 text-xs pt-1">
-                      <div className="flex justify-between text-neutral-600">
-                        <span>Items Subtotal</span>
-                        <span className="font-mono">₹{subtotal}</span>
+                    <div className="space-y-2 text-xs font-mono">
+                      <div className="flex justify-between text-neutral-400">
+                        <span>Subtotal</span>
+                        <span className="text-white">₹{subtotal.toFixed(0)}</span>
                       </div>
-                      <div className="flex justify-between text-neutral-600">
-                        <span>GST & Service Charge (5%)</span>
-                        <span className="font-mono">₹{tax}</span>
+                      <div className="flex justify-between text-neutral-400">
+                        <span>Taxes (5%)</span>
+                        <span className="text-white">₹{tax.toFixed(0)}</span>
                       </div>
-                      <div className="flex justify-between text-base font-bold text-black pt-2 border-t border-black/10">
-                        <span>Grand Total</span>
-                        <span className="font-serif text-[#D4AF37]">₹{total}</span>
+                      <div className="flex justify-between text-sm font-serif font-bold text-[#E5B869] pt-2 border-t border-white/10">
+                        <span>Total</span>
+                        <span>₹{total.toFixed(0)}</span>
                       </div>
                     </div>
 
-                    {/* Action */}
                     <button
+                      type="button"
                       onClick={handleSubmitOrder}
                       disabled={isSubmitting}
-                      className="w-full py-4 rounded-xl bg-black hover:bg-[#D4AF37] text-white hover:text-black font-bold text-xs uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-2"
+                      className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#D4AF37] via-[#E5B869] to-[#C59F6D] text-black font-bold text-xs uppercase tracking-[0.2em] shadow-xl hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       {isSubmitting ? (
                         <span>Transmitting to Kitchen...</span>
                       ) : (
-                        <>
-                          <span>Transmit to Kitchen • ₹{total}</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </>
+                        <span>Place Order</span>
                       )}
                     </button>
                   </div>
                 )}
+
               </motion.div>
             </div>
           </div>
@@ -255,10 +230,12 @@ export const CartDrawer: React.FC = () => {
       </AnimatePresence>
 
       {/* Success Modal */}
-      <OrderSuccessModal
-        order={submittedOrder}
-        onClose={() => setSubmittedOrder(null)}
-      />
+      {submittedOrder && (
+        <OrderSuccessModal
+          order={submittedOrder}
+          onClose={() => setSubmittedOrder(null)}
+        />
+      )}
     </>
   );
 };
